@@ -27,12 +27,13 @@ load_dotenv(BASE_DIR / ".env")
 LOG_DIR = BASE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 
+app = Flask(__name__)
+CORS(app)
+
 handler = RotatingFileHandler(LOG_DIR / "impact_api.log", maxBytes=512_000, backupCount=3, encoding="utf-8")
 handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
-app = Flask(__name__)
 app.logger.addHandler(handler)
 app.logger.setLevel(logging.INFO)
-CORS(app)
 
 DB_CONFIG = {
     "host": os.getenv("NOTUN_ALO_DB_HOST") or os.getenv("DB_HOST") or "localhost",
@@ -93,13 +94,14 @@ def ensure_schema(conn) -> None:
     safe_execute("ALTER TABLE emission_factors MODIFY co2_sa_adjusted DECIMAL(10,4) NOT NULL")
     safe_execute("ALTER TABLE emission_factors MODIFY water_liters_per_kg DECIMAL(12,4) NOT NULL")
     safe_execute("ALTER TABLE emission_factors MODIFY energy_kwh_per_kg DECIMAL(12,4) NOT NULL")
-    safe_execute("CREATE UNIQUE INDEX uq_emission_factor ON emission_factors(category, subcategory)")
-    safe_execute("CREATE INDEX idx_emission_category ON emission_factors(category)")
-    safe_execute("CREATE INDEX idx_emission_subcategory ON emission_factors(subcategory)")
+    
+    # Collation fix for existing columns
+    safe_execute("ALTER TABLE emission_factors CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
 
     cursor.execute("SHOW COLUMNS FROM pickups LIKE 'subcategory'")
     if cursor.fetchone() is None:
         cursor.execute("ALTER TABLE pickups ADD COLUMN subcategory VARCHAR(140) NULL AFTER category")
+    
     insert_sql = """
         INSERT INTO emission_factors
         (category, subcategory, co2_base_kg_per_kg, co2_sa_adjusted, water_liters_per_kg, energy_kwh_per_kg, source, notes)
@@ -116,6 +118,9 @@ def ensure_schema(conn) -> None:
     for row in FACTORS_CACHE["rows"]:
         values.append((row["category"], row["subcategory"], row["co2_base_kg_per_kg"], row["co2_sa_adjusted"], row["water_liters_per_kg"], row["energy_kwh_per_kg"], row["source"], row["notes"]))
     cursor.executemany(insert_sql, values)
+    
+    # Drop table if it exists as a base table before creating view (fixes 'is not VIEW' error)
+    cursor.execute("DROP TABLE IF EXISTS category_averages")
     cursor.execute("""
         CREATE OR REPLACE VIEW category_averages AS
         SELECT category,
@@ -156,8 +161,8 @@ SELECT
     SUM(CASE WHEN p.category = 'E-waste' THEN 1 ELSE 0 END) AS ewaste_pickups
 FROM users u
 LEFT JOIN pickups p ON p.user_id = u.id AND p.status = 'completed'
-LEFT JOIN emission_factors ef ON ef.category = p.category AND p.subcategory IS NOT NULL AND p.subcategory <> '' AND ef.subcategory = p.subcategory
-LEFT JOIN category_averages ca ON ca.category = p.category
+LEFT JOIN emission_factors ef ON ef.category = p.category COLLATE utf8mb4_unicode_ci AND p.subcategory IS NOT NULL AND p.subcategory <> '' AND ef.subcategory = p.subcategory COLLATE utf8mb4_unicode_ci
+LEFT JOIN category_averages ca ON ca.category = p.category COLLATE utf8mb4_unicode_ci
 WHERE u.id = %s
 GROUP BY u.id, u.name
 """
@@ -171,8 +176,8 @@ SELECT
     COALESCE(SUM(p.estimated_weight * COALESCE(ef.water_liters_per_kg, ca.avg_water_liters_per_kg, 0)), 0) AS water_saved_liters,
     COALESCE(SUM(p.estimated_weight * COALESCE(ef.energy_kwh_per_kg, ca.avg_energy_kwh_per_kg, 0)), 0) AS energy_saved_kwh
 FROM pickups p
-LEFT JOIN emission_factors ef ON ef.category = p.category AND p.subcategory IS NOT NULL AND p.subcategory <> '' AND ef.subcategory = p.subcategory
-LEFT JOIN category_averages ca ON ca.category = p.category
+LEFT JOIN emission_factors ef ON ef.category = p.category COLLATE utf8mb4_unicode_ci AND p.subcategory IS NOT NULL AND p.subcategory <> '' AND ef.subcategory = p.subcategory COLLATE utf8mb4_unicode_ci
+LEFT JOIN category_averages ca ON ca.category = p.category COLLATE utf8mb4_unicode_ci
 WHERE p.status = 'completed'
 """
 
@@ -182,8 +187,8 @@ SELECT
     COALESCE(SUM(p.estimated_weight), 0) AS total_kg,
     COALESCE(SUM(p.estimated_weight * COALESCE(ef.co2_sa_adjusted, ca.avg_co2, 0)), 0) AS co2_saved_kg
 FROM pickups p
-LEFT JOIN emission_factors ef ON ef.category = p.category AND p.subcategory IS NOT NULL AND p.subcategory <> '' AND ef.subcategory = p.subcategory
-LEFT JOIN category_averages ca ON ca.category = p.category
+LEFT JOIN emission_factors ef ON ef.category = p.category COLLATE utf8mb4_unicode_ci AND p.subcategory IS NOT NULL AND p.subcategory <> '' AND ef.subcategory = p.subcategory COLLATE utf8mb4_unicode_ci
+LEFT JOIN category_averages ca ON ca.category = p.category COLLATE utf8mb4_unicode_ci
 WHERE p.status = 'completed'
 GROUP BY p.category
 ORDER BY co2_saved_kg DESC
@@ -199,8 +204,8 @@ SELECT
     p.estimated_weight * COALESCE(ef.water_liters_per_kg, ca.avg_water_liters_per_kg, 0) AS water_saved_liters,
     p.estimated_weight * COALESCE(ef.energy_kwh_per_kg, ca.avg_energy_kwh_per_kg, 0) AS energy_saved_kwh
 FROM pickups p
-LEFT JOIN emission_factors ef ON ef.category = p.category AND p.subcategory IS NOT NULL AND p.subcategory <> '' AND ef.subcategory = p.subcategory
-LEFT JOIN category_averages ca ON ca.category = p.category
+LEFT JOIN emission_factors ef ON ef.category = p.category COLLATE utf8mb4_unicode_ci AND p.subcategory IS NOT NULL AND p.subcategory <> '' AND ef.subcategory = p.subcategory COLLATE utf8mb4_unicode_ci
+LEFT JOIN category_averages ca ON ca.category = p.category COLLATE utf8mb4_unicode_ci
 WHERE p.user_id = %s AND p.status = 'completed'
 ORDER BY p.schedule_date ASC, p.id ASC
 """
