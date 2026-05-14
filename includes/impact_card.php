@@ -48,19 +48,31 @@ $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['use
     document.getElementById('impact-story').innerHTML=`You prevented <strong>${fmt(data.co2_saved_kg,2)} kg CO2</strong>, saved <strong>${fmt(data.water_saved_liters,1)} liters of water</strong>, and enough energy for <strong>${fmt(data.phone_charge_equivalent)}</strong> phone charges.${badge}<br>${data.ewaste_message}`;
     <?php endif; ?>
   }).catch((err)=>setText('impact-status','Failed: ' + err.message));
-  fetch(`${api}?action=forecast&user_id=${userId}`).then(r=>r.json()).then(data=>{
-    if(data.error) throw new Error(data.error);
-    const list=document.getElementById('impact-forecast-list'); list.innerHTML='';
-    (data.forecast||[]).forEach(item=>{const li=document.createElement('li'); 
-    <?php if ($currentLang === 'bn'): ?>
-    li.textContent=`${item.month}: ${fmt(item.co2_saved_kg,2)} কেজি CO2, ${fmt(item.water_saved_liters,1)} লিটার পানি, ${fmt(item.energy_saved_kwh,2)} kWh (বিশ্বাসযোগ্যতা: ${data.confidence}, প্রবণতা: ${data.trend})`;
-    <?php else: ?>
-    li.textContent=`${item.month}: ${fmt(item.co2_saved_kg,2)} kg CO2, ${fmt(item.water_saved_liters,1)} L water, ${fmt(item.energy_saved_kwh,2)} kWh (${data.confidence} confidence, ${data.trend})`;
-    <?php endif; ?>
-    list.appendChild(li);});
-  }).catch((err)=>{
-    const list=document.getElementById('impact-forecast-list'); 
-    list.innerHTML=`<li style="color:#b42318">Forecast unavailable: ${err.message || 'Service offline'}</li>`;
-  });
+  fetch(`${api}?action=forecast&user_id=${userId}`)
+    .then(r => {
+      if (!r.ok) return r.text().then(t => { throw new Error('Server error: ' + t.substring(0, 50)); });
+      return r.text();
+    })
+    .then(text => {
+      try {
+        const data = JSON.parse(text);
+        if(data.error) throw new Error(data.error);
+        const list=document.getElementById('impact-forecast-list'); list.innerHTML='';
+        (data.forecast||[]).forEach(item=>{const li=document.createElement('li'); 
+        <?php if ($currentLang === 'bn'): ?>
+        li.textContent=`${item.month}: ${fmt(item.co2_saved_kg,2)} কেজি CO2, ${fmt(item.water_saved_liters,1)} লিটার পানি, ${fmt(item.energy_saved_kwh,2)} kWh (বিশ্বাসযোগ্যতা: ${data.confidence}, প্রবণতা: ${data.trend})`;
+        <?php else: ?>
+        li.textContent=`${item.month}: ${fmt(item.co2_saved_kg,2)} kg CO2, ${fmt(item.water_saved_liters,1)} L water, ${fmt(item.energy_saved_kwh,2)} kWh (${data.confidence} confidence, ${data.trend})`;
+        <?php endif; ?>
+        list.appendChild(li);});
+      } catch (e) {
+        console.error('Impact Forecast JSON Parse Error. Raw text:', text);
+        throw new Error('Invalid JSON response: ' + text.substring(0, 40));
+      }
+    })
+    .catch((err)=>{
+      const list=document.getElementById('impact-forecast-list'); 
+      list.innerHTML=`<li style="color:#b42318">Forecast unavailable: ${err.message}</li>`;
+    });
 })();
 </script>

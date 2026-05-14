@@ -1,9 +1,12 @@
 <?php
-// api_impact.php
-// A PHP wrapper to retrieve environmental impact via Python CLI
-// This avoids the need for a running Flask API on port 5003.
+ob_start();
+error_reporting(0);
+ini_set('display_errors', 0);
 
 require_once 'includes/config.php';
+
+// Clear any output from config.php (like notices or warnings)
+ob_clean();
 header('Content-Type: application/json');
 
 $action = $_GET['action'] ?? '';
