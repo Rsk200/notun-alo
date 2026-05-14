@@ -36,8 +36,8 @@ $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['use
   const root=document.currentScript.previousElementSibling; const userId=root.dataset.userId; const api='api_impact.php';
   const fmt=(n,d=0)=>Number(n||0).toLocaleString(undefined,{maximumFractionDigits:d});
   function setText(id,text){const el=document.getElementById(id); if(el) el.textContent=text;}
-  fetch(`${api}?action=impact&user_id=${userId}`).then(r=>r.json()).then(data=>{
-    if(data.error) throw new Error(data.error);
+    fetch(`${api}?action=impact&user_id=${userId}`).then(r=>r.json()).then(data=>{
+    if(data.error) throw new Error(data.error + (data.message ? ': ' + data.message : ''));
     setText('impact-status','<?= $lang['live_impact_loaded'] ?? 'Live impact loaded' ?>');
     setText('impact-co2',`${fmt(data.co2_saved_kg,2)} kg`); setText('impact-water',`${fmt(data.water_saved_liters,1)} L`); setText('impact-energy',`${fmt(data.energy_saved_kwh,2)} kWh`);
     setText('impact-car',`${fmt(data.car_trip_equivalent)} <?= $lang['car_trips_avoided'] ?? 'car trips avoided' ?>`); setText('impact-bottles',`${fmt(data.water_bottle_equivalent)} <?= $lang['bottles_saved'] ?? 'bottles saved' ?>`); setText('impact-phone',`${fmt(data.phone_charge_equivalent)} <?= $lang['phone_charges'] ?? 'phone charges' ?>`);
@@ -47,7 +47,7 @@ $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['use
     <?php else: ?>
     document.getElementById('impact-story').innerHTML=`You prevented <strong>${fmt(data.co2_saved_kg,2)} kg CO2</strong>, saved <strong>${fmt(data.water_saved_liters,1)} liters of water</strong>, and enough energy for <strong>${fmt(data.phone_charge_equivalent)}</strong> phone charges.${badge}<br>${data.ewaste_message}`;
     <?php endif; ?>
-  }).catch(()=>setText('impact-status','Failed to load impact analytics.'));
+  }).catch((err)=>setText('impact-status','Failed: ' + err.message));
   fetch(`${api}?action=forecast&user_id=${userId}`).then(r=>r.json()).then(data=>{
     if(data.error) throw new Error(data.error);
     const list=document.getElementById('impact-forecast-list'); list.innerHTML='';
@@ -58,6 +58,9 @@ $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['use
     li.textContent=`${item.month}: ${fmt(item.co2_saved_kg,2)} kg CO2, ${fmt(item.water_saved_liters,1)} L water, ${fmt(item.energy_saved_kwh,2)} kWh (${data.confidence} confidence, ${data.trend})`;
     <?php endif; ?>
     list.appendChild(li);});
-  }).catch(()=>{});
+  }).catch((err)=>{
+    const list=document.getElementById('impact-forecast-list'); 
+    list.innerHTML=`<li style="color:#b42318">Forecast unavailable: ${err.message || 'Service offline'}</li>`;
+  });
 })();
 </script>
