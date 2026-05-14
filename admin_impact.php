@@ -29,8 +29,8 @@ $platformImpact = $pdo->query("
       (SELECT p2.category
        FROM pickups p2
        LEFT JOIN emission_factors ef2
-         ON p2.category = ef2.category AND COALESCE(p2.subcategory, p2.category) = ef2.subcategory
-       LEFT JOIN category_averages ca2 ON p2.category = ca2.category
+         ON p2.category = ef2.category COLLATE utf8mb4_unicode_ci AND COALESCE(p2.subcategory, p2.category) = ef2.subcategory COLLATE utf8mb4_unicode_ci
+       LEFT JOIN category_averages ca2 ON p2.category = ca2.category COLLATE utf8mb4_unicode_ci
        WHERE p2.status = 'completed'
        GROUP BY p2.category
        ORDER BY SUM(p2.estimated_weight * COALESCE(ef2.co2_sa_adjusted, ca2.avg_co2)) DESC
@@ -38,8 +38,8 @@ $platformImpact = $pdo->query("
       ROUND(COALESCE(AVG(p.estimated_weight), 0), 2) AS avg_weight_per_pickup
     FROM pickups p
     LEFT JOIN emission_factors ef
-      ON p.category = ef.category AND COALESCE(p.subcategory, p.category) = ef.subcategory
-    LEFT JOIN category_averages ca ON p.category = ca.category
+      ON p.category = ef.category COLLATE utf8mb4_unicode_ci AND COALESCE(p.subcategory, p.category) = ef.subcategory COLLATE utf8mb4_unicode_ci
+    LEFT JOIN category_averages ca ON p.category = ca.category COLLATE utf8mb4_unicode_ci
     WHERE p.status = 'completed'
 ")->fetch();
 
@@ -53,8 +53,8 @@ $categoryRows = $pdo->query("
         NULLIF((SELECT SUM(px.estimated_weight * COALESCE(efx.co2_sa_adjusted, cax.avg_co2))
                 FROM pickups px
                 LEFT JOIN emission_factors efx
-                  ON px.category = efx.category AND COALESCE(px.subcategory, px.category) = efx.subcategory
-                LEFT JOIN category_averages cax ON px.category = cax.category
+                  ON px.category = efx.category COLLATE utf8mb4_unicode_ci AND COALESCE(px.subcategory, px.category) = efx.subcategory COLLATE utf8mb4_unicode_ci
+                LEFT JOIN category_averages cax ON px.category = cax.category COLLATE utf8mb4_unicode_ci
                 WHERE px.status = 'completed'), 0) * 100,
         2
       ) AS pct_platform_total,
@@ -62,8 +62,8 @@ $categoryRows = $pdo->query("
       MAX(COALESCE(ef.is_ewaste, 0)) AS has_ewaste
     FROM pickups p
     LEFT JOIN emission_factors ef
-      ON p.category = ef.category AND COALESCE(p.subcategory, p.category) = ef.subcategory
-    LEFT JOIN category_averages ca ON p.category = ca.category
+      ON p.category = ef.category COLLATE utf8mb4_unicode_ci AND COALESCE(p.subcategory, p.category) = ef.subcategory COLLATE utf8mb4_unicode_ci
+    LEFT JOIN category_averages ca ON p.category = ca.category COLLATE utf8mb4_unicode_ci
     WHERE p.status = 'completed'
     GROUP BY p.category
     ORDER BY co2_saved_kg DESC
@@ -77,8 +77,8 @@ $monthRows = $pdo->query("
           THEN estimated_weight * COALESCE(ef.co2_sa_adjusted, ca.avg_co2) ELSE 0 END) AS last_month
     FROM pickups p
     LEFT JOIN emission_factors ef
-      ON p.category = ef.category AND COALESCE(p.subcategory, p.category) = ef.subcategory
-    LEFT JOIN category_averages ca ON p.category = ca.category
+      ON p.category = ef.category COLLATE utf8mb4_unicode_ci AND COALESCE(p.subcategory, p.category) = ef.subcategory COLLATE utf8mb4_unicode_ci
+    LEFT JOIN category_averages ca ON p.category = ca.category COLLATE utf8mb4_unicode_ci
     WHERE p.status = 'completed'
 ")->fetch();
 

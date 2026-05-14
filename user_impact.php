@@ -29,11 +29,11 @@ if ($hasEmissionFactors && $hasSubcategory) {
           ROUND(SUM(p.estimated_weight), 2) AS kg_collected
         FROM pickups p
         LEFT JOIN emission_factors ef
-          ON p.category = ef.category
+          ON p.category = ef.category COLLATE utf8mb4_unicode_ci
          AND p.subcategory IS NOT NULL
          AND p.subcategory <> ''
-         AND p.subcategory = ef.subcategory
-        LEFT JOIN category_averages ca ON p.category = ca.category
+         AND p.subcategory = ef.subcategory COLLATE utf8mb4_unicode_ci
+        LEFT JOIN category_averages ca ON p.category = ca.category COLLATE utf8mb4_unicode_ci
         WHERE p.user_id = ?
           AND p.status = 'completed'
           AND p.schedule_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
