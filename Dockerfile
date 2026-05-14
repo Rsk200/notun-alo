@@ -1,9 +1,10 @@
 FROM php:8.2-apache
 
-# Install required PHP extensions (if any)
+# Install required PHP extensions
 RUN apt-get update && apt-get install -y \
     libpng-dev \
-    libjpeg-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
     libzip-dev && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install gd zip pdo pdo_mysql && \
@@ -19,9 +20,8 @@ COPY . /var/www/html
 # Ensure proper permissions
 RUN chown -R www-data:www-data /var/www/html
 
-# Expose the port Cloud Run expects (the $PORT env var, default 8080)
+# Expose the port Cloud Run / Render expects
 ENV PORT 8080
 EXPOSE 8080
 
-# Use the default Apache command
 CMD ["apache2-foreground"]
