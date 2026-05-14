@@ -73,7 +73,10 @@ if ($action === 'impact') {
             ["name" => "Eco-Tree", "xp" => 1000],
             ["name" => "Eco-Forest", "xp" => 2500],
             ["name" => "Eco-Guardian", "xp" => 6000],
-            ["name" => "Earth Hero", "xp" => 15000]
+            ["name" => "Earth Hero", "xp" => 15000],
+            ["name" => "Climate Commander", "xp" => 35000],
+            ["name" => "Atmosphere Architect", "xp" => 75000],
+            ["name" => "Planet Savior", "xp" => 150000]
         ];
 
         $currentLevel = $levels[0];
@@ -89,12 +92,15 @@ if ($action === 'impact') {
         }
 
         $progress = 0;
+        $nextRankMsg = "";
         if ($nextLevel) {
             $range = $nextLevel['xp'] - $currentLevel['xp'];
             $earned = $xp - $currentLevel['xp'];
             $progress = round(($earned / $range) * 100);
+            $nextRankMsg = round($nextLevel['xp'] - $xp) . " XP to " . $nextLevel['name'];
         } else {
-            $progress = 100; // Max level
+            $progress = 100;
+            $nextRankMsg = "Ultimate Rank Achieved! 🏆";
         }
 
         echo json_encode([
@@ -115,7 +121,8 @@ if ($action === 'impact') {
                 "next_level_name" => $nextLevel ? $nextLevel['name'] : "Max Level",
                 "next_level_xp" => $nextLevel ? $nextLevel['xp'] : $xp,
                 "progress_percent" => $progress,
-                "points_to_next" => $nextLevel ? round($nextLevel['xp'] - $xp) : 0
+                "points_to_next" => $nextLevel ? round($nextLevel['xp'] - $xp) : 0,
+                "next_rank_msg" => $nextRankMsg
             ],
             "high_impact_badge" => ((int)$row['ewaste_pickups'] > 0) ? "High Impact Recycling" : null,
             "ewaste_message" => "Mobile phone recycling has ~29x higher environmental impact than mixed plastic recycling."

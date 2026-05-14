@@ -88,7 +88,7 @@ $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['use
         setText('eco-xp-display', fmt(data.gamification.xp) + ' XP');
         const fill = document.getElementById('eco-progress-fill');
         if(fill) fill.style.width = data.gamification.progress_percent + '%';
-        setText('eco-next-text', fmt(data.gamification.points_to_next) + ' XP to ' + data.gamification.next_level_name);
+        setText('eco-next-text', data.gamification.next_rank_msg);
     }
   }).catch((err)=>setText('impact-status','Failed: ' + err.message));
   fetch(`${api}?action=forecast&user_id=${userId}`)
