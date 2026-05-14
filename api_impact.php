@@ -62,6 +62,41 @@ if ($action === 'impact') {
         $water = (float)$row['water_saved_liters'];
         $energy = (float)$row['energy_saved_kwh'];
 
+        // Gamification Algorithm: Eco-Rank
+        // 1 kg CO2 = 10 XP, 1 L Water = 1 XP, 1 kWh Energy = 10 XP
+        $xp = ($co2 * 10) + ($water * 1) + ($energy * 10);
+        
+        $levels = [
+            ["name" => "Eco-Seed", "xp" => 0],
+            ["name" => "Eco-Sprout", "xp" => 100],
+            ["name" => "Eco-Sapling", "xp" => 300],
+            ["name" => "Eco-Tree", "xp" => 1000],
+            ["name" => "Eco-Forest", "xp" => 2500],
+            ["name" => "Eco-Guardian", "xp" => 6000],
+            ["name" => "Earth Hero", "xp" => 15000]
+        ];
+
+        $currentLevel = $levels[0];
+        $nextLevel = null;
+        foreach ($levels as $i => $l) {
+            if ($xp >= $l['xp']) {
+                $currentLevel = $l;
+                $currentLevel['index'] = $i + 1;
+                $nextLevel = $levels[$i + 1] ?? null;
+            } else {
+                break;
+            }
+        }
+
+        $progress = 0;
+        if ($nextLevel) {
+            $range = $nextLevel['xp'] - $currentLevel['xp'];
+            $earned = $xp - $currentLevel['xp'];
+            $progress = round(($earned / $range) * 100);
+        } else {
+            $progress = 100; // Max level
+        }
+
         echo json_encode([
             "user_id" => $userId,
             "user_name" => $row['user_name'],
@@ -73,6 +108,15 @@ if ($action === 'impact') {
             "car_trip_equivalent" => round($co2 / $CAR_CO2),
             "water_bottle_equivalent" => round($water / $WATER_BOTTLE),
             "phone_charge_equivalent" => round($energy / $PHONE_KWH),
+            "gamification" => [
+                "xp" => round($xp),
+                "level_name" => $currentLevel['name'],
+                "level_number" => $currentLevel['index'],
+                "next_level_name" => $nextLevel ? $nextLevel['name'] : "Max Level",
+                "next_level_xp" => $nextLevel ? $nextLevel['xp'] : $xp,
+                "progress_percent" => $progress,
+                "points_to_next" => $nextLevel ? round($nextLevel['xp'] - $xp) : 0
+            ],
             "high_impact_badge" => ((int)$row['ewaste_pickups'] > 0) ? "High Impact Recycling" : null,
             "ewaste_message" => "Mobile phone recycling has ~29x higher environmental impact than mixed plastic recycling."
         ]);

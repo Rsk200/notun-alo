@@ -15,6 +15,20 @@ $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['use
         body.dark-mode .impact-dashboard h2 { color: #81c784 !important; }
         body.dark-mode .impact-dashboard p { color: #aaa !important; }
         body.dark-mode .impact-badge { background: rgba(255, 214, 107, 0.15); color: #ffd66b; border-color: rgba(255, 214, 107, 0.3); }
+        
+        /* Eco-Rank Premium Styling */
+        .eco-rank-container { background: #fff; border-radius: 12px; padding: 1.25rem; border: 1px solid #dfeee3; box-shadow: 0 4px 12px rgba(27,94,32,0.05); }
+        .eco-rank-info { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .eco-badge { background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; font-weight: 800; padding: .6rem 1rem; border-radius: 10px; font-size: 1rem; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3); }
+        #eco-rank-name { margin: 0; font-size: 1.2rem; color: #1b5e20; font-weight: 700; }
+        .eco-xp-text { font-size: 0.9rem; color: #667085; }
+        .eco-progress-bar { height: 10px; background: #f0f7f2; border-radius: 5px; overflow: hidden; margin-bottom: 6px; border: 1px solid #e2ece5; }
+        .eco-progress-fill { height: 100%; background: linear-gradient(90deg, #2ecc71, #a8e063); transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1); width: 0; }
+        .eco-next-milestone { font-size: 0.8rem; color: #667085; text-align: right; font-weight: 500; }
+        
+        body.dark-mode .eco-rank-container { background: #1e1e1e; border-color: #333; }
+        body.dark-mode .eco-progress-bar { background: #2a2a2a; border-color: #333; }
+        body.dark-mode #eco-rank-name { color: #81c784; }
     </style>
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1rem;">
         <div>
@@ -23,7 +37,26 @@ $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['use
         </div>
         <span id="impact-status" style="font-size:.9rem;color:#667085;">Loading...</span>
     </div>
-    <div class="impact-grid">
+
+    <div class="impact-card">
+        <div class="eco-rank-container">
+            <div class="eco-rank-info">
+                <div class="eco-badge" id="eco-level-badge">Lvl 1</div>
+                <div>
+                    <h4 id="eco-rank-name">Eco-Seed</h4>
+                    <div class="eco-xp-text" id="eco-xp-display">0 XP</div>
+                </div>
+            </div>
+            <div class="eco-progress-wrapper">
+                <div class="eco-progress-bar">
+                    <div class="eco-progress-fill" id="eco-progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="eco-next-milestone" id="eco-next-text">100 XP to next rank</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="impact-grid" style="margin-top: 1rem;">
         <div class="impact-card"><small><?= $lang['co2_prevented'] ?? 'CO2 prevented' ?></small><strong id="impact-co2">0 kg</strong><span id="impact-car">0 <?= $lang['car_trips_avoided'] ?? 'car trips avoided' ?></span></div>
         <div class="impact-card water"><small><?= $lang['water_saved'] ?? 'Water saved' ?></small><strong id="impact-water">0 L</strong><span id="impact-bottles">0 <?= $lang['bottles_saved'] ?? 'bottles saved' ?></span></div>
         <div class="impact-card energy"><small><?= $lang['energy_saved'] ?? 'Energy saved' ?></small><strong id="impact-energy">0 kWh</strong><span id="impact-phone">0 <?= $lang['phone_charges'] ?? 'phone charges' ?></span></div>
@@ -47,6 +80,16 @@ $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['use
     <?php else: ?>
     document.getElementById('impact-story').innerHTML=`You prevented <strong>${fmt(data.co2_saved_kg,2)} kg CO2</strong>, saved <strong>${fmt(data.water_saved_liters,1)} liters of water</strong>, and enough energy for <strong>${fmt(data.phone_charge_equivalent)}</strong> phone charges.${badge}<br>${data.ewaste_message}`;
     <?php endif; ?>
+
+    // Update Gamification UI
+    if (data.gamification) {
+        setText('eco-level-badge', 'Lvl ' + data.gamification.level_number);
+        setText('eco-rank-name', data.gamification.level_name);
+        setText('eco-xp-display', fmt(data.gamification.xp) + ' XP');
+        const fill = document.getElementById('eco-progress-fill');
+        if(fill) fill.style.width = data.gamification.progress_percent + '%';
+        setText('eco-next-text', fmt(data.gamification.points_to_next) + ' XP to ' + data.gamification.next_level_name);
+    }
   }).catch((err)=>setText('impact-status','Failed: ' + err.message));
   fetch(`${api}?action=forecast&user_id=${userId}`)
     .then(r => {
