@@ -78,6 +78,18 @@ try {
         }
 
         echo "<p>AUTO_INCREMENT: $ok/6 tables fixed. Constraints: $ck/7 added.</p>";
+
+        // Fix collation mismatch (MySQL 8.0 default utf8mb4_0900_ai_ci vs MariaDB/older utf8mb4_general_ci)
+        echo "<p>Fixing table collations...</p>";
+        $collationTables = ['users', 'orders', 'pickups', 'products', 'rewards', 'emission_factors', 'user_ml_scores'];
+        $colFixed = 0;
+        foreach ($collationTables as $tbl) {
+            if (runAlter($pdo, "ALTER TABLE `$tbl` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")) {
+                $colFixed++;
+            }
+        }
+        echo "<p>$colFixed/" . count($collationTables) . " tables converted to utf8mb4_unicode_ci.</p>";
+
         echo "<h1 style='color:green;'>Database schema is up to date!</h1>";
     }
 
