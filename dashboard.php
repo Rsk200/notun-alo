@@ -155,19 +155,19 @@ $i18n = [
 
 $t = $i18n[$currentLang];
 
-function translateRank($name, $lang) {
+function dash_translateRank($name, $lang) {
     if ($lang === 'en') return $name;
     $ranks = ['Bronze' => 'ব্রোঞ্জ', 'Silver' => 'সিলভার', 'Gold' => 'গোল্ড', 'Platinum' => 'প্লাটিনাম'];
     return $ranks[$name] ?? $name;
 }
 
-function translateCategory($cat, $lang) {
+function dash_translateCategory($cat, $lang) {
     if ($lang === 'en') return $cat;
     $cats = ['Paper' => 'কাগজ', 'Plastic' => 'প্লাস্টিক', 'Metal' => 'ধাতু', 'E-waste' => 'ই-বর্জ্য'];
     return $cats[$cat] ?? $cat;
 }
 
-function translateStatus($status, $lang) {
+function dash_translateStatus($status, $lang) {
     if ($lang === 'en') return $status;
     $st = ['completed' => 'সম্পন্ন', 'pending' => 'অপেক্ষমান', 'scheduled' => 'নির্ধারিত', 'assigned' => 'বরাদ্দকৃত'];
     return $st[strtolower($status)] ?? $status;
@@ -354,17 +354,17 @@ function translateStatus($status, $lang) {
             <div class="tier-card">
                 <div class="tier-header">
                     <i class="ti ti-medal"></i>
-                    <span><?= translateRank($currentTier['name'], $currentLang) ?> <?= $t['recycler'] ?></span>
+                    <span><?= dash_translateRank($currentTier['name'], $currentLang) ?> <?= $t['recycler'] ?></span>
                 </div>
                 <div class="tier-points" id="tier-points-display">০ <?= $t['pts'] ?></div>
                 <div class="tier-progress-bg">
                     <div class="tier-progress-fill" id="tier-progress-fill" style="width: 0%;"></div>
                 </div>
                 <div class="tier-milestones">
-                    <span><?= translateRank('Bronze', $currentLang) ?></span>
-                    <span><?= translateRank('Silver', $currentLang) ?></span>
-                    <span><?= translateRank('Gold', $currentLang) ?></span>
-                    <span><?= translateRank('Platinum', $currentLang) ?></span>
+                    <span><?= dash_translateRank('Bronze', $currentLang) ?></span>
+                    <span><?= dash_translateRank('Silver', $currentLang) ?></span>
+                    <span><?= dash_translateRank('Gold', $currentLang) ?></span>
+                    <span><?= dash_translateRank('Platinum', $currentLang) ?></span>
                 </div>
                 <div class="tier-next" id="tier-next-text">...</div>
             </div>
@@ -376,7 +376,7 @@ function translateStatus($status, $lang) {
         <div class="stat-card <?= $points == 0 ? 'empty' : '' ?>" id="stat-card-points">
             <div class="stat-header"><i class="ti ti-star"></i> <?= $t['reward_pts'] ?></div>
             <div class="stat-num" id="val-points" data-val="<?= $points ?>">০</div>
-            <div class="stat-sub"><?= translateRank($currentTier['name'], $currentLang) ?> <?= $t['tier'] ?> · <span id="pts-to-next">...</span></div>
+            <div class="stat-sub"><?= dash_translateRank($currentTier['name'], $currentLang) ?> <?= $t['tier'] ?> · <span id="pts-to-next">...</span></div>
             <div class="stat-accent"><div class="stat-accent-fill" style="background: var(--color-gold); width: 0%;"></div></div>
         </div>
         <div class="stat-card <?= $totalPickups == 0 ? 'empty' : '' ?>" id="stat-card-pickups">
@@ -478,10 +478,10 @@ function translateStatus($status, $lang) {
                         <div class="timeline-dot"></div>
                         <div class="timeline-content">
                             <div>
-                                <div class="timeline-title"><?= translateCategory($act['category'], $currentLang) ?> <?= $act['subcategory'] ? '(' . e($act['subcategory']) . ')' : '' ?></div>
+                                <div class="timeline-title"><?= dash_translateCategory($act['category'], $currentLang) ?> <?= $act['subcategory'] ? '(' . e($act['subcategory']) . ')' : '' ?></div>
                                 <div class="timeline-date" data-date="<?= $act['schedule_date'] ?>">...</div>
                             </div>
-                            <span class="timeline-badge badge-<?= strtolower($act['status']) ?>"><?= translateStatus($act['status'], $currentLang) ?></span>
+                            <span class="timeline-badge badge-<?= strtolower($act['status']) ?>"><?= dash_translateStatus($act['status'], $currentLang) ?></span>
                         </div>
                     </div>
                     <?php endforeach; ?>
