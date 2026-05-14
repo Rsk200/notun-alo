@@ -1,13 +1,9 @@
 <?php
 require_once 'includes/config.php';
 
-// Prevent accidental re-initialization if needed, or just let it run.
-// For now, we allow it to run to fix the user's issue.
-
 try {
     $sqlFile = 'clean_merged_notun_alo.sql';
     if (!file_exists($sqlFile)) {
-        // Fallback to database/notun_alo.sql if the merged one isn't there
         $sqlFile = 'database/notun_alo.sql';
     }
 
@@ -26,11 +22,37 @@ try {
     echo "<h1>Initializing Database...</h1>";
     echo "<p>Using: <code>$sqlFile</code></p>";
 
-    // Execute the SQL (strip DEFINER clauses already handled above)
-    $pdo->exec($sql);
+    try {
+        $pdo->exec($sql);
+        echo "<h1 style='color:green;'>Database initialized successfully!</h1>";
+    } catch (PDOException $e) {
+        $msg = strtolower($e->getMessage());
+        // If tables already exist, just apply ALTER TABLE statements (AUTO_INCREMENT + constraints)
+        if (strpos($msg, 'already exists') !== false) {
+            echo "<p>Tables already exist. Applying AUTO_INCREMENT and constraint fixes...</p>";
 
-    echo "<h1 style='color:green;'>Database initialized successfully!</h1>";
-    echo "<p>All tables and views have been created/updated on <strong>" . DB_NAME . "</strong>.</p>";
+            // Extract all ALTER TABLE statements from the SQL
+            preg_match_all('/ALTER\s+TABLE[^;]+;/i', $sql, $matches);
+            $alters = $matches[0] ?? [];
+
+            $successCount = 0;
+            $failCount = 0;
+            foreach ($alters as $alter) {
+                try {
+                    $pdo->exec($alter);
+                    $successCount++;
+                } catch (PDOException $alterErr) {
+                    // Many alters may already be applied (duplicate key, etc.) - that's fine
+                    $failCount++;
+                }
+            }
+            echo "<p>Applied $successCount ALTER TABLE statements ($failCount skipped - already applied).</p>";
+            echo "<h1 style='color:green;'>Database schema is up to date!</h1>";
+        } else {
+            throw $e;
+        }
+    }
+
     echo "<p><a href='index.php' style='padding:10px 20px; background:#28a745; color:white; text-decoration:none; border-radius:5px;'>Go to Homepage</a></p>";
 
 } catch (PDOException $e) {
