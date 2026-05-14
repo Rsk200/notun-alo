@@ -44,6 +44,7 @@ $navItems = [];
 
 if ($role === 'user') {
     $navItems = [
+        ['url' => 'dashboard.php',            'icon' => 'fa-solid fa-house', 'label' => $lang['dashboard'] ?? 'Dashboard'],
         ['url' => 'user_request_pickup.php',  'icon' => 'fa-solid fa-truck-fast', 'label' => $lang['request_pickup'] ?? 'Request Pickup'],
         ['url' => 'shop.php',                 'icon' => 'fa-solid fa-bag-shopping', 'label' => $lang['shop'] ?? 'Shop'],
         ['url' => 'chatbot.php',              'icon' => 'fa-solid fa-robot', 'label' => $lang['ai_assistant'] ?? 'AI Assistant'],
