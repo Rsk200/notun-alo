@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Notun Alo Smart Recycling</title>
+    
+    <!-- Tabler Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --brand-dark: #0A2E1E;
+            --brand-primary: #1D9E75;
+            --brand-light: #E6F5EE;
+            --brand-border: #6EE7B7;
+            --gold: #D97706;
+            --gold-bg: #FEF3C7;
+            --gold-text: #92400E;
+            --silver: #94A3B8;
+            --silver-bg: #F1F5F9;
+            --silver-text: #475569;
+            --bronze: #F97316;
+            --bronze-bg: #FFEDD5;
+            --bronze-text: #9A3412;
+            --blue: #2563EB;
+            --blue-bg: #DBEAFE;
+            --blue-text: #1E40AF;
+            --purple: #7C3AED;
+            --purple-bg: #EDE9FE;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --border: #E5E7EB;
+            --border-light: #F3F4F6;
+            --bg-page: #F5F7F2;
+            --bg-card: #FFFFFF;
+            --bg-subtle: #F9FAFB;
+            --success-bg: #DCFCE7;
+            --success-text: #166534;
+            --warning-bg: #FEF3C7;
+            --warning-text: #92400E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* === NAVBAR === */
+        .navbar {
+            height: 60px;
+            background: var(--brand-dark);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-logo {
+            width: 28px;
+            height: 28px;
+            color: white;
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            line-height: 1;
+        }
+
+        .brand-tagline {
+            font-size: 10px;
+            color: #6EE7B7;
+            margin-top: 2px;
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            font-size: 13px;
+            color: white;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+        }
+
+        .nav-link.active {
+            background: var(--brand-primary);
+            padding: 7px 16px;
+            border-radius: 99px;
+            opacity: 1;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--brand-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* === LAYOUT === */
+        .wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        .grid-gap {
+            display: grid;
+            gap: 20px;
+        }
+
+        /* === CARDS === */
+        .white-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.03);
+            padding: 24px;
+        }
+
+        /* === SECTION 1: HERO === */
+        .hero-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            align-items: start;
+            margin-bottom: 24px;
+        }
+
+        .greeting-block {
+            padding: 8px 0;
+        }
+
+        .page-greeting {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .page-date {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        #rotating-quote {
+            font-size: 14px;
+            color: var(--brand-primary);
+            font-weight: 500;
+            margin-top: 10px;
+            transition: opacity 0.3s ease;
+        }
+
+        .tier-card {
+            width: 280px;
+        }
+
+        .tier-badge {
+            background: var(--gold-bg);
+            color: var(--gold-text);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 99px;
+            display: inline-block;
+            letter-spacing: 0.04em;
+        }
+
+        .metric-main {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-top: 12px;
+            line-height: 1.2;
+        }
+
+        .card-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+        }
+
+        .progress-container {
+            margin-top: 14px;
+        }
+
+        .progress-bg {
+            height: 8px;
+            background: var(--border-light);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand-primary), #34D399);
+            width: 0%;
+            transition: width 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .tier-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 10px;
+            color: #D1D5DB;
+        }
+
+        /* === SECTION 2: STATS === */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card-label-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .stat-num {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .stat-accent-bar {
+            height: 4px;
+            background: var(--border-light);
+            border-radius: 99px;
+            margin-top: 16px;
+            overflow: hidden;
+        }
+
+        .stat-accent-fill {
+            height: 100%;
+            border-radius: 99px;
+        }
+
+        /* === SECTION 3: CTA === */
+        .cta-banner {
+            background: linear-gradient(135deg, #065F46, #1D9E75);
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .cta-headline {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .cta-sub {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 6px;
+        }
+
+        .pill-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .cta-pill {
+            background: rgba(255, 255, 255, 0.15);
+            font-size: 12px;
+            padding: 5px 12px;
+            border-radius: 99px;
+            font-weight: 500;
+        }
+
+        .cta-btn-wrap {
+            text-align: center;
+        }
+
+        .btn-schedule {
+            background: white;
+            color: #065F46;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 13px 24px;
+            border-radius: 10px;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .btn-schedule:hover {
+            transform: scale(1.02);
+        }
+
+        .cta-caption {
+            font-size: 11px;
+            opacity: 0.55;
+            margin-top: 6px;
+            display: block;
+        }
+
+        /* === SECTION 4: TWO COL GRID === */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .section-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .filter-pill {
+            border: 1px solid var(--border);
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 99px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            background: white;
+            transition: background 0.2s;
+        }
+
+        .filter-pill:hover {
+            background: var(--bg-subtle);
+        }
+
+        /* Leaderboard Items */
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .lb-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 14px;
+            border-radius: 10px;
+        }
+
+        .rank-top-1 { background: #FFFBEB; border-left: 3px solid #F59E0B; }
+        .rank-top-2 { background: #F8FAFC; border-left: 3px solid #94A3B8; }
+        .rank-top-3 { background: #FFF7ED; border-left: 3px solid #F97316; }
+
+        .lb-rank-icon {
+            font-size: 18px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            width: 24px;
+        }
+
+        .lb-rank-num {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            width: 24px;
+            margin-right: 12px;
+        }
+
+        .lb-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+
+        .lb-avatar-sm {
+            width: 32px;
+            height: 32px;
+            font-size: 12px;
+        }
+
+        .lb-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .lb-pts-pill {
+            margin-left: auto;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 99px;
+        }
+
+        .lb-footer {
+            background: #F0FDF4;
+            border-top: 1px solid #D1FAE5;
+            padding: 12px 16px;
+            border-radius: 0 0 16px 16px;
+            margin: 16px -24px -24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Recent Activity */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .activity-item {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #F9FAFB;
+            align-items: center;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-wrap {
+            width: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .timeline-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--brand-primary);
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .timeline-line {
+            width: 1px;
+            height: 100%;
+            border-left: 1px dashed var(--border);
+            position: absolute;
+            top: 8px;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .activity-date {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 99px;
+        }
+
+        .status-completed { background: #DCFCE7; color: #166534; }
+        .status-pending { background: #FEF3C7; color: #92400E; }
+        .status-scheduled { background: #DBEAFE; color: #1E40AF; }
+
+        /* === SECTION 5: QUICK ACTIONS === */
+        .actions-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .action-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        .icon-circle {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .action-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .action-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .action-badge {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 99px;
+        }
+
+        /* === SECTION 6: FOOTER STRIP === */
+        .footer-strip {
+            background: #F0FDF4;
+            border: 1px solid #D1FAE5;
+            border-radius: 16px;
+            padding: 18px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-strip-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #065F46;
+        }
+
+        .btn-learn {
+            border: 1.5px solid var(--brand-primary);
+            color: var(--brand-primary);
+            background: transparent;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-learn:hover {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 900px) {
+            .main-grid { grid-template-columns: 1fr; }
+            .actions-row { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 640px) {
+            .hero-row { grid-template-columns: 1fr; }
+            .tier-card { width: 100%; }
+            .stats-row { grid-template-columns: 1fr; }
+            .cta-banner { flex-direction: column; text-align: center; gap: 20px; }
+            .actions-row { grid-template-columns: 1fr; }
+            .footer-strip { flex-direction: column; text-align: center; gap: 16px; }
+            
+            .page-greeting { font-size: 24px; }
+            .stat-num { font-size: 28px; }
+            .wrapper { padding: 20px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <svg class="nav-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12l5 5L20 7" />
+            </svg>
+            <div class="nav-brand-text">
+                <span class="brand-name">Notun Alo</span>
+                <span class="brand-tagline">Smart Recycling System</span>
+            </div>
+        </div>
+
+        <div class="nav-center">
+            <a href="#" class="nav-link active">Dashboard</a>
+            <a href="#" class="nav-link">Request a Pickup</a>
+            <a href="#" class="nav-link">Shop</a>
+            <a href="#" class="nav-link">AI Assistant</a>
+            <a href="#" class="nav-link">Environmental Impact</a>
+            <a href="#" class="nav-link">My Recent Activity</a>
+        </div>
+
+        <div class="nav-right">
+            <div class="icon-btn"><i class="ti ti-mail"></i></div>
+            <div class="icon-btn"><i class="ti ti-moon"></i></div>
+            <div class="icon-btn"><i class="ti ti-settings"></i></div>
+            <div class="user-avatar">RK</div>
+        </div>
+    </nav>
+
+    <main class="wrapper">
+        
+        <!-- SECTION 1: HERO -->
+        <div class="hero-row">
+            <div class="greeting-block">
+                <h1 class="page-greeting">Greetings, Rabbi 🌿</h1>
+                <p class="page-date">May 15, 2026 · Dhaka, BD</p>
+                <div id="rotating-quote">Every pickup makes Dhaka cleaner. 🌿</div>
+            </div>
+
+            <div class="white-card tier-card">
+                <div class="tier-badge">BRONZE RECYCLER</div>
+                <div class="metric-main" id="hero-pts">0</div>
+                <div class="card-label">reward points</div>
+                
+                <div class="progress-container">
+                    <div class="progress-bg">
+                        <div class="progress-fill" id="tier-progress"></div>
+                    </div>
+                    <div class="progress-labels">
+                        <span style="color: var(--text-secondary)">200 pts</span>
+                        <span style="color: var(--text-muted)">300 to Silver</span>
+                    </div>
+                    <div class="tier-timeline">
+                        <span>Bronze</span>
+                        <span>Silver</span>
+                        <span>Gold</span>
+                        <span>Platinum</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: STATS -->
+        <div class="stats-row">
+            <!-- Reward Points -->
+            <div class="white-card">
+                <div class="stat-card-label-row">
+                    <i class="ti ti-star" style="color: #D97706; font-size: 18px;"></i>
+                    <span class="card-label">REWARD POINTS</span>
+                </div>
+                <div class="stat-num" style="color: #D97706;" data-val="50">0</div>
+                <div class="stat-sub">Level: Bronze</div>
+                <div class="stat-accent-bar">
+                    <div class="stat-accent-fill" style="background: #D97706; width: 10%;"></div>
+                </div>
+            </div>
+
+            <!-- Completed Pickups -->
+            <div class="white-card">
+                <div class="stat-card-label-row">
+                    <i class="ti ti-truck" style="color: #2563EB; font-size: 18px;"></i>
+                    <span class="card-label">COMPLETED PICKUPS</span>
+                </div>
+                <div class="stat-num" style="color: #2563EB;" data-val="8">0</div>
+                <div class="stat-sub">4 pending · 4 scheduled</div>
+                <div class="stat-accent-bar">
+                    <div class="stat-accent-fill" style="background: #2563EB; width: 80%;"></div>
+                </div>
+            </div>
+
+            <!-- Total Impact -->
+            <div class="white-card">
+                <div class="stat-card-label-row">
+                    <i class="ti ti-leaf" style="color: #1D9E75; font-size: 18px;"></i>
+                    <span class="card-label">TOTAL IMPACT</span>
+                </div>
+                <div class="stat-num" style="color: #1D9E75;" data-val="66.3" data-decimal="1">0</div>
+                <div class="stat-sub">= 336.5 CO₂ kg prevented</div>
+                <div class="stat-accent-bar">
+                    <div class="stat-accent-fill" style="background: #1D9E75; width: 66%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: CTA -->
+        <div class="cta-banner">
+            <div>
+                <h2 class="cta-headline">Ready to make a bigger impact?</h2>
+                <p class="cta-sub">Schedule a pickup today and climb the leaderboard.</p>
+                <div class="pill-row">
+                    <span class="cta-pill">🆓 Free Pickup</span>
+                    <span class="cta-pill">⭐ Earn Points</span>
+                    <span class="cta-pill">🌿 Save the Planet</span>
+                </div>
+            </div>
+            <div class="cta-btn-wrap">
+                <a href="#" class="btn-schedule">Schedule a Pickup →</a>
+                <span class="cta-caption">Takes less than 2 minutes</span>
+            </div>
+        </div>
+
+        <!-- SECTION 4: TWO COL GRID -->
+        <div class="main-grid">
+            <!-- Leaderboard -->
+            <div class="white-card" style="padding-bottom: 0; overflow: hidden; display: flex; flex-direction: column;">
+                <div class="card-header">
+                    <div>
+                        <h2 class="section-title">Leaderboard</h2>
+                        <p class="section-subtitle">Top performing recyclers this month</p>
+                    </div>
+                    <div class="filter-pill" id="lb-filter">This Month ▾</div>
+                </div>
+
+                <div class="leaderboard-list" id="leaderboard-list">
+                    <!-- JS Injected -->
+                </div>
+
+                <div class="lb-footer">
+                    <span class="footer-strip-text" style="font-size: 13px;">📍 Your rank: Not ranked yet</span>
+                    <span style="font-size: 11px; color: var(--text-secondary)">Complete a pickup to rank</span>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="white-card">
+                <div class="card-header">
+                    <div>
+                        <h2 class="section-title">Recent Activity</h2>
+                        <p class="section-subtitle">History of your contributions</p>
+                    </div>
+                </div>
+
+                <div class="activity-list" id="activity-list">
+                    <!-- JS Injected -->
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: QUICK ACTIONS -->
+        <div class="actions-row">
+            <!-- New Pickup -->
+            <div class="action-card" onclick="console.log('Navigate to: New Pickup')">
+                <div class="icon-circle" style="background: #E6F5EE;">
+                    <i class="ti ti-truck" style="color: #1D9E75;"></i>
+                </div>
+                <h3 class="action-title">New Pickup</h3>
+                <p class="action-sub">Schedule a collection</p>
+                <span class="action-badge" style="background: #DCFCE7; color: #166534;">Free</span>
+            </div>
+
+            <!-- Upcycle Shop -->
+            <div class="action-card" onclick="console.log('Navigate to: Upcycle Shop')">
+                <div class="icon-circle" style="background: #EFF6FF;">
+                    <i class="ti ti-shopping-bag" style="color: #2563EB;"></i>
+                </div>
+                <h3 class="action-title">Upcycle Shop</h3>
+                <p class="action-sub">Browse earned-point items</p>
+                <span class="action-badge" style="background: #DBEAFE; color: #1E40AF;">New items</span>
+            </div>
+
+            <!-- Eco-Assistant -->
+            <div class="action-card" onclick="console.log('Navigate to: Eco-Assistant')">
+                <div class="icon-circle" style="background: #EDE9FE;">
+                    <i class="ti ti-robot" style="color: #7C3AED;"></i>
+                </div>
+                <h3 class="action-title">Eco-Assistant</h3>
+                <p class="action-sub">Get recycling guidance</p>
+                <span class="action-badge" style="background: #DCFCE7; color: #166534;">● Online</span>
+            </div>
+
+            <!-- Eco-Impact -->
+            <div class="action-card" onclick="console.log('Navigate to: Eco-Impact')">
+                <div class="icon-circle" style="background: #ECFDF5;">
+                    <i class="ti ti-leaf" style="color: #059669;"></i>
+                </div>
+                <h3 class="action-title">Eco-Impact</h3>
+                <p class="action-sub">View your eco savings</p>
+                <span class="action-badge" style="background: #F0FDF4; color: #166534;">66.3 kg saved</span>
+            </div>
+        </div>
+
+        <!-- SECTION 6: FOOTER STRIP -->
+        <div class="footer-strip">
+            <span class="footer-strip-text">🌍 Together, we have prevented 12,450 kg of e-waste from reaching landfills.</span>
+            <a href="#" class="btn-learn">Learn More →</a>
+        </div>
+
+    </main>
+
+    <script>
+        const user = {
+            name: "Rabbi",
+            initials: "RK",
+            tier: "Bronze",
+            points: 200,
+            pointsToNext: 300,
+            nextTier: "Silver",
+            maxTierPoints: 500,
+            completedPickups: 8,
+            pendingPickups: 4,
+            scheduledPickups: 4,
+            totalRecycled: 66.3,
+            co2Prevented: 336.5,
+            rank: null,
+            streak: 5
+        };
+
+        const leaderboard = [
+            { rank: 1, name: "Arif Rahman", initials: "AR", points: 900 },
+            { rank: 2, name: "Sadia Islam", initials: "SI", points: 720 },
+            { rank: 3, name: "Mehedi Hasan", initials: "MH", points: 650 },
+            { rank: 4, name: "Nadia Akter", initials: "NA", points: 580 },
+            { rank: 5, name: "Karim Uddin", initials: "KU", points: 568 },
+            { rank: 6, name: "Fatema Begum", initials: "FB", points: 556 },
+            { rank: 7, name: "Rafi Ahmed", initials: "RA", points: 544 },
+            { rank: 8, name: "Tania Khanam", initials: "TK", points: 532 },
+            { rank: 9, name: "Imran Ali", initials: "IA", points: 520 },
+            { rank: 10, name: "Sumaiya Hoque", initials: "SH", points: 508 }
+        ];
+
+        const activity = [
+            { name: "Paper (Mixed Paper)", date: "Oct 21, 2025", status: "COMPLETED" },
+            { name: "Paper (Mixed Paper)", date: "Sep 15, 2025", status: "COMPLETED" },
+            { name: "Paper (Mixed Paper)", date: "May 30, 2025", status: "COMPLETED" },
+            { name: "Paper (Mixed Paper)", date: "May 15, 2025", status: "PENDING" },
+            { name: "Plastic (HDPE #2 bottles)", date: "Apr 11, 2025", status: "COMPLETED" }
+        ];
+
+        const quotes = [
+            "Every pickup makes Dhaka cleaner. 🌿",
+            "Small actions create massive change. ♻️",
+            "You're building a greener future. ⭐",
+            "Recycling today, healthier Dhaka tomorrow. 🌍"
+        ];
+
+        // === INITIALIZATION ===
+        document.addEventListener('DOMContentLoaded', () => {
+            initStats();
+            initLeaderboard();
+            initActivity();
+            initQuoteRotation();
+            
+            // Progress Bar Animation
+            setTimeout(() => {
+                document.getElementById('tier-progress').style.width = '40%';
+            }, 3000);
+        });
+
+        // === STATS COUNT UP ===
+        function initStats() {
+            // Hero points
+            animateValue("hero-pts", 0, user.points, 1200);
+            
+            // Stat cards
+            document.querySelectorAll('.stat-num').forEach(el => {
+                const target = parseFloat(el.getAttribute('data-val'));
+                const decimal = parseInt(el.getAttribute('data-decimal')) || 0;
+                animateValue(el, 0, target, 1200, decimal);
+            });
+        }
+
+        function animateValue(obj, start, end, duration, decimals = 0) {
+            let startTimestamp = null;
+            const element = typeof obj === "string" ? document.getElementById(obj) : obj;
+            
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                
+                // Ease out quart
+                const easeProgress = 1 - Math.pow(1 - progress, 4);
+                const current = (easeProgress * (end - start) + start).toFixed(decimals);
+                
+                element.innerHTML = current;
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // === LEADERBOARD ===
+        function initLeaderboard() {
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = '';
+
+            leaderboard.forEach((item, index) => {
+                const isTop3 = index < 3;
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `lb-item ${isTop3 ? 'rank-top-' + (index + 1) : ''}`;
+                
+                const avatarBg = isTop3 ? (index === 0 ? '#FEF3C7' : index === 1 ? '#F1F5F9' : '#FFEDD5') : '#F3F4F6';
+                const avatarColor = isTop3 ? (index === 0 ? '#92400E' : index === 1 ? '#475569' : '#9A3412') : '#6B7280';
+                const ptsBg = isTop3 ? avatarBg : 'transparent';
+                const ptsColor = isTop3 ? avatarColor : '#1D9E75';
+
+                itemDiv.innerHTML = `
+                    ${isTop3 ? `<span class="lb-rank-icon"><i class="ti ti-trophy" style="color: ${index === 0 ? '#F59E0B' : index === 1 ? '#94A3B8' : '#F97316'}"></i></span>` : `<span class="lb-rank-num">${item.rank}</span>`}
+                    <div class="lb-avatar ${!isTop3 ? 'lb-avatar-sm' : ''}" style="background: ${avatarBg}; color: ${avatarColor};">
+                        ${item.initials}
+                    </div>
+                    <span class="lb-name">${item.name}</span>
+                    <span class="lb-pts-pill" style="background: ${ptsBg}; color: ${ptsColor};">
+                        ${item.points} pts
+                    </span>
+                `;
+                list.appendChild(itemDiv);
+            });
+        }
+
+        // Leaderboard Filter Cycle
+        const filterBtn = document.getElementById('lb-filter');
+        const filters = ["This Month", "All Time", "This Week"];
+        let currentFilterIdx = 0;
+
+        filterBtn.addEventListener('click', () => {
+            currentFilterIdx = (currentFilterIdx + 1) % filters.length;
+            filterBtn.innerHTML = `${filters[currentFilterIdx]} ▾`;
+        });
+
+        // === ACTIVITY ===
+        function initActivity() {
+            const list = document.getElementById('activity-list');
+            list.innerHTML = '';
+
+            activity.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'activity-item';
+                
+                const statusClass = 'status-' + item.status.toLowerCase();
+
+                itemDiv.innerHTML = `
+                    <div class="timeline-wrap">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-name">${item.name}</div>
+                        <div class="activity-date">${item.date}</div>
+                    </div>
+                    <span class="status-badge ${statusClass}">${item.status}</span>
+                `;
+                list.appendChild(itemDiv);
+            });
+        }
+
+        // === QUOTE ROTATION ===
+        function initQuoteRotation() {
+            const el = document.getElementById('rotating-quote');
+            let idx = 0;
+
+            setInterval(() => {
+                el.style.opacity = 0;
+                setTimeout(() => {
+                    idx = (idx + 1) % quotes.length;
+                    el.innerText = quotes[idx];
+                    el.style.opacity = 1;
+                }, 300);
+            }, 10000);
+        }
+    </script>
+</body>
+</html>

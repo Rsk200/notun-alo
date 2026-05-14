@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+venv/
+ENV/
+.env
+.DS_Store
+*.html
+!index.php
+!index.html

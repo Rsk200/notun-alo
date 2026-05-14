@@ -1,79 +1,81 @@
 <?php
 // ============================================
-// user_impact.php - User Environmental Impact
+// user_impact.php - User Environmental Impact (Viewer Friendly Redesign)
 // Notun Alo (New Light) Recycling Platform
 // ============================================
 require_once 'includes/config.php';
 requireLogin();
-startSession();
 
 if ($_SESSION['role'] !== 'user') redirect('dashboard.php');
 
 $userId = (int)$_SESSION['user_id'];
 $user   = getCurrentUser($pdo);
+$currentLang = $_SESSION['lang'] ?? 'en';
 
-$monthlyImpact = [];
-$impactReadyStmt = $pdo->prepare("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'emission_factors'");
-$impactReadyStmt->execute();
-$hasEmissionFactors = (int)$impactReadyStmt->fetchColumn() > 0;
-$subcatReadyStmt = $pdo->prepare("SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'pickups' AND column_name = 'subcategory'");
-$subcatReadyStmt->execute();
-$hasSubcategory = (int)$subcatReadyStmt->fetchColumn() > 0;
-
-if ($hasEmissionFactors && $hasSubcategory) {
-    $stmt = $pdo->prepare("
-        SELECT
-          DATE_FORMAT(p.schedule_date, '%Y-%m') AS month,
-          p.category,
-          ROUND(SUM(p.estimated_weight * COALESCE(ef.co2_sa_adjusted, ca.avg_co2)), 3) AS co2_saved_kg,
-          ROUND(SUM(p.estimated_weight), 2) AS kg_collected
-        FROM pickups p
-        LEFT JOIN emission_factors ef
-          ON p.category = ef.category COLLATE utf8mb4_unicode_ci
-         AND p.subcategory IS NOT NULL
-         AND p.subcategory <> ''
-         AND p.subcategory = ef.subcategory COLLATE utf8mb4_unicode_ci
-        LEFT JOIN category_averages ca ON p.category = ca.category COLLATE utf8mb4_unicode_ci
-        WHERE p.user_id = ?
-          AND p.status = 'completed'
-          AND p.schedule_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
-        GROUP BY month, p.category
-        ORDER BY month ASC, co2_saved_kg DESC
-    ");
-    $stmt->execute([$userId]);
-    $monthlyImpact = $stmt->fetchAll();
-}
+$i18n_impact = [
+    'en' => [
+        'title' => 'Environmental Impact',
+        'sub' => 'Quantifying your personal contribution to a greener planet.',
+        'back' => '← Dashboard'
+    ],
+    'bn' => [
+        'title' => 'পরিবেশগত প্রভাব',
+        'sub' => 'সবুজ পৃথিবী গড়ায় আপনার ব্যক্তিগত অবদান পরিমাপ করা হচ্ছে।',
+        'back' => '← ড্যাশবোর্ড'
+    ]
+];
+$ti = $i18n_impact[$currentLang];
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= $currentLang ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Environmental Impact — Notun Alo</title>
+    <title><?= $ti['title'] ?> — Notun Alo</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/sortable-table.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --brand-dark: #0A2E1E;
+            --brand-primary: #1D9E75;
+            --brand-light: #E6F5EE;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-muted: #9CA3AF;
+            --border: #E5E7EB;
+            --bg-page: #F5F7F2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Inter', 'Noto Sans Bengali', sans-serif; background-color: var(--bg-page); color: var(--text-secondary); }
+
+        .container { max-width: 1280px; margin: 0 auto; padding: 60px 32px; }
+        @media (max-width: 640px) { .container { padding: 32px 20px; } }
+
+        .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--brand-primary); text-decoration: none; font-size: 14px; font-weight: 700; margin-bottom: 24px; transition: 0.2s; }
+        .back-link:hover { transform: translateX(-5px); }
+
+        .impact-header { margin-bottom: 48px; border-bottom: 1px solid var(--border); padding-bottom: 32px; }
+        h1 { font-size: 44px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; margin-bottom: 8px; }
+        .sub-text { font-size: 18px; color: var(--text-muted); }
+    </style>
 </head>
 <body>
 
-<?php include 'includes/navbar.php'; ?>
-<main class="main-content" style="background: #F5F7F2; min-height: 100vh;">
-    <div class="container" style="max-width: 960px; margin: 0 auto; padding: 40px 24px;">
+    <?php include 'includes/navbar.php'; ?>
 
-        <div class="page-header" style="padding: 0 0 8px 0;">
-            <a href="dashboard.php" style="display: block; font-size: 14px; color: #6B7280; text-decoration: none; margin-bottom: 12px;">
-                <span style="margin-right: 4px;">←</span> Dashboard
-            </a>
-            <h1 style="font-size: 28px; font-weight: 700; color: #111827; margin: 0;">Environmental Impact</h1>
-            <p style="font-size: 14px; color: #6B7280; margin: 6px 0 0 0;">Track your climate, water, and energy savings through recycling.</p>
-            <div style="height: 1px; background: #E5E7EB; margin-top: 20px;"></div>
+    <main class="container">
+        <div class="impact-header">
+            <a href="dashboard.php" class="back-link"><?= $ti['back'] ?></a>
+            <h1><?= $ti['title'] ?></h1>
+            <p class="sub-text"><?= $ti['sub'] ?></p>
         </div>
 
         <?php $impactUserId = $userId; include __DIR__ . '/includes/impact_card.php'; ?>
-
-    </div>
-</main>
- endif; ?>
+    </main>
 
 </body>
 </html>

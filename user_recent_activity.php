@@ -1,24 +1,17 @@
 <?php
 // ============================================
-// user_recent_activity.php - Recent Pickups List
+// user_recent_activity.php - Recent Activity (Clean/Light Redesign)
 // Notun Alo (New Light) Recycling Platform
 // ============================================
 require_once 'includes/config.php';
 requireLogin();
-startSession();
 
 if ($_SESSION['role'] !== 'user') redirect('dashboard.php');
 
 $userId = (int)$_SESSION['user_id'];
 $user   = getCurrentUser($pdo);
 
-// Fetch recent pickups
-$stmt = $pdo->prepare(
-    "SELECT p.*, u.name as user_name FROM pickups p
-     JOIN users u ON u.id = p.user_id
-     WHERE p.user_id = ? 
-     ORDER BY p.created_at DESC LIMIT 20"
-);
+$stmt = $pdo->prepare("SELECT * FROM pickups WHERE user_id = ? ORDER BY created_at DESC LIMIT 20");
 $stmt->execute([$userId]);
 $pickups = $stmt->fetchAll();
 ?>
@@ -27,98 +20,99 @@ $pickups = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $lang['recent_activity'] ?? 'My Recent Activity' ?> — Notun Alo</title>
+    <title>Recent Activity — Notun Alo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/sortable-table.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --brand-dark: #0A2E1E;
+            --brand-primary: #1D9E75;
+            --brand-light: #E6F5EE;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-muted: #9CA3AF;
+            --border: #E5E7EB;
+            --bg-page: #F5F7F2;
+        }
+
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-page); color: var(--text-secondary); }
+        .wrapper { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
+        
+        .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--brand-primary); text-decoration: none; font-size: 14px; font-weight: 600; margin-bottom: 24px; transition: 0.2s; }
+        .back-link:hover { transform: translateX(-5px); }
+
+        .white-card { background: white; border: 1px solid var(--border); border-radius: 20px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        h1 { font-size: 28px; font-weight: 800; color: var(--text-primary); margin-bottom: 8px; }
+        .sub-text { font-size: 14px; color: #9CA3AF; margin-bottom: 32px; }
+
+        .table-container { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th { text-align: left; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; padding: 16px; border-bottom: 1px solid var(--border); }
+        td { padding: 16px; border-bottom: 1px solid #F9FAFB; font-size: 14px; vertical-align: middle; }
+        
+        .status-badge { font-size: 10px; font-weight: 700; padding: 6px 12px; border-radius: 99px; text-transform: uppercase; }
+        .st-completed { background: #DCFCE7; color: #166534; }
+        .st-pending { background: #FEF3C7; color: #92400E; }
+        .st-scheduled { background: #DBEAFE; color: #1E40AF; }
+
+        .empty-state { text-align: center; padding: 60px 0; color: var(--text-muted); }
+        .empty-icon { font-size: 48px; margin-bottom: 16px; display: block; }
+    </style>
 </head>
 <body>
 
-<?php include 'includes/navbar.php'; ?>
+    <?php include 'includes/navbar.php'; ?>
 
-<main class="main-content">
-    <div class="container">
+    <main class="wrapper">
+        <a href="dashboard.php" class="back-link">← Back to Dashboard</a>
         
-        <div class="page-header">
-            <div style="display: flex; gap: 1rem; align-items: center;">
-                <a href="dashboard.php" class="btn-back">
-                    <span class="btn-back__arrow">←</span>
-                    <?= $lang['dashboard'] ?? 'Dashboard' ?>
-                </a>
-                <div>
-                    <h1 class="page-title" data-reveal><?= $lang['recent_activity'] ?? 'My Recent Activity' ?></h1>
-                    <p class="page-sub"><?= $lang['activity_hint'] ?? 'Your pickup history and statuses' ?></p>
-                </div>
-            </div>
-        </div>
+        <div class="white-card">
+            <h1>Recent Activity</h1>
+            <p class="sub-text">History of your recycling pickups and points earned.</p>
 
-        <section class="card" data-reveal>
-            <div class="card-header" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
-                <div>
-                    <h2 class="card-title" data-reveal>✅ <?= $lang['recently_completed'] ?? 'Recently Completed' ?></h2>
-                    <p class="card-sub" data-reveal><?= $lang['last_10_completed'] ?? 'Last completed pickups' ?></p>
-                </div>
-                <div class="table-search-wrap">
-                    <span class="table-search-icon">🔍</span>
-                    <input
-                        type="text"
-                        id="tableSearchInput"
-                        class="table-search-input"
-                        placeholder="<?= $lang['search'] ?? 'Search...' ?>"
-                        oninput="filterTable(this.value)"
-                        autocomplete="off"
-                    >
-                </div>
-            </div>
-            
             <?php if (empty($pickups)): ?>
                 <div class="empty-state">
-                    <p class="empty-icon">🌱</p>
-                    <p><?= $lang['no_pickups'] ?? 'No pickups yet. Request your first one!' ?></p>
+                    <span class="empty-icon">🌱</span>
+                    <p>No activity yet. Your recycling journey starts with your first pickup!</p>
                 </div>
             <?php else: ?>
-                <div class="table-wrap">
-                    <table class="data-table" data-sortable id="activityTable">
+                <div class="table-container">
+                    <table>
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th><?= $lang['user'] ?? 'User' ?></th>
-                                <th><?= $lang['category'] ?? 'Category' ?></th>
-                                <th><?= $lang['weight'] ?? 'Weight' ?></th>
-                                <th><?= $lang['date'] ?? 'Date' ?></th>
-                                <th><?= $lang['status'] ?? 'Status' ?></th>
+                                <th>Category</th>
+                                <th>Subcategory</th>
+                                <th>Weight</th>
+                                <th>Date</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($pickups as $index => $p): ?>
+                            <?php foreach ($pickups as $p): ?>
                             <tr>
-                                <td><?= en2bn($index + 1) ?></td>
-                                <td><?= e($p['user_name']) ?></td>
-                                <td><?= translateStatus($p['category']) ?></td>
-                                <td><?= en2bn(number_format($p['estimated_weight'], 1)) ?> KG</td>
-                                <td><?= en2bn(date('d M Y', strtotime($p['created_at']))) ?></td>
-                                <td><span class="badge badge-<?= e($p['status']) ?>"><?= translateStatus($p['status']) ?></span></td>
+                                <td>
+                                    <div style="font-weight:600; color:var(--text-primary);"><?= e($p['category']) ?></div>
+                                </td>
+                                <td><?= e($p['subcategory'] ?? '—') ?></td>
+                                <td><?= number_format($p['estimated_weight'], 1) ?> kg</td>
+                                <td><?= date('M j, Y', strtotime($p['created_at'])) ?></td>
+                                <td>
+                                    <?php 
+                                        $st = strtolower($p['status']);
+                                        $cls = 'st-' . $st;
+                                    ?>
+                                    <span class="status-badge <?= $cls ?>"><?= e($p['status']) ?></span>
+                                </td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
             <?php endif; ?>
+        </div>
+    </main>
 
-        </section>
-
-    </div>
-</main>
-<script src="assets/js/sortable-table.js"></script>
-<script>
-function filterTable(query) {
-    const q = query.trim().toLowerCase();
-    const rows = document.querySelectorAll('#activityTable tbody tr');
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = (!q || text.includes(q)) ? '' : 'none';
-    });
-}
-</script>
 </body>
 </html>

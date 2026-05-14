@@ -1,13 +1,11 @@
 <?php
 // ============================================
-// login.php - User Login
+// login.php - User Login (Clean/Light Redesign)
 // Notun Alo (New Light) Recycling Platform
 // ============================================
 require_once 'includes/config.php';
 startSession();
 
-
-// Already logged in → redirect
 if (isLoggedIn()) {
     $role = $_SESSION['role'] ?? 'user';
     redirect(match($role) {
@@ -17,19 +15,12 @@ if (isLoggedIn()) {
     });
 }
 
-
 $error = '';
-
-// Check if database is initialized
-if (!isDatabaseInitialized($pdo)) {
-    redirect('init_db.php');
-}
-
+if (!isDatabaseInitialized($pdo)) redirect('init_db.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
-
 
     if (empty($email) || empty($password)) {
         $error = 'Please fill in all fields.';
@@ -38,13 +29,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$email]);
         $user = $stmt->fetch();
 
-
         if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['name']    = $user['name'];
             $_SESSION['email']   = $user['email'];
             $_SESSION['role']    = $user['role'];
-            setFlash('success', 'Welcome back, ' . $user['name'] . '!');
+            setFlash('success', 'Welcome back!');
             redirect(match($user['role']) {
                 'admin'  => 'admin.php',
                 'agency' => 'agency.php',
@@ -55,29 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-
-
-// Fetch real-time stats
-$statsQuery = $pdo->query("
-    SELECT
-        (SELECT SUM(estimated_weight) FROM pickups WHERE status = 'completed') as total_recycled,
-        (SELECT COUNT(id) FROM users WHERE role = 'user') as total_users,
-        (SELECT SUM(lifetime_points) FROM rewards) as total_points
-");
-$realStats = $statsQuery->fetch();
-
-
-function formatNumberShort($num) {
-    $num = (float)$num;
-    if ($num >= 1000000) return round($num / 1000000, 1) . 'M';
-    if ($num >= 1000) return round($num / 1000, 1) . 'K';
-    return (int)$num;
-}
-
-
-$formattedRecycled = formatNumberShort($realStats['total_recycled'] ?? 0);
-$formattedUsers = formatNumberShort($realStats['total_users'] ?? 0);
-$formattedPoints = formatNumberShort($realStats['total_points'] ?? 0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -85,74 +52,56 @@ $formattedPoints = formatNumberShort($realStats['total_points'] ?? 0);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login — Notun Alo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F5F7F2; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: white; border: 1px solid #E5E7EB; border-radius: 20px; width: 100%; max-width: 440px; padding: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.02); }
+        .logo-wrap { width: 48px; height: 48px; background: #E6F5EE; color: #1D9E75; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 24px; }
+        .login-title { font-size: 24px; font-weight: 700; color: #111827; text-align: center; margin-bottom: 8px; }
+        .login-sub { font-size: 14px; color: #6B7280; text-align: center; margin-bottom: 32px; }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+        input { width: 100%; height: 46px; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 10px; padding: 0 16px; font-size: 14px; outline: none; transition: 0.2s; }
+        input:focus { border-color: #1D9E75; background: white; box-shadow: 0 0 0 3px rgba(29,158,117,0.1); }
+        
+        .btn-submit { width: 100%; height: 48px; background: #1D9E75; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .btn-submit:hover { background: #065F46; }
+        
+        .error-box { background: #FEF2F2; color: #B91C1C; border: 1px solid #FEE2E2; padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; text-align: center; }
+        .footer-link { display: block; text-align: center; margin-top: 24px; font-size: 14px; color: #6B7280; text-decoration: none; }
+        .footer-link strong { color: #1D9E75; }
+    </style>
 </head>
-<body class="auth-body">
-<div class="auth-split">
-    <!-- Left branding panel -->
-    <div class="auth-brand">
-        <div class="brand-content">
-            <div class="logo-mark">♻</div>
-            <h1 class="brand-title">Notun Alo</h1>
-            <p class="brand-tagline">নতুন আলো — New Light</p>
-            <p class="brand-desc">Turn your waste into rewards. Build a greener tomorrow, one pickup at a time.</p>
-            <div class="brand-stats">
-                <div class="stat"><span class="stat-num"><?= $formattedRecycled ?></span><span class="stat-label">KG Recycled</span></div>
-                <div class="stat"><span class="stat-num"><?= $formattedUsers ?></span><span class="stat-label">Active Users</span></div>
-                <div class="stat"><span class="stat-num"><?= $formattedPoints ?></span><span class="stat-label">Points Rewarded</span></div>
+<body>
+
+    <div class="login-card">
+        <div class="logo-wrap"><i class="ti ti-recycle"></i></div>
+        <h1 class="login-title">Welcome Back</h1>
+        <p class="login-sub">Sign in to your Notun Alo account</p>
+
+        <?php if ($error): ?>
+            <div class="error-box"><?= e($error) ?></div>
+        <?php endif; ?>
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" value="<?= e($_POST['email'] ?? '') ?>" required>
             </div>
-        </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-submit">Sign In</button>
+        </form>
+
+        <a href="register.php" class="footer-link">Don't have an account? <strong>Register here</strong></a>
+        <a href="index.php" class="footer-link">← Back to Home</a>
     </div>
 
-
-    <!-- Right form panel -->
-    <div class="auth-form-panel">
-        <div class="auth-form-wrap">
-            <h2 class="auth-heading">Welcome Back</h2>
-            <p class="auth-sub">Sign in to your Notun Alo account</p>
-
-
-            <?php if ($error): ?>
-                <div class="alert alert-error"><?= e($error) ?></div>
-            <?php endif; ?>
-
-
-            <form method="POST" class="auth-form">
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="you@example.com"
-                           value="<?= e($_POST['email'] ?? '') ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="input-wrap">
-                        <input type="password" id="password" name="password" placeholder="••••••••" required>
-                        <button type="button" class="toggle-pass" onclick="togglePass()">👁</button>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary btn-full">Sign In</button>
-            </form>
-
-
-            <p class="auth-switch">Don't have an account? <a href="register.php">Register here</a></p>
-            <p class="auth-switch">← <a href="index.php">Back to Home</a></p>
-        </div>
-    </div>
-</div>
-
-
-<script>
-function togglePass() {
-    const p = document.getElementById('password');
-    p.type = p.type === 'password' ? 'text' : 'password';
-}
-</script>
 </body>
 </html>
-
-
-
-
-
