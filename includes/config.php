@@ -1,4 +1,5 @@
 <?php
+ob_start();
 // ============================================
 // config.php - Database Connection
 // Notun Alo (New Light) Recycling Platform
