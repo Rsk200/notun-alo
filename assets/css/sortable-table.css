@@ -1,0 +1,166 @@
+/* =====================================================================
+   SORTABLE TABLE — Lightweight client-side column sorting
+   Usage: add  data-sortable  attribute to any <table>
+          The # (first) column is NOT sortable.
+          Single-value columns (e.g. "Assign Agency" action col) are also skipped.
+===================================================================== */
+
+/* Sort header caret */
+.data-table th[data-sort-col] {
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    position: relative;
+    padding-right: 1.6rem !important;
+    transition: background 0.2s, color 0.2s;
+}
+
+.data-table th[data-sort-col]::after {
+    content: '⇅';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+}
+
+.data-table th[data-sort-col]:hover::after { opacity: 0.8; }
+.data-table th[data-sort-col]:hover { color: #22c55e; }
+
+.data-table th[data-sort-col].sort-asc::after  { content: '↑'; opacity: 1; color: #22c55e; }
+.data-table th[data-sort-col].sort-desc::after { content: '↓'; opacity: 1; color: #22c55e; }
+
+/* Highlight sorted column cells lightly */
+.data-table td.sorted-col {
+    background: rgba(34, 197, 94, 0.04);
+    transition: background 0.2s;
+}
+
+body.dark-mode .data-table td.sorted-col {
+    background: rgba(74, 222, 128, 0.06);
+}
+
+/* =====================================================================
+   BTN-BACK — Premium "Back to Dashboard" button
+   Usage: <a href="dashboard.php" class="btn-back">← Dashboard</a>
+===================================================================== */
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.1rem 0.55rem 0.85rem;
+    border-radius: 10px;
+    border: 1.5px solid #d1fae5;
+    background: #f0fdf4;
+    color: #15803d;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.22s, border-color 0.22s, transform 0.18s, box-shadow 0.22s;
+    white-space: nowrap;
+}
+
+.btn-back__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    background: #dcfce7;
+    font-size: 0.9rem;
+    transition: transform 0.18s, background 0.18s;
+}
+
+.btn-back:hover {
+    background: #dcfce7;
+    border-color: #22c55e;
+    color: #14532d;
+    transform: translateX(-2px);
+    box-shadow: 0 3px 12px rgba(34,197,94,.18);
+}
+
+.btn-back:hover .btn-back__arrow {
+    background: #22c55e;
+    color: #fff;
+    transform: translateX(-2px);
+}
+
+/* Dark mode */
+body.dark-mode .btn-back {
+    background: #132314;
+    border-color: #2d4a2e;
+    color: #4ade80;
+}
+
+body.dark-mode .btn-back__arrow {
+    background: #1f4a25;
+    color: #4ade80;
+}
+
+body.dark-mode .btn-back:hover {
+    background: #1a3520;
+    border-color: #22c55e;
+    color: #86efac;
+}
+
+body.dark-mode .btn-back:hover .btn-back__arrow {
+    background: #22c55e;
+    color: #fff;
+}
+
+/* =====================================================================
+   TABLE SEARCH BAR
+===================================================================== */
+
+.table-search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f0fdf4;
+    border: 1.5px solid #d1fae5;
+    border-radius: 10px;
+    padding: 0.45rem 0.85rem;
+    transition: border-color 0.22s, box-shadow 0.22s;
+}
+
+.table-search-wrap:focus-within {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.14);
+    background: #fff;
+}
+
+.table-search-icon {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    flex-shrink: 0;
+}
+
+.table-search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 0.88rem;
+    color: #111827;
+    width: 170px;
+    font-family: inherit;
+}
+
+.table-search-input::placeholder { color: #9ca3af; }
+
+/* Dark mode search */
+body.dark-mode .table-search-wrap {
+    background: #132314;
+    border-color: #2d4a2e;
+}
+
+body.dark-mode .table-search-wrap:focus-within {
+    border-color: #22c55e;
+    background: #1a2e1b;
+}
+
+body.dark-mode .table-search-input {
+    color: #e5e7eb;
+}

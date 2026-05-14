@@ -1,0 +1,101 @@
+Country,Year,E_Waste_Generation_Million_Metric_Tons,Recycling_Rate_Percentage
+China,2015,5.57,58.42
+China,2016,5.39,57.45
+China,2017,5.49,61.09
+China,2018,5.98,61.26
+China,2019,5.8,63.11
+China,2020,6.45,60.88
+China,2021,6.22,61.56
+China,2022,6.46,63.73
+China,2023,6.7,63.59
+China,2024,6.97,63.79
+United States,2015,4.54,35.8
+United States,2016,4.52,35.51
+United States,2017,4.9,34.44
+United States,2018,5.04,35.74
+United States,2019,4.85,39.65
+United States,2020,5.53,39.89
+United States,2021,5.27,37.85
+United States,2022,5.64,40.02
+United States,2023,5.44,41.04
+United States,2024,5.52,43.49
+India,2015,4.1,46.58
+India,2016,4.37,46.04
+India,2017,4.75,49.2
+India,2018,4.86,50.48
+India,2019,4.78,51.39
+India,2020,4.6,49.28
+India,2021,4.7,50.6
+India,2022,5.04,51.19
+India,2023,5.43,52.33
+India,2024,5.22,53.87
+Germany,2015,2.72,54.04
+Germany,2016,3.23,51.68
+Germany,2017,2.86,54.95
+Germany,2018,3.37,55.4
+Germany,2019,3.5,53.58
+Germany,2020,3.34,54.55
+Germany,2021,3.73,57.38
+Germany,2022,3.5,55.94
+Germany,2023,3.58,57.79
+Germany,2024,3.92,59.84
+Brazil,2015,10.59,39.74
+Brazil,2016,11.3,39.93
+Brazil,2017,11.63,40.46
+Brazil,2018,11.8,41.0
+Brazil,2019,11.83,40.52
+Brazil,2020,12.16,43.43
+Brazil,2021,12.65,43.72
+Brazil,2022,13.33,43.49
+Brazil,2023,13.36,46.31
+Brazil,2024,13.57,44.4
+Japan,2015,4.8,27.68
+Japan,2016,4.76,28.73
+Japan,2017,5.0,26.8
+Japan,2018,5.19,29.01
+Japan,2019,5.27,31.23
+Japan,2020,5.11,28.89
+Japan,2021,5.2,30.96
+Japan,2022,5.69,33.49
+Japan,2023,5.34,32.89
+Japan,2024,5.72,32.54
+United Kingdom,2015,3.02,32.8
+United Kingdom,2016,2.85,35.12
+United Kingdom,2017,2.84,36.99
+United Kingdom,2018,3.28,34.91
+United Kingdom,2019,3.09,35.91
+United Kingdom,2020,3.04,35.65
+United Kingdom,2021,3.32,38.32
+United Kingdom,2022,3.07,38.22
+United Kingdom,2023,3.67,38.86
+United Kingdom,2024,3.29,40.66
+France,2015,11.95,30.73
+France,2016,12.05,31.4
+France,2017,12.48,31.81
+France,2018,13.0,32.23
+France,2019,13.03,34.22
+France,2020,13.52,32.43
+France,2021,13.71,34.85
+France,2022,14.44,33.35
+France,2023,14.7,34.99
+France,2024,15.14,35.58
+Indonesia,2015,9.02,34.02
+Indonesia,2016,8.92,34.72
+Indonesia,2017,9.53,38.58
+Indonesia,2018,9.4,38.51
+Indonesia,2019,10.0,38.89
+Indonesia,2020,10.09,38.44
+Indonesia,2021,10.09,41.86
+Indonesia,2022,10.83,41.6
+Indonesia,2023,10.76,41.27
+Indonesia,2024,11.25,44.26
+Canada,2015,10.9,49.53
+Canada,2016,10.94,53.59
+Canada,2017,11.53,50.83
+Canada,2018,11.55,54.25
+Canada,2019,11.82,53.04
+Canada,2020,12.47,55.96
+Canada,2021,12.85,54.89
+Canada,2022,13.21,55.74
+Canada,2023,13.31,58.58
+Canada,2024,13.82,59.79
