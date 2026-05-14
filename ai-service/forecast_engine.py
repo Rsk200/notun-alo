@@ -42,15 +42,14 @@ def forecast_from_history(history: list[dict[str, Any]], horizon: int = 3) -> di
     
     months = _next_months(horizon)
     if not history:
-        baseline = calculate_environmental_impact(2.0, "Plastic", "Mixed plastic")
         return {
-            "trend": "Stable",
-            "confidence": "low",
+            "trend": "None",
+            "confidence": "none",
             "cold_start": True,
+            "message": "Complete your first pickup to unlock AI impact forecasting!",
             "forecast": [
-                {"month": month, "co2_saved_kg": round(baseline["co2_saved_kg"] * (1 + 0.03 * i), 2), 
-                 "water_saved_liters": baseline["water_saved_liters"], "energy_saved_kwh": baseline["energy_saved_kwh"]}
-                for i, month in enumerate(months, start=1)
+                {"month": month, "co2_saved_kg": 0.0, "water_saved_liters": 0.0, "energy_saved_kwh": 0.0}
+                for month in months
             ],
         }
 
@@ -58,7 +57,15 @@ def forecast_from_history(history: list[dict[str, Any]], horizon: int = 3) -> di
     weights = [float(h.get('weight') or 0) for h in history]
     co2_vals = [float(h.get('co2_saved_kg') or 0) for h in history]
     
-    avg_weight = sum(weights) / len(weights) if weights else 2.0
+    avg_weight = sum(weights) / len(weights) if weights else 0.0
+    
+    if avg_weight == 0:
+         return {
+            "trend": "None",
+            "confidence": "none",
+            "cold_start": True,
+            "forecast": [{"month": m, "co2_saved_kg": 0.0, "water_saved_liters": 0.0, "energy_saved_kwh": 0.0} for m in months],
+        }
     
     # Simple projection without loading the full model bundle if memory is tight,
     # or use the model if available.

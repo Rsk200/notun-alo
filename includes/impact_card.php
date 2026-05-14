@@ -58,6 +58,10 @@ $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['use
         const data = JSON.parse(text);
         if(data.error) throw new Error(data.error);
         const list=document.getElementById('impact-forecast-list'); list.innerHTML='';
+        if(data.message) {
+            const li=document.createElement('li'); li.style.fontStyle='italic'; li.textContent=data.message;
+            list.appendChild(li);
+        }
         (data.forecast||[]).forEach(item=>{const li=document.createElement('li'); 
         <?php if ($currentLang === 'bn'): ?>
         li.textContent=`${item.month}: ${fmt(item.co2_saved_kg,2)} কেজি CO2, ${fmt(item.water_saved_liters,1)} লিটার পানি, ${fmt(item.energy_saved_kwh,2)} kWh (বিশ্বাসযোগ্যতা: ${data.confidence}, প্রবণতা: ${data.trend})`;
