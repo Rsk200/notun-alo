@@ -1,5 +1,11 @@
 steps:
   - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "gcr.io/$PROJECT_ID/notun-alo", "."]
+    args:
+      - "build"
+      - "-t"
+      - "gcr.io/$PROJECT_ID/notun-alo-rag"
+      - "-f"
+      - "Dockerfile.rag"
+      - "."
 images:
-  - "gcr.io/$PROJECT_ID/notun-alo"
+  - "gcr.io/$PROJECT_ID/notun-alo-rag"

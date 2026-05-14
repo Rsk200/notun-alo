@@ -1,0 +1,30 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system libs for PyMuPDF
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Pre-download the embedding model so cold starts are fast
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')"
+
+# Copy Flask app files
+COPY app.py rag_pipeline.py ingest.py reranker.py verifier.py ./
+
+# Copy knowledge base documents for ingestion
+COPY "Phase 1 (RAG)" "Phase 1 (RAG)"
+
+# Tell Flask which app to run
+ENV FLASK_APP=app.py
+
+# Cloud Run sets $PORT at runtime
+EXPOSE 8080
+
+CMD ["sh", "-c", "python -m flask run --host=0.0.0.0 --port=${PORT:-8080}"]

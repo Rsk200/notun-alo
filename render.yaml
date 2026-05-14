@@ -1,5 +1,5 @@
 services:
-  # Single web service running Apache (PHP) + Flask (RAG) together
+  # Single web service running Apache (PHP) — RAG chatbot runs on Google Cloud Run
   - type: web
     name: notun-alo
     runtime: docker
@@ -19,9 +19,11 @@ services:
         value: ""
       - key: DB_NAME
         value: ""
-      # ── Get from https://aistudio.google.com ──
-      - key: GEMINI_API_KEY
-        sync: false
+      # ── Cloud Run RAG service URL (set after deploying to Cloud Run) ──
+      - key: RAG_API_URL
+        value: https://notun-alo-rag-xxx-uc.a.run.app
+      - key: RAG_ENABLED
+        value: "true"
       # ── Public site URL (for correct redirects) ──
       - key: BASE_URL
         value: https://notun-alo.onrender.com
