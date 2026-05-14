@@ -4,10 +4,10 @@
 // Notun Alo (New Light) Recycling Platform
 // ============================================
 
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');        // Change for production
-define('DB_PASS', '');            // Change for production
-define('DB_NAME', 'notun_alo');
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_USER', getenv('DB_USER') ?: 'root');
+define('DB_PASS', getenv('DB_PASS') ?: '');
+define('DB_NAME', getenv('DB_NAME') ?: 'notun_alo');
 define('SITE_NAME', 'Notun Alo');
 define('BASE_URL', 'http://localhost/notun_alo/');
 
