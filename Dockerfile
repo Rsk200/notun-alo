@@ -15,9 +15,14 @@ RUN apt-get update && apt-get install -y \
     a2enmod rewrite && \
     rm -rf /var/lib/apt/lists/*
 
+# Create Python virtual environment (avoids Debian system package conflicts)
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
 # Install Python dependencies for Flask RAG + impact CLI scripts
 COPY requirements.txt /tmp/requirements.txt
-RUN pip3 install --break-system-packages -r /tmp/requirements.txt && \
+RUN pip install --no-cache-dir -r /tmp/requirements.txt && \
     rm /tmp/requirements.txt
 
 # Tell Flask which app to run
