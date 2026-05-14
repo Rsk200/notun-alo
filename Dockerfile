@@ -47,7 +47,9 @@ RUN { \
     echo 'exec apache2-foreground'; \
 } > /usr/local/bin/start-apache.sh && chmod +x /usr/local/bin/start-apache.sh
 
-# Create Supervisor config to run Apache + Flask together
+# Configure Apache to run standalone (Flask RAG removed — too memory-heavy for free tier.
+# The chatbot still works via the Pollinations.ai fallback in chatbot_api.php.)
+# To re-enable Flask on a paid plan, add a [program:flask] section here.
 RUN { \
     echo '[supervisord]'; \
     echo 'nodaemon=true'; \
@@ -55,16 +57,6 @@ RUN { \
     echo ''; \
     echo '[program:apache]'; \
     echo 'command=/usr/local/bin/start-apache.sh'; \
-    echo 'autostart=true'; \
-    echo 'autorestart=true'; \
-    echo 'stdout_logfile=/dev/stdout'; \
-    echo 'stdout_logfile_maxbytes=0'; \
-    echo 'stderr_logfile=/dev/stderr'; \
-    echo 'stderr_logfile_maxbytes=0'; \
-    echo ''; \
-    echo '[program:flask]'; \
-    echo 'command=python3 -m flask run --host=127.0.0.1 --port=5000'; \
-    echo 'directory=/var/www/html'; \
     echo 'autostart=true'; \
     echo 'autorestart=true'; \
     echo 'stdout_logfile=/dev/stdout'; \
