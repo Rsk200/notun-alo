@@ -35,6 +35,8 @@ if ($userMessage === '') {
 // ─── 3. Detect user language for error messages ───────────────────────────────
 $isBengali = (bool)preg_match('/[\x{0980}-\x{09FF}]/u', $userMessage);
 
+$ragEnabled = strtolower((string)getenv('RAG_ENABLED') ?: '') === 'true';
+
 function callRagAssistant(string $message, bool $isBengali): ?array {
     $payload = json_encode([
         'query' => $message,
@@ -189,15 +191,17 @@ try {
         exit;
     }
 
-    $rag = callRagAssistant($userMessage, $isBengali);
-    if ($rag !== null) {
-        echo json_encode([
-            'reply' => $rag['reply'],
-            'action' => null,
-            'sources' => $rag['sources'],
-            'source' => 'rag',
-        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        exit;
+    if ($ragEnabled) {
+        $rag = callRagAssistant($userMessage, $isBengali);
+        if ($rag !== null) {
+            echo json_encode([
+                'reply' => $rag['reply'],
+                'action' => null,
+                'sources' => $rag['sources'],
+                'source' => 'rag',
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            exit;
+        }
     }
 
     // ─── 5. Build system prompt ───────────────────────────────────────────────
