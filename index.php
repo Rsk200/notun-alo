@@ -18,7 +18,14 @@ if (isLoggedIn()) {
 
 
 // Fetch products for visitors
-$products = $pdo->query("SELECT * FROM products ORDER BY created_at DESC")->fetchAll();
+try {
+    $products = $pdo->query("SELECT * FROM products ORDER BY created_at DESC")->fetchAll();
+} catch (PDOException $e) {
+    if (!isDatabaseInitialized($pdo)) {
+        redirect('init_db.php');
+    }
+    throw $e;
+}
 
 
 // Fetch total points for the stats counter

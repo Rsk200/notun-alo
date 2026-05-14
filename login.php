@@ -20,6 +20,11 @@ if (isLoggedIn()) {
 
 $error = '';
 
+// Check if database is initialized
+if (!isDatabaseInitialized($pdo)) {
+    redirect('init_db.php');
+}
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email'] ?? '');

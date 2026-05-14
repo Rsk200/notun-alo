@@ -60,6 +60,19 @@ function ensurePickupCategoryVarchar(PDO $pdo): void {
 
 ensurePickupCategoryVarchar($pdo);
 
+/**
+ * Check if the database has been initialized
+ */
+function isDatabaseInitialized(PDO $pdo): bool {
+    try {
+        // Try to query a core table to see if it exists
+        $pdo->query("SELECT 1 FROM products LIMIT 1");
+        return true;
+    } catch (Throwable $e) {
+        return false;
+    }
+}
+
 // -----------------------------------------------
 // Helper Functions
 // -----------------------------------------------
