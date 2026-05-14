@@ -27,19 +27,19 @@ load_dotenv(BASE_DIR / ".env")
 LOG_DIR = BASE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 
-app = Flask(__name__)
-CORS(app)
-
 handler = RotatingFileHandler(LOG_DIR / "impact_api.log", maxBytes=512_000, backupCount=3, encoding="utf-8")
 handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+app = Flask(__name__)
 app.logger.addHandler(handler)
 app.logger.setLevel(logging.INFO)
+CORS(app)
 
 DB_CONFIG = {
-    "host": os.getenv("NOTUN_ALO_DB_HOST", os.getenv("DB_HOST", "localhost")),
-    "user": os.getenv("NOTUN_ALO_DB_USER", os.getenv("DB_USER", "root")),
-    "password": os.getenv("NOTUN_ALO_DB_PASS", os.getenv("DB_PASS", "")),
-    "database": os.getenv("NOTUN_ALO_DB_NAME", os.getenv("DB_NAME", "notun_alo")),
+    "host": os.getenv("NOTUN_ALO_DB_HOST") or os.getenv("DB_HOST") or "localhost",
+    "user": os.getenv("NOTUN_ALO_DB_USER") or os.getenv("DB_USER") or "root",
+    "password": os.getenv("NOTUN_ALO_DB_PASS") or os.getenv("DB_PASS") or "",
+    "database": os.getenv("NOTUN_ALO_DB_NAME") or os.getenv("DB_NAME") or "notun_alo",
+    "port": int(os.getenv("DB_PORT") or 3306)
 }
 FACTORS_CACHE = load_emission_factors()
 

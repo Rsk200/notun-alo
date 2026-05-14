@@ -20,14 +20,23 @@ if (!file_exists($pythonBin)) {
 }
 
 $scriptPath = __DIR__ . '/ai-service/cli_impact.py';
-$cmd = escapeshellcmd("timeout 10 " . $pythonBin . " " . escapeshellarg($scriptPath) . " " . escapeshellarg($action) . " " . escapeshellarg((string)$userId));
+$actionArg = escapeshellarg($action);
+$userArg   = escapeshellarg((string)$userId);
+$pathArg   = escapeshellarg($scriptPath);
 
-$output = shell_exec($cmd . " 2>&1");
+// Simplify command construction. timeout is usually available on Linux.
+$cmd = "timeout 15 $pythonBin $pathArg $actionArg $userArg 2>&1";
+
+$output = shell_exec($cmd);
 $output = trim($output);
 
 if (!$output || !json_decode($output)) {
-    error_log('[Notun Alo Impact] Python CLI failed. Action=' . $action . ' User=' . $userId . ' Output=' . substr($output, 0, 500));
-    echo json_encode(['error' => 'python script failed', 'details' => $output]);
+    http_response_code(500);
+    echo json_encode([
+        'error' => 'python_cli_failed',
+        'details' => $output ?: 'Empty output from script',
+        'command' => $cmd
+    ]);
     exit;
 }
 

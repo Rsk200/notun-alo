@@ -8,17 +8,17 @@ services:
     plan: free
     region: oregon
     envVars:
-      # ── Database (set these from your Aiven MySQL dashboard) ──
+      # ── Database Connection (Set these in Render Dashboard for security) ──
       - key: DB_HOST
-        value: ""
+        value: "your-aiven-db-host.a.aivencloud.com"
       - key: DB_PORT
-        value: ""
+        value: "20764"
       - key: DB_USER
-        value: ""
+        value: "avnadmin"
       - key: DB_PASS
-        value: ""
+        value: "your-secure-password"
       - key: DB_NAME
-        value: ""
+        value: "defaultdb"
       # ── Cloud Run RAG service URL (set after deploying to Cloud Run) ──
       - key: RAG_API_URL
         value: https://notun-alo-rag-xxx-uc.a.run.app
