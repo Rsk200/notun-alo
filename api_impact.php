@@ -14,7 +14,7 @@ if (!$userId || !in_array($action, ['impact', 'forecast'])) {
 }
 
 $scriptPath = __DIR__ . '/ai-service/cli_impact.py';
-$cmd = escapeshellcmd("python " . escapeshellarg($scriptPath) . " " . escapeshellarg($action) . " " . escapeshellarg((string)$userId));
+$cmd = escapeshellcmd("python3 " . escapeshellarg($scriptPath) . " " . escapeshellarg($action) . " " . escapeshellarg((string)$userId));
 
 $output = shell_exec($cmd . " 2>&1");
 $output = trim($output);

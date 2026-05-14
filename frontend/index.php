@@ -43,7 +43,7 @@
     </section>
 </main>
 <script>
-const API = 'http://localhost:5000';
+const API = '<?= rtrim((string)getenv('RAG_API_URL') ?: 'http://localhost:5000', '/') ?>';
 const answer = document.getElementById('answer');
 const sources = document.getElementById('sources');
 

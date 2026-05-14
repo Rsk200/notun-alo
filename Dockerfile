@@ -1,15 +1,27 @@
 FROM php:8.2-apache
 
-# Install required PHP extensions
+# Install required PHP extensions + Python + Supervisor
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
-    libzip-dev && \
+    libzip-dev \
+    python3 \
+    python3-pip \
+    python3-venv \
+    supervisor && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install gd zip pdo pdo_mysql && \
     a2enmod rewrite && \
     rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies for Flask RAG + impact CLI scripts
+COPY requirements.txt /tmp/requirements.txt
+RUN pip3 install --break-system-packages -r /tmp/requirements.txt && \
+    rm /tmp/requirements.txt
+
+# Tell Flask which app to run
+ENV FLASK_APP=app.py
 
 # Set working directory
 WORKDIR /var/www/html
@@ -20,8 +32,44 @@ COPY . /var/www/html
 # Ensure proper permissions
 RUN chown -R www-data:www-data /var/www/html
 
-# Expose the port Cloud Run / Render expects
+# Create Apache startup script that binds to Render's $PORT
+RUN { \
+    echo '#!/bin/bash'; \
+    echo 'set -e'; \
+    echo 'APACHE_PORT="${PORT:-8080}"'; \
+    echo 'sed -i "s/Listen 80/Listen ${APACHE_PORT}/g" /etc/apache2/ports.conf'; \
+    echo 'sed -i "s/:80>/:${APACHE_PORT}>/g" /etc/apache2/sites-available/000-default.conf'; \
+    echo 'exec apache2-foreground'; \
+} > /usr/local/bin/start-apache.sh && chmod +x /usr/local/bin/start-apache.sh
+
+# Create Supervisor config to run Apache + Flask together
+RUN { \
+    echo '[supervisord]'; \
+    echo 'nodaemon=true'; \
+    echo 'user=root'; \
+    echo ''; \
+    echo '[program:apache]'; \
+    echo 'command=/usr/local/bin/start-apache.sh'; \
+    echo 'autostart=true'; \
+    echo 'autorestart=true'; \
+    echo 'stdout_logfile=/dev/stdout'; \
+    echo 'stdout_logfile_maxbytes=0'; \
+    echo 'stderr_logfile=/dev/stderr'; \
+    echo 'stderr_logfile_maxbytes=0'; \
+    echo ''; \
+    echo '[program:flask]'; \
+    echo 'command=python3 -m flask run --host=127.0.0.1 --port=5000'; \
+    echo 'directory=/var/www/html'; \
+    echo 'autostart=true'; \
+    echo 'autorestart=true'; \
+    echo 'stdout_logfile=/dev/stdout'; \
+    echo 'stdout_logfile_maxbytes=0'; \
+    echo 'stderr_logfile=/dev/stderr'; \
+    echo 'stderr_logfile_maxbytes=0'; \
+} > /etc/supervisor/conf.d/supervisord.conf
+
+# Expose the port Render expects
 ENV PORT 8080
 EXPOSE 8080
 
-CMD ["apache2-foreground"]
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

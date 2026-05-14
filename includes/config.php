@@ -10,7 +10,7 @@ define('DB_USER', getenv('DB_USER') ?: 'root');
 define('DB_PASS', getenv('DB_PASS') ?: '');
 define('DB_NAME', getenv('DB_NAME') ?: 'notun_alo');
 define('SITE_NAME', 'Notun Alo');
-define('BASE_URL', 'http://localhost/notun_alo/');
+define('BASE_URL', getenv('BASE_URL') ?: 'http://localhost/notun_alo/');
 
 // Points per KG by category
 define('POINTS_PAPER',   5);   // 5 points per KG

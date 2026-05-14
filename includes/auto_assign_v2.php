@@ -31,7 +31,8 @@ function autoAssignPickupAI(int $pickup_id, PDO $pdo): array {
         ]);
 
         // 3. POST to Flask with 3-second timeout
-        $ch = curl_init('http://localhost:5005/assign');
+        $assignUrl = rtrim((string)getenv('ASSIGN_API_URL') ?: 'http://localhost:5005', '/') . '/assign';
+        $ch = curl_init($assignUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);

@@ -1,7 +1,7 @@
 <?php
 if (!function_exists('impact_api_get')) {
     function impact_api_get(string $endpoint, int $userId): ?array {
-        $url = "http://localhost/notun_alo/api_impact.php?action={$endpoint}&user_id=" . urlencode((string)$userId);
+        $url = BASE_URL . "api_impact.php?action={$endpoint}&user_id=" . urlencode((string)$userId);
         $context = stream_context_create([
             'http' => [
                 'method' => 'GET',

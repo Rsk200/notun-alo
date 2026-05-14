@@ -1,58 +1,27 @@
 services:
-  # 1. PHP Frontend
+  # Single web service running Apache (PHP) + Flask (RAG) together
   - type: web
-    name: notun-alo-php
+    name: notun-alo
     runtime: docker
     dockerContext: .
     dockerfilePath: Dockerfile
     plan: free
     region: oregon
     envVars:
+      # ── Database (set these from your Aiven MySQL dashboard) ──
       - key: DB_HOST
-        fromDatabase:
-          name: notun-alo-db
-          property: host
+        value: ""
+      - key: DB_PORT
+        value: ""
       - key: DB_USER
-        fromDatabase:
-          name: notun-alo-db
-          property: user
+        value: ""
       - key: DB_PASS
-        fromDatabase:
-          name: notun-alo-db
-          property: password
+        value: ""
       - key: DB_NAME
-        fromDatabase:
-          name: notun-alo-db
-          property: database
-
-  # 2. Flask AI Background Worker
-  - type: worker
-    name: notun-alo-flask
-    runtime: docker
-    dockerContext: .
-    dockerfilePath: Dockerfile.flask
-    plan: free
-    region: oregon
-    envVars:
-      - key: DB_HOST
-        fromDatabase:
-          name: notun-alo-db
-          property: host
-      - key: DB_USER
-        fromDatabase:
-          name: notun-alo-db
-          property: user
-      - key: DB_PASS
-        fromDatabase:
-          name: notun-alo-db
-          property: password
-      - key: DB_NAME
-        fromDatabase:
-          name: notun-alo-db
-          property: database
-
-databases:
-  # 3. Managed PostgreSQL (Compatible with your logic)
-  - name: notun-alo-db
-    plan: free
-    region: oregon
+        value: ""
+      # ── Get from https://aistudio.google.com ──
+      - key: GEMINI_API_KEY
+        sync: false
+      # ── Public site URL (for correct redirects) ──
+      - key: BASE_URL
+        value: https://notun-alo.onrender.com

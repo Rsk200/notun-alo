@@ -41,7 +41,8 @@ function callRagAssistant(string $message, bool $isBengali): ?array {
         'language' => $isBengali ? 'bn' : 'en',
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-    $ch = curl_init('http://localhost:5000/chat');
+    $ragUrl = rtrim((string)getenv('RAG_API_URL') ?: 'http://localhost:5000', '/') . '/chat';
+    $ch = curl_init($ragUrl);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST           => true,
