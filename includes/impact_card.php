@@ -1,7 +1,68 @@
 <?php
 $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['user_id'] ?? 1);
+$currentLang = $_SESSION['lang'] ?? 'en';
+
+// Page-specific bilingual dictionary
+$i18n = [
+    'en' => [
+        'hero_title' => 'Start Your Eco-Journey',
+        'hero_sub' => 'Your recycling can save 100+ kg of CO2 per year. Request your first pickup to see your impact!',
+        'req_pickup' => 'Request Pickup',
+        'lvl' => 'LVL',
+        'rank_sub' => 'Keep recycling to unlock the next rank!',
+        'xp_to_next' => 'XP (Rank Progress: %s%%)',
+        'next_tier' => 'Next Tier',
+        'streak' => '1 Month Streak',
+        'co2_label' => 'CO₂ PREVENTED',
+        'water_label' => 'WATER SAVED',
+        'energy_label' => 'ENERGY SAVED',
+        'co2_sub' => 'Total emissions avoided',
+        'water_sub' => 'Clean water preserved',
+        'energy_sub' => 'Total power preserved',
+        'forecast_title' => '90-Day AI Forecast',
+        'forecast_sub' => 'Projected impact based on your recycling trends.',
+        'locked_title' => 'Complete 1 pickup to unlock<br>your 90-day AI forecast.',
+        'book_pickup' => 'Book a Pickup',
+        'trend_title' => 'Monthly Impact Trend',
+        'trend_sub' => 'Breakdown of CO₂ saved by category each month.',
+        'trend_empty' => 'Your impact chart is waiting',
+        'trend_steps' => 'How to get started in 3 easy steps:',
+        'step1' => 'Request a recycling pickup from your dashboard',
+        'step2' => 'Wait for our agent to collect and weigh items',
+        'step3' => 'Watch your impact grow with every completion!',
+    ],
+    'bn' => [
+        'hero_title' => 'আপনার পরিবেশবান্ধব যাত্রা শুরু করুন',
+        'hero_sub' => 'আপনার রিসাইক্লিং বছরে ১০০+ কেজি CO2 সাশ্রয় করতে পারে। আপনার প্রভাব দেখতে প্রথম পিকআপ অনুরোধ করুন!',
+        'req_pickup' => 'পিকআপ অনুরোধ করুন',
+        'lvl' => 'লেভেল',
+        'rank_sub' => 'পরবর্তী র‍্যাঙ্ক আনলক করতে রিসাইক্লিং চালিয়ে যান!',
+        'xp_to_next' => 'XP (অগ্রগতি: %s%%)',
+        'next_tier' => 'পরবর্তী ধাপ',
+        'streak' => '১ মাসের ধারাবাহিকতা',
+        'co2_label' => 'প্রতিরোধকৃত CO₂',
+        'water_label' => 'সাশ্রয়কৃত পানি',
+        'energy_label' => 'সাশ্রয়কৃত শক্তি',
+        'co2_sub' => 'মোট নির্গমন এড়ানো হয়েছে',
+        'water_sub' => 'বিশুদ্ধ পানি সংরক্ষিত',
+        'energy_sub' => 'মোট বিদ্যুৎ সংরক্ষিত',
+        'forecast_title' => '৯০-দিনের AI পূর্বাভাস',
+        'forecast_sub' => 'আপনার রিসাইক্লিং প্রবণতার উপর ভিত্তি করে সম্ভাব্য প্রভাব।',
+        'locked_title' => 'আপনার ৯০-দিনের AI পূর্বাভাস আনলক করতে<br>১টি পিকআপ সম্পন্ন করুন।',
+        'book_pickup' => 'পিকআপ বুক করুন',
+        'trend_title' => 'মাসিক প্রভাবের প্রবণতা',
+        'trend_sub' => 'প্রতি মাসে ক্যাটাগরি অনুযায়ী সাশ্রয়কৃত CO₂ এর বিভাজন।',
+        'trend_empty' => 'আপনার প্রভাব চার্ট অপেক্ষা করছে',
+        'trend_steps' => 'কিভাবে শুরু করবেন ৩টি সহজ ধাপে:',
+        'step1' => 'আপনার ড্যাশবোর্ড থেকে একটি পিকআপ অনুরোধ করুন',
+        'step2' => 'আমাদের এজেন্টের সংগ্রহ এবং ওজন করার জন্য অপেক্ষা করুন',
+        'step3' => 'প্রতিটি কাজ সম্পন্ন হওয়ার সাথে সাথে আপনার প্রভাব বাড়তে দেখুন!',
+    ]
+];
+
+$t = $i18n[$currentLang];
 ?>
-<div class="impact-container" id="impact-root" data-user-id="<?= $impactUserId ?>">
+<div class="impact-container" id="impact-root" data-user-id="<?= $impactUserId ?>" data-lang="<?= $currentLang ?>">
     <style>
         :root {
             --green-primary: #1D9E75;
@@ -18,7 +79,7 @@ $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['use
             --bg-subtle: #F9FAFB;
         }
 
-        .impact-container { font-family: 'DM Sans', sans-serif; color: var(--text-primary); }
+        .impact-container { font-family: 'DM Sans', 'Noto Sans Bengali', sans-serif; color: var(--text-primary); }
         
         /* Banner */
         .hero-banner { 
@@ -41,7 +102,7 @@ $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['use
         /* Gamification Card */
         .gami-card { background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 12px; padding: 20px 24px; display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
         .level-badge { width: 56px; height: 56px; border-radius: 50%; background: var(--green-light); border: 2px solid var(--green-primary); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
-        .lvl-label { font-size: 10px; font-weight: 500; color: var(--green-dark); line-height: 1; }
+        .lvl-label { font-size: 9px; font-weight: 500; color: var(--green-dark); line-height: 1; text-transform: uppercase; }
         .lvl-num { font-size: 18px; font-weight: 700; color: var(--green-primary); line-height: 1.2; }
         .gami-info { flex: 1; }
         .rank-name { font-size: 16px; font-weight: 600; color: var(--text-primary); margin: 0; }
@@ -68,11 +129,11 @@ $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['use
         .metric-equiv { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
 
         /* Fun Fact */
-        .fun-fact-box { background: #F0FDF4; border-left: 4px solid var(--green-primary); border-radius: 0 8px 8px 0; padding: 14px 18px; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 24px; }
+        .fun-fact-box { background: #F0FDF4; border-left: 4px solid var(--green-primary); border-radius: 0 8px 8px 0; padding: 14px 18px; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 24px; min-height: 70px; }
         .fact-icon { color: var(--green-primary); font-size: 20px; flex-shrink: 0; margin-top: 1px; }
-        .fact-content { font-size: 13px; color: var(--green-dark); line-height: 1.6; }
-        .fact-content b { font-weight: 700; }
-        .fact-item { transition: opacity 0.4s ease; }
+        .fact-content { font-size: 13px; color: var(--green-dark); line-height: 1.6; transition: opacity 0.8s ease; }
+        .fact-lang-divider { margin: 4px 0; border-top: 1px dashed rgba(29, 158, 117, 0.2); }
+        .fact-bn { font-family: 'Noto Sans Bengali', sans-serif; font-weight: 500; }
 
         /* Forecast Card */
         .forecast-card { background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; }
@@ -113,184 +174,193 @@ $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['use
         }
     </style>
 
-    <!-- 1. Hero CTA Banner (Conditional) -->
+    <!-- 1. Hero CTA Banner -->
     <div id="hero-banner" class="hero-banner" style="display: none;">
         <button class="banner-close" onclick="document.getElementById('hero-banner').remove()">×</button>
         <div class="banner-icon"><i class="fa-solid fa-leaf"></i></div>
         <div class="banner-text">
-            <h3>Start Your Eco-Journey</h3>
-            <p>Your recycling can save 100+ kg of CO2 per year. Request your first pickup to see your impact!</p>
+            <h3><?= $t['hero_title'] ?></h3>
+            <p><?= $t['hero_sub'] ?></p>
         </div>
-        <a href="user_request_pickup.php" class="banner-cta">Request Pickup</a>
+        <a href="user_request_pickup.php" class="banner-cta"><?= $t['req_pickup'] ?></a>
     </div>
 
     <!-- 2. Gamification Card -->
     <div class="gami-card">
         <div class="level-badge">
-            <span class="lvl-label">LVL</span>
-            <span class="lvl-num" id="eco-level-num">1</span>
+            <span class="lvl-label"><?= $t['lvl'] ?></span>
+            <span class="lvl-num" id="eco-level-num">১</span>
         </div>
         <div class="gami-info">
-            <h4 class="rank-name" id="eco-rank-name">Eco-Seed</h4>
-            <p class="rank-sub">Keep recycling to unlock the next rank!</p>
+            <h4 class="rank-name" id="eco-rank-name">...</h4>
+            <p class="rank-sub"><?= $t['rank_sub'] ?></p>
             <div class="xp-bar-wrapper">
                 <div class="xp-bar-fill" id="eco-progress-fill"></div>
             </div>
-            <p class="xp-label" id="eco-xp-label">0 / 100 XP to next rank</p>
+            <p class="xp-label" id="eco-xp-label">... XP (<?= sprintf($t['xp_to_next'], '০') ?>)</p>
         </div>
         <div class="gami-right">
-            <div class="next-tier-label">Next Tier</div>
-            <div class="next-tier-name" id="eco-next-tier">Eco-Sprout</div>
-            <div class="streak-badge" id="eco-streak">1 Month Streak</div>
+            <div class="next-tier-label"><?= $t['next_tier'] ?></div>
+            <div class="next-tier-name" id="eco-next-tier">...</div>
+            <div class="streak-pill" id="eco-streak"><?= $t['streak'] ?></div>
         </div>
     </div>
 
     <!-- 3. Metrics Grid -->
     <div class="metrics-grid">
-        <!-- CO2 Card -->
         <div class="metric-card">
-            <div class="metric-label"><i class="fa-solid fa-cloud"></i> CO₂ PREVENTED</div>
-            <div class="metric-val co2-val" id="impact-co2">0 kg</div>
-            <div class="metric-sub">Total emissions avoided</div>
+            <div class="metric-label"><i class="fa-solid fa-cloud"></i> <?= $t['co2_label'] ?></div>
+            <div class="metric-val co2-val" id="impact-co2">০ কেজি</div>
+            <div class="metric-sub"><?= $t['co2_sub'] ?></div>
             <div class="metric-divider"></div>
-            <div class="metric-equiv" id="impact-car-equiv"><i class="fa-solid fa-car"></i> 0 car trips avoided</div>
+            <div class="metric-equiv" id="impact-car-equiv"><i class="fa-solid fa-car"></i> ০ car trips avoided</div>
         </div>
-        <!-- Water Card -->
         <div class="metric-card">
-            <div class="metric-label"><i class="fa-solid fa-droplet"></i> WATER SAVED</div>
-            <div class="metric-val water-val" id="impact-water">0 L</div>
-            <div class="metric-sub">Clean water preserved</div>
+            <div class="metric-label"><i class="fa-solid fa-droplet"></i> <?= $t['water_label'] ?></div>
+            <div class="metric-val water-val" id="impact-water">০ লিটার</div>
+            <div class="metric-sub"><?= $t['water_sub'] ?></div>
             <div class="metric-divider"></div>
-            <div class="metric-equiv" id="impact-water-equiv"><i class="fa-solid fa-bottle-water"></i> 0 bottles saved</div>
+            <div class="metric-equiv" id="impact-water-equiv"><i class="fa-solid fa-bottle-water"></i> ০ bottles saved</div>
         </div>
-        <!-- Energy Card -->
         <div class="metric-card">
-            <div class="metric-label"><i class="fa-solid fa-bolt"></i> ENERGY SAVED</div>
-            <div class="metric-val energy-val" id="impact-energy">0 kWh</div>
-            <div class="metric-sub">Total power preserved</div>
+            <div class="metric-label"><i class="fa-solid fa-bolt"></i> <?= $t['energy_label'] ?></div>
+            <div class="metric-val energy-val" id="impact-energy">০ kWh</div>
+            <div class="metric-sub"><?= $t['energy_sub'] ?></div>
             <div class="metric-divider"></div>
-            <div class="metric-equiv" id="impact-energy-equiv"><i class="fa-solid fa-plug"></i> 0 phone charges</div>
+            <div class="metric-equiv" id="impact-energy-equiv"><i class="fa-solid fa-plug"></i> ০ phone charges</div>
         </div>
     </div>
 
-    <!-- 4. Fun Fact Callout -->
+    <!-- 4. Fun Fact Callout (Bilingual) -->
     <div class="fun-fact-box">
         <i class="fa-solid fa-lightbulb fact-icon"></i>
-        <div class="fact-content" id="rotating-fact">
-            Did you know? Mobile phone recycling has <b>29×</b> higher environmental impact than mixed plastic recycling.
+        <div class="fact-content" id="rotating-fact" style="opacity: 0;">
+            <!-- Content injected by JS after 3s -->
         </div>
     </div>
 
     <!-- 5. 90-Day Forecast -->
     <div class="forecast-card">
         <div class="card-header-row">
-            <div class="card-title-text">90-Day AI Forecast</div>
+            <div class="card-title-text"><?= $t['forecast_title'] ?></div>
             <div class="live-pill">LIVE</div>
         </div>
-        <p class="card-subtitle-text">Projected impact based on your recycling trends.</p>
+        <p class="card-subtitle-text"><?= $t['forecast_sub'] ?></p>
         
         <div id="forecast-locked" class="locked-overlay" style="display: none;">
             <i class="fa-solid fa-lock lock-icon"></i>
-            <p class="lock-text">Complete 1 pickup to unlock<br>your 90-day AI forecast.</p>
-            <a href="user_request_pickup.php" class="unlock-btn">Book a Pickup</a>
+            <p class="lock-text"><?= $t['locked_title'] ?></p>
+            <a href="user_request_pickup.php" class="unlock-btn"><?= $t['book_pickup'] ?></a>
         </div>
         
-        <div id="forecast-list" class="forecast-list">
-            <!-- Items injected by JS -->
-        </div>
+        <div id="forecast-list" class="forecast-list"></div>
     </div>
 
     <!-- 6. Monthly Impact -->
     <div class="monthly-card">
         <div class="card-header-row">
-            <div class="card-title-text">Monthly Impact Trend</div>
+            <div class="card-title-text"><?= $t['trend_title'] ?></div>
         </div>
-        <p class="card-subtitle-text">Breakdown of CO₂ saved by category each month.</p>
+        <p class="card-subtitle-text"><?= $t['trend_sub'] ?></p>
         
         <div id="monthly-empty" class="monthly-empty" style="display: none;">
             <i class="fa-solid fa-chart-line empty-icon-lg"></i>
-            <div class="empty-headline">Your impact chart is waiting</div>
-            <p class="empty-subtext">How to get started in 3 easy steps:</p>
+            <div class="empty-headline"><?= $t['trend_empty'] ?></div>
+            <p class="empty-subtext"><?= $t['trend_steps'] ?></p>
             <div class="steps-list">
-                <div class="step-item">
-                    <div class="step-num">1</div>
-                    <div class="step-txt">Request a recycling pickup from your dashboard</div>
-                </div>
-                <div class="step-item">
-                    <div class="step-num">2</div>
-                    <div class="step-txt">Wait for our agent to collect and weigh items</div>
-                </div>
-                <div class="step-item">
-                    <div class="step-num">3</div>
-                    <div class="step-txt">Watch your impact grow with every completion!</div>
-                </div>
+                <div class="step-item"><div class="step-num">১</div><div class="step-txt"><?= $t['step1'] ?></div></div>
+                <div class="step-item"><div class="step-num">২</div><div class="step-txt"><?= $t['step2'] ?></div></div>
+                <div class="step-item"><div class="step-num">৩</div><div class="step-txt"><?= $t['step3'] ?></div></div>
             </div>
         </div>
-
-        <div id="monthly-chart-container" style="height: 300px; display: none;">
-            <canvas id="monthlyImpactChart"></canvas>
-        </div>
+        <div id="monthly-chart-container" style="height: 300px; display: none;"><canvas id="monthlyImpactChart"></canvas></div>
     </div>
-
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 (function(){
     const root = document.getElementById('impact-root');
     const userId = root.dataset.userId;
-    const fmt = (n, d = 0) => Number(n || 0).toLocaleString(undefined, { maximumFractionDigits: d });
+    const isBn = root.dataset.lang === 'bn';
     
-    // Rotating Facts
+    const en2bn = (n) => {
+        if (!isBn) return n;
+        const eng = ['0','1','2','3','4','5','6','7','8','9'];
+        const bng = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+        return String(n).replace(/[0-9]/g, w => bng[eng.indexOf(w)]);
+    };
+    const fmt = (n, d = 0) => {
+        let val = Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: d });
+        return isBn ? en2bn(val) : val;
+    };
+
+    // Bilingual Rotating Facts
     const facts = [
-        "Did you know? Mobile phone recycling has <b>29×</b> higher environmental impact than mixed plastic recycling.",
-        "Recycling a single aluminum can saves enough energy to run a <b>TV for 3 hours</b>.",
-        "Producing paper from recycled fibers uses <b>40% less energy</b> than virgin wood.",
-        "A single recycled glass bottle saves enough energy to power a <b>laptop for 25 minutes</b>."
+        {
+            en: "Did you know? Mobile phone recycling has <b>29×</b> higher environmental impact than mixed plastic recycling.",
+            bn: "আপনি কি জানেন? মিশ্র প্লাস্টিকের তুলনায় মোবাইল ফোন রিসাইক্লিংয়ের পরিবেশগত প্রভাব প্রায় <b>২৯ গুণ</b> বেশি।"
+        },
+        {
+            en: "Recycling a single aluminum can saves enough energy to run a <b>TV for 3 hours</b>.",
+            bn: "একটি অ্যালুমিনিয়াম ক্যান রিসাইক্লিং করলে যে শক্তি সাশ্রয় হয় তা দিয়ে একটি <b>টিভি ৩ ঘণ্টা</b> চালানো সম্ভব।"
+        },
+        {
+            en: "Producing paper from recycled fibers uses <b>40% less energy</b> than virgin wood.",
+            bn: "ভার্জিন কাঠের তুলনায় রিসাইক্লিং করা ফাইবার থেকে কাগজ তৈরি করলে <b>৪০% কম শক্তি</b> ব্যয় হয়।"
+        },
+        {
+            en: "A single recycled glass bottle saves enough energy to power a <b>laptop for 25 minutes</b>.",
+            bn: "একটি কাঁচের বোতল রিসাইক্লিং করলে একটি <b>ল্যাপটপ ২৫ মিনিট</b> চালানোর মতো শক্তি সাশ্রয় হয়।"
+        }
     ];
     let factIdx = 0;
-    setInterval(() => {
+    
+    const showFact = () => {
         const el = document.getElementById('rotating-fact');
+        const f = facts[factIdx];
         el.style.opacity = '0';
         setTimeout(() => {
-            factIdx = (factIdx + 1) % facts.length;
-            el.innerHTML = facts[factIdx];
+            el.innerHTML = `
+                <div class="fact-en">${f.en}</div>
+                <div class="fact-lang-divider"></div>
+                <div class="fact-bn">${f.bn}</div>
+            `;
             el.style.opacity = '1';
-        }, 400);
-    }, 8000);
+            factIdx = (factIdx + 1) % facts.length;
+        }, 800);
+    };
 
-    // Fetch Impact Data
+    // Start rotation after 3 seconds
+    setTimeout(() => {
+        showFact();
+        setInterval(showFact, 8000);
+    }, 3000);
+
+    // Fetch Data
     fetch(`api_impact.php?action=impact&user_id=${userId}`)
     .then(r => r.json())
     .then(data => {
         if(data.error) return;
-
-        // Show Hero Banner if no pickups
-        if (data.total_pickups === 0) {
-            document.getElementById('hero-banner').style.display = 'flex';
-        }
-
-        // Gamification
+        if (data.total_pickups === 0) document.getElementById('hero-banner').style.display = 'flex';
+        
         if (data.gamification) {
-            document.getElementById('eco-level-num').textContent = data.gamification.level_number;
-            document.getElementById('eco-rank-name').textContent = data.gamification.level_name;
+            document.getElementById('eco-level-num').textContent = en2bn(data.gamification.level_number);
+            document.getElementById('eco-rank-name').textContent = isBn ? translateRank(data.gamification.level_name) : data.gamification.level_name;
             document.getElementById('eco-progress-fill').style.width = data.gamification.progress_percent + '%';
-            document.getElementById('eco-xp-label').textContent = `${fmt(data.gamification.xp)} XP (Rank Progress: ${data.gamification.progress_percent}%)`;
-            document.getElementById('eco-next-tier').textContent = data.gamification.next_level_name;
-            document.getElementById('eco-next-tier').nextElementSibling.textContent = data.gamification.next_rank_msg;
+            document.getElementById('eco-xp-label').textContent = `${fmt(data.gamification.xp)} XP (${isBn ? 'অগ্রগতি' : 'Rank Progress'}: ${fmt(data.gamification.progress_percent)}%)`;
+            document.getElementById('eco-next-tier').textContent = isBn ? translateRank(data.gamification.next_level_name) : data.gamification.next_level_name;
+            document.getElementById('eco-streak').textContent = isBn ? en2bn(data.gamification.streak_msg || '১ মাসের ধারাবাহিকতা') : (data.gamification.streak_msg || '1 Month Streak');
         }
 
-        // Metrics
-        document.getElementById('impact-co2').textContent = fmt(data.co2_saved_kg, 1) + ' kg';
-        document.getElementById('impact-water').textContent = fmt(data.water_saved_liters, 0) + ' L';
+        document.getElementById('impact-co2').textContent = fmt(data.co2_saved_kg, 1) + (isBn ? ' কেজি' : ' kg');
+        document.getElementById('impact-water').textContent = fmt(data.water_saved_liters, 0) + (isBn ? ' লিটার' : ' L');
         document.getElementById('impact-energy').textContent = fmt(data.energy_saved_kwh, 1) + ' kWh';
         
-        document.getElementById('impact-car-equiv').innerHTML = `<i class="fa-solid fa-car"></i> ${fmt(data.car_trip_equivalent)} car trips avoided`;
-        document.getElementById('impact-water-equiv').innerHTML = `<i class="fa-solid fa-bottle-water"></i> ${fmt(data.water_bottle_equivalent)} bottles saved`;
-        document.getElementById('impact-energy-equiv').innerHTML = `<i class="fa-solid fa-plug"></i> ${fmt(data.phone_charge_equivalent)} phone charges`;
+        document.getElementById('impact-car-equiv').innerHTML = `<i class="fa-solid fa-car"></i> ${fmt(data.car_trip_equivalent)} ${isBn ? 'গাড়ির ট্রিপ এড়ানো হয়েছে' : 'car trips avoided'}`;
+        document.getElementById('impact-water-equiv').innerHTML = `<i class="fa-solid fa-bottle-water"></i> ${fmt(data.water_bottle_equivalent)} ${isBn ? 'বোতল সাশ্রয়' : 'bottles saved'}`;
+        document.getElementById('impact-energy-equiv').innerHTML = `<i class="fa-solid fa-plug"></i> ${fmt(data.phone_charge_equivalent)} ${isBn ? 'ফোন চার্জ' : 'phone charges'}`;
     });
 
-    // Fetch Forecast
     fetch(`api_impact.php?action=forecast&user_id=${userId}`)
     .then(r => r.json())
     .then(data => {
@@ -301,27 +371,33 @@ $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['use
             const list = document.getElementById('forecast-list');
             list.innerHTML = data.forecast.map(item => `
                 <div class="forecast-item">
-                    <span class="forecast-month">${item.month}</span>
+                    <span class="forecast-month">${isBn ? translateMonth(item.month) : item.month}</span>
                     <span class="forecast-vals">${fmt(item.co2_saved_kg, 1)} kg CO₂, ${fmt(item.energy_saved_kwh, 1)} kWh</span>
                 </div>
             `).join('');
         }
     });
 
-    // Fetch Monthly Trend
-    // We'll use the same API for now, or just handle empty state if needed.
-    // Assuming Monthly Impact logic is integrated into api_impact.php or handled here.
-    // For now, let's just show the empty state if impact is 0.
-    fetch(`api_impact.php?action=impact&user_id=${userId}`)
-    .then(r => r.json())
-    .then(data => {
-        if (data.total_pickups === 0) {
-            document.getElementById('monthly-empty').style.display = 'block';
-            document.getElementById('monthly-chart-container').style.display = 'none';
-        } else {
-            // Ideally call a monthly history API here. For now, we'll keep the empty state logic simple.
-        }
-    });
+    function translateRank(name) {
+        const ranks = {
+            'Eco-Seed': 'পরিবেশ-বীজ', 'Eco-Sprout': 'পরিবেশ-অঙ্কুর', 'Eco-Sapling': 'পরিবেশ-চারা', 
+            'Eco-Tree': 'পরিবেশ-বৃক্ষ', 'Eco-Forest': 'পরিবেশ-বন', 'Eco-Guardian': 'পরিবেশ-রক্ষক',
+            'Earth Hero': 'পৃথিবীর বীর', 'Climate Commander': 'জলবায়ু সেনাপতি', 
+            'Atmosphere Architect': 'বায়ুমণ্ডল স্থপতি', 'Planet Savior': 'গ্রহ রক্ষাকর্তা', 'Max Level': 'সর্বোচ্চ পর্যায়'
+        };
+        return ranks[name] || name;
+    }
 
+    function translateMonth(m) {
+        if (!m) return m;
+        const [y, mm] = m.split('-');
+        const months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+        return en2bn(y) + '-' + months[parseInt(mm)-1];
+    }
+
+    fetch(`api_impact.php?action=impact&user_id=${userId}`).then(r=>r.json()).then(data=>{
+        if (data.total_pickups === 0) document.getElementById('monthly-empty').style.display = 'block';
+    });
 })();
 </script>
+
