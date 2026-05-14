@@ -16,12 +16,17 @@ try {
     }
 
     $sql = file_get_contents($sqlFile);
-    
+
+    // Strip DEFINER clauses (not allowed on Aiven - requires SUPER privilege)
+    $sql = preg_replace('/\s+DEFINER\s*=\s*[^\s]+/i', '', $sql);
+
+    // Strip SET SESSION sql_require_primary_key (may be rejected on Aiven)
+    $sql = preg_replace('/^SET\s+SESSION\s+sql_require_primary_key\s*=\s*[^;]+;/im', '', $sql);
+
     echo "<h1>Initializing Database...</h1>";
     echo "<p>Using: <code>$sqlFile</code></p>";
 
-    // We can use exec() for the whole block, but for better feedback,
-    // we could try to split it. However, multi-statement exec is usually fine in PDO.
+    // Execute the SQL (strip DEFINER clauses already handled above)
     $pdo->exec($sql);
 
     echo "<h1 style='color:green;'>Database initialized successfully!</h1>";
