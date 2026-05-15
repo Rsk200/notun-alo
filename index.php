@@ -104,13 +104,6 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        .hero-spin-emoji {
-            display: inline-block;
-            animation: spin 4s linear infinite;
-            font-size: 3.5rem;
-            line-height: 1;
-            margin-bottom: 16px;
-        }
         .hero-v2-content { animation: slideUp 0.8s ease-out; }
         .hero-v2-badge { animation: fadeIn 1s ease-out 0.3s both; }
         .hero-v2-title { animation: slideUp 0.8s ease-out 0.2s both; }
@@ -198,12 +191,11 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     <div class="hero-particle" style="left: 70%; animation-duration: 10s; animation-delay: 3s;"></div>
     <div class="hero-particle" style="left: 85%; animation-duration: 14s; animation-delay: 0s;"></div>
 
-    <!-- Background rotating emoji -->
-    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28rem; opacity: 0.06; animation: spin 20s linear infinite; pointer-events: none; user-select: none; z-index: 0;">♻️</div>
+    <!-- Background rotating emoji behind title only -->
+    <div style="position: absolute; top: 26%; left: 50%; transform: translate(-50%, -50%); font-size: 22rem; opacity: 0.07; animation: spin 20s linear infinite; pointer-events: none; user-select: none; z-index: 0;">♻️</div>
 
     <div class="container" style="position: relative; width: 100%; z-index: 1;">
         <div class="hero-v2-content" style="text-align: center; max-width: 800px; margin: 0 auto;">
-            <div class="hero-spin-emoji">♻️</div>
             <span class="hero-v2-badge">🌿 <?= $t("Bangladesh's #1 Recycling Platform — Buildfest 2026", "বাংলাদেশের #১ পুনর্ব্যবহার প্ল্যাটফর্ম — বিল্ডফেস্ট ২০২৬") ?></span>
             <h1 class="hero-v2-title"><?= $t('Recycle. Earn.<br>Build <em>Tomorrow.</em>', 'পুনর্ব্যবহার করুন। উপার্জন করুন।<br>গড়ুন <em>ভবিষ্যত।</em>') ?></h1>
             <p class="hero-v2-sub"><?= $t('The smartest way to handle household waste. Schedule pickups at your doorstep, earn valuable reward points, and shop for sustainable goods.', 'গৃহস্থালির বর্জ্য ব্যবস্থাপনার সবচেয়ে বুদ্ধিমান উপায়। আপনার দরজায় পিকআপ শিডিউল করুন, মূল্যবান রিওয়ার্ড পয়েন্ট অর্জন করুন এবং টেকসই পণ্য কিনুন।') ?></p>

@@ -1,8 +1,4 @@
 <?php
-// ============================================
-// register.php - User Registration (Clean/Light Redesign)
-// Notun Alo (New Light) Recycling Platform
-// ============================================
 require_once 'includes/config.php';
 startSession();
 
@@ -15,7 +11,13 @@ if (isLoggedIn()) {
     });
 }
 
+$currentLang = $_SESSION['lang'] ?? 'en';
+$t = function(string $en, string $bn) use ($currentLang): string {
+    return $currentLang === 'bn' ? $bn : $en;
+};
+
 $error   = '';
+$success = '';
 if (!isDatabaseInitialized($pdo)) redirect('init_db.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -27,112 +29,158 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pass2   = $_POST['password2'] ?? '';
 
     if (empty($name) || empty($email) || empty($pass) || empty($address)) {
-        $error = 'Please fill in all required fields.';
+        $error = $t('Please fill in all required fields.', 'অনুগ্রহ করে সমস্ত প্রয়োজনীয় ক্ষেত্র পূরণ করুন।');
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = 'Please enter a valid email address.';
+        $error = $t('Please enter a valid email address.', 'একটি বৈধ ইমেল ঠিকানা লিখুন।');
     } elseif (strlen($pass) < 6) {
-        $error = 'Password must be at least 6 characters.';
+        $error = $t('Password must be at least 6 characters.', 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।');
     } elseif ($pass !== $pass2) {
-        $error = 'Passwords do not match.';
+        $error = $t('Passwords do not match.', 'পাসওয়ার্ড মেলে না।');
     } else {
         $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
         $stmt->execute([$email]);
         if ($stmt->fetch()) {
-            $error = 'An account with this email already exists.';
+            $error = $t('An account with this email already exists.', 'এই ইমেলে ইতিমধ্যে একটি অ্যাকাউন্ট বিদ্যমান।');
         } else {
             $hashed = password_hash($pass, PASSWORD_BCRYPT);
-            $stmt = $pdo->prepare("INSERT INTO users (name, email, password, address, phone, role) VALUES (?, ?, ?, ?, ?, 'user')");
+            $stmt = $pdo->prepare(
+                "INSERT INTO users (name, email, password, address, phone, role) VALUES (?, ?, ?, ?, ?, 'user')"
+            );
             $stmt->execute([$name, $email, $hashed, $address, $phone]);
             $newId = $pdo->lastInsertId();
             $pdo->prepare("INSERT INTO rewards (user_id, total_points) VALUES (?, 0)")->execute([$newId]);
-            setFlash('success', 'Account created! Please log in.');
+            setFlash('success', $t('Account created! Please log in.', 'অ্যাকাউন্ট তৈরি! অনুগ্রহ করে লগইন করুন।'));
             redirect('login.php');
         }
     }
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= $currentLang === 'bn' ? 'bn' : 'en' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register — Notun Alo</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
-
+    <title><?= $t('Register — Notun Alo', 'নিবন্ধন — নতুন আলো') ?></title>
+    <link rel="stylesheet" href="assets/css/style.css?v=<?= time() ?>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #F5F7F2; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
-        .register-card { background: white; border: 1px solid #E5E7EB; border-radius: 20px; width: 100%; max-width: 540px; padding: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.02); }
-        .logo-wrap { width: 48px; height: 48px; background: #E6F5EE; color: #1D9E75; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 24px; }
-        .register-title { font-size: 24px; font-weight: 700; color: #111827; text-align: center; margin-bottom: 8px; }
-        .register-sub { font-size: 14px; color: #6B7280; text-align: center; margin-bottom: 32px; }
-        
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 8px; }
-        input, textarea { width: 100%; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 10px; padding: 12px 16px; font-size: 14px; outline: none; transition: 0.2s; font-family: inherit; }
-        input:focus, textarea:focus { border-color: #1D9E75; background: white; box-shadow: 0 0 0 3px rgba(29,158,117,0.1); }
-        
-        .btn-submit { width: 100%; height: 48px; background: #1D9E75; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 10px; }
-        .btn-submit:hover { background: #065F46; }
-        
-        .error-box { background: #FEF2F2; color: #B91C1C; border: 1px solid #FEE2E2; padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; text-align: center; }
-        .footer-link { display: block; text-align: center; margin-top: 24px; font-size: 14px; color: #6B7280; text-decoration: none; }
-        .footer-link strong { color: #1D9E75; }
-        @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } }
+        :root { --auth-bg-left: linear-gradient(135deg, #064e3b, #065f46, #1D9E75); }
+        body.dark-mode { --auth-bg-left: linear-gradient(135deg, #0a1a12, #0f2e1a, #14532d); }
+        body.dark-mode .auth-form-panel { background: #0f1712; }
+        body.dark-mode .auth-form-wrap { background: #1a2320; border-color: #374151; }
+        body.dark-mode .auth-heading { color: #e5e7eb; }
+        body.dark-mode .auth-sub { color: #9ca3af; }
+        body.dark-mode .form-group label { color: #d1d5db; }
+        body.dark-mode .auth-form input, body.dark-mode .auth-form textarea { background: #111827; border-color: #374151; color: #e5e7eb; }
+        body.dark-mode .auth-form input:focus, body.dark-mode .auth-form textarea:focus { border-color: var(--brand-primary); }
+        body.dark-mode .auth-switch { color: #9ca3af; }
+        body.dark-mode .auth-switch a { color: #6ee7b7; }
+        body.dark-mode .alert-error { background: #451a1a; border-color: #7f1d1d; color: #fca5a5; }
+        body.dark-mode .benefit-list li { color: rgba(255,255,255,0.8); }
+        .auth-top-bar {
+            position: absolute; top: 20px; right: 24px; z-index: 10;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .auth-top-bar a, .auth-top-bar span {
+            color: white; text-decoration: none; font-weight: 600; font-size: 0.85rem;
+            padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; cursor: pointer;
+        }
+        .auth-top-bar a.active, .auth-top-bar span.active { background: rgba(255,255,255,0.15); }
+        body.dark-mode .auth-top-bar a, body.dark-mode .auth-top-bar span { color: #e5e7eb; border-color: #4b5563; }
+        body.dark-mode .auth-top-bar a.active, body.dark-mode .auth-top-bar span.active { background: rgba(255,255,255,0.1); }
     </style>
 </head>
-<body>
-
-    <div class="register-card">
-        <div class="logo-wrap"><i class="ti ti-recycle"></i></div>
-        <h1 class="register-title">Join Notun Alo</h1>
-        <p class="register-sub">Start your recycling journey today</p>
-
-        <?php if ($error): ?>
-            <div class="error-box"><?= e($error) ?></div>
-        <?php endif; ?>
-
-        <form method="POST">
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" placeholder="John Doe" value="<?= e($_POST['name'] ?? '') ?>" required>
-            </div>
-
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="john@example.com" value="<?= e($_POST['email'] ?? '') ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="text" id="phone" name="phone" placeholder="01XXXXXXXXX" value="<?= e($_POST['phone'] ?? '') ?>">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="address">Pickup Address</label>
-                <textarea id="address" name="address" rows="2" placeholder="Street, City, Postcode" required><?= e($_POST['address'] ?? '') ?></textarea>
-            </div>
-
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="••••••••" required>
-                </div>
-                <div class="form-group">
-                    <label for="password2">Confirm Password</label>
-                    <input type="password" id="password2" name="password2" placeholder="••••••••" required>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-submit">Create Account</button>
-        </form>
-
-        <a href="login.php" class="footer-link">Already have an account? <strong>Sign in</strong></a>
-        <a href="index.php" class="footer-link">← Back to Home</a>
+<body class="auth-body">
+<div class="auth-split">
+    <div class="auth-top-bar">
+        <a href="?lang=bn" class="<?= $currentLang === 'bn' ? 'active' : '' ?>">বাং</a>
+        <a href="?lang=en" class="<?= $currentLang === 'en' ? 'active' : '' ?>">EN</a>
+        <span id="authThemeToggle">🌙</span>
     </div>
 
+    <div class="auth-brand">
+        <div class="brand-content">
+            <div class="logo-mark">♻</div>
+            <h1 class="brand-title">Notun Alo</h1>
+            <p class="brand-tagline"><?= $t('নতুন আলো — Smart Recycling Platform', 'নতুন আলো — স্মার্ট রিসাইক্লিং প্ল্যাটফর্ম') ?></p>
+            <p class="brand-desc"><?= $t('Join thousands of eco-warriors turning waste into rewards and building a cleaner, greener Bangladesh through smart recycling.', 'হাজার হাজার ইকো-যোদ্ধার সাথে যোগ দিন যারা বর্জ্যকে পুরস্কারে পরিণত করছে এবং স্মার্ট রিসাইক্লিংয়ের মাধ্যমে একটি পরিচ্ছন্ন, সবুজ বাংলাদেশ গড়ছে।') ?></p>
+            <ul class="benefit-list">
+                <li>🌱 <?= $t('Earn reward points for every recycle', 'প্রত্যেক পুনর্ব্যবহারের জন্য পুরস্কার পয়েন্ট অর্জন করুন') ?></li>
+                <li>🛍 <?= $t('Redeem points in Upcycle Shop', 'আপসাইকেল শপে পয়েন্ট রিডিম করুন') ?></li>
+                <li>🚛 <?= $t('Schedule pickup anytime', 'যেকোনো সময় পিকআপ শিডিউল করুন') ?></li>
+                <li>📊 <?= $t('Track your environmental impact', 'আপনার পরিবেশগত প্রভাব ট্র্যাক করুন') ?></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="auth-form-panel">
+        <div class="auth-form-wrap">
+            <h2 class="auth-heading"><?= $t('Create Account', 'অ্যাকাউন্ট তৈরি করুন') ?></h2>
+            <p class="auth-sub"><?= $t('Join the green revolution today', 'সবুজ বিপ্লবে আজই যোগ দিন') ?></p>
+
+            <?php if ($error): ?>
+                <div class="alert alert-error"><?= e($error) ?></div>
+            <?php endif; ?>
+
+            <form method="POST" class="auth-form">
+                <div class="form-group">
+                    <label for="name"><?= $t('Full Name', 'পুরো নাম') ?></label>
+                    <input type="text" id="name" name="name" placeholder="<?= $t('Enter your full name', 'আপনার পুরো নাম লিখুন') ?>"
+                        value="<?= e($_POST['name'] ?? '') ?>" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email"><?= $t('Email Address', 'ইমেল ঠিকানা') ?></label>
+                        <input type="email" id="email" name="email" placeholder="you@example.com"
+                            value="<?= e($_POST['email'] ?? '') ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone"><?= $t('Phone Number', 'ফোন নম্বর') ?></label>
+                        <input type="text" id="phone" name="phone" placeholder="01XXXXXXXXX"
+                            value="<?= e($_POST['phone'] ?? '') ?>">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address"><?= $t('Address', 'ঠিকানা') ?></label>
+                    <textarea id="address" name="address" rows="3" placeholder="<?= $t('Enter your address', 'আপনার ঠিকানা লিখুন') ?>"
+                        required><?= e($_POST['address'] ?? '') ?></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password"><?= $t('Password', 'পাসওয়ার্ড') ?></label>
+                        <input type="password" id="password" name="password" placeholder="<?= $t('Minimum 6 characters', 'ন্যূনতম ৬ অক্ষর') ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password2"><?= $t('Confirm Password', 'পাসওয়ার্ড নিশ্চিত করুন') ?></label>
+                        <input type="password" id="password2" name="password2" placeholder="<?= $t('Repeat your password', 'পাসওয়ার্ড পুনরায় লিখুন') ?>" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full"><?= $t('Create My Account', 'আমার অ্যাকাউন্ট তৈরি করুন') ?></button>
+            </form>
+
+            <p class="auth-switch"><?= $t('Already have an account?', 'ইতিমধ্যে একটি অ্যাকাউন্ট আছে?') ?> <a href="login.php"><?= $t('Sign In', 'সাইন ইন') ?></a></p>
+            <p class="auth-switch">← <a href="index.php"><?= $t('Back to Home', 'হোম পেজে ফিরুন') ?></a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+const toggle = document.getElementById('authThemeToggle');
+if (toggle) {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') { document.body.classList.add('dark-mode'); toggle.textContent = '☀️'; }
+    toggle.onclick = () => {
+        document.body.classList.toggle('dark-mode');
+        toggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    };
+}
+</script>
 </body>
 </html>
