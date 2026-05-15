@@ -1,8 +1,4 @@
 <?php
-// ============================================
-// index.php - Landing Page (Viewer Friendly Redesign)
-// Notun Alo (New Light) Recycling Platform
-// ============================================
 require_once 'includes/config.php';
 startSession();
 
@@ -15,8 +11,13 @@ if (isLoggedIn()) {
     });
 }
 
+$currentLang = $_SESSION['lang'] ?? 'en';
+$t = function(string $en, string $bn) use ($currentLang): string {
+    return $currentLang === 'bn' ? $bn : $en;
+};
+
 try {
-    $products = $pdo->query("SELECT * FROM products ORDER BY created_at DESC LIMIT 4")->fetchAll();
+    $products = $pdo->query("SELECT * FROM products ORDER BY created_at DESC")->fetchAll();
 } catch (PDOException $e) {
     if (!isDatabaseInitialized($pdo)) redirect('init_db.php');
     throw $e;
@@ -27,169 +28,441 @@ $totalPointsData = $totalPointsQuery->fetch();
 $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= $currentLang === 'bn' ? 'bn' : 'en' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notun Alo — Recycling for a Greener Bangladesh</title>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title><?= $t('Notun Alo — Recycling for a Greener Bangladesh', 'নতুন আলো — একটি সবুজ বাংলাদেশের জন্য পুনর্ব্যবহার') ?></title>
     <link rel="stylesheet" href="assets/css/style.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --brand-dark: #0A2E1E;
-            --brand-primary: #1D9E75;
-            --brand-light: #E6F5EE;
-            --text-primary: #111827;
-            --text-secondary: #4B5563;
-            --bg-page: #F5F7F2;
-            --container-max: 1280px;
+            --about-bg: linear-gradient(180deg, #f8fdf5 0%, #ffffff 100%);
+            --testimonial-bg: #ffffff;
+            --pillar-bg: #ffffff;
+            --pillar-border: #e5e7eb;
+            --team-bg: linear-gradient(135deg,#f0fdf4,#dcfce7);
+            --team-border: #bbf7d0;
+            --team-box-bg: #ffffff;
+            --hero-badge-bg: #dcfce7;
+            --hero-badge-text: #166534;
         }
-
-        body { font-family: 'Inter', sans-serif; background: var(--bg-page); color: var(--text-secondary); -webkit-font-smoothing: antialiased; }
-
-        /* NAV */
-        nav { height: 72px; background: var(--brand-dark); display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        .nav-inner { width: 100%; max-width: var(--container-max); margin: 0 auto; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; }
-
-        /* HERO */
-        .hero { background: white; padding: 140px 32px 100px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
-        .hero-inner { max-width: var(--container-max); margin: 0 auto; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 80px; align-items: center; }
-        
-        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--brand-light); color: #065F46; padding: 8px 18px; border-radius: 99px; font-size: 14px; font-weight: 700; margin-bottom: 32px; }
-        .hero-title { font-size: 72px; font-weight: 900; color: var(--text-primary); line-height: 0.95; letter-spacing: -0.04em; margin-bottom: 24px; }
-        .hero-title span { color: var(--brand-primary); }
-        .hero-sub { font-size: 20px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 40px; max-width: 600px; }
-        
-        .hero-btns { display: flex; gap: 20px; }
-        .btn-xl { padding: 20px 40px; border-radius: 16px; font-size: 18px; font-weight: 800; text-decoration: none; transition: 0.3s; }
-        .btn-xl-primary { background: var(--brand-primary); color: white; box-shadow: 0 10px 30px rgba(29,158,117,0.3); }
-        .btn-xl-primary:hover { background: #065F46; transform: translateY(-3px); box-shadow: 0 15px 40px rgba(29,158,117,0.4); }
-        .btn-xl-outline { border: 2px solid var(--border); color: var(--text-primary); }
-        .btn-xl-outline:hover { background: var(--bg-subtle); border-color: var(--text-primary); }
-
-        /* FLOATING CARD */
-        .hero-graphic { position: relative; }
-        .hero-main-card { background: white; border: 1px solid var(--border); border-radius: 32px; padding: 40px; box-shadow: 0 40px 80px rgba(0,0,0,0.08); position: relative; z-index: 2; transform: rotate(-1deg); }
-        .float-tag { position: absolute; background: #FEF3C7; color: #92400E; padding: 12px 24px; border-radius: 20px; font-weight: 800; font-size: 16px; box-shadow: 0 10px 20px rgba(217,119,6,0.15); z-index: 3; }
-
-        /* SECTION */
-        .section { padding: 120px 32px; max-width: var(--container-max); margin: 0 auto; }
-        .section-header { text-align: center; margin-bottom: 80px; }
-        .section-tag { color: var(--brand-primary); font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; font-size: 13px; margin-bottom: 12px; display: block; }
-        .section-h { font-size: 48px; font-weight: 900; color: var(--text-primary); letter-spacing: -0.02em; }
-
-        .feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
-        .feature-card { background: white; border: 1px solid var(--border); border-radius: 24px; padding: 40px; transition: 0.4s; }
-        .feature-card:hover { transform: translateY(-10px); border-color: var(--brand-primary); box-shadow: 0 20px 40px rgba(0,0,0,0.04); }
-        .feat-icon { width: 56px; height: 56px; background: var(--brand-light); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--brand-primary); font-size: 24px; margin-bottom: 28px; }
-
-        @media (max-width: 1100px) {
-            .hero-inner, .feature-grid { grid-template-columns: 1fr; }
-            .hero-title { font-size: 56px; }
-            .hero-graphic { order: -1; }
+        body.dark-mode {
+            --about-bg: linear-gradient(180deg, #0a1a12 0%, #0f1712 100%);
+            --testimonial-bg: #1a2320;
+            --pillar-bg: #1a2320;
+            --pillar-border: #374151;
+            --team-bg: linear-gradient(135deg, #0a1f15, #0f2e1a);
+            --team-border: #1b4d2a;
+            --team-box-bg: #1a2320;
+            --hero-badge-bg: #0f2e1a;
+            --hero-badge-text: #6ee7b7;
         }
+        body.dark-mode .section-title { color: #e5e7eb; }
+        body.dark-mode .pillar-card h4 { color: #e5e7eb; }
+        body.dark-mode .pillar-card p { color: #9ca3af; }
+        body.dark-mode .testimonial-card { background: #1a2320; border-color: #374151; }
+        body.dark-mode .testimonial-card .testimonial-quote { color: #d1d5db; }
+        body.dark-mode .testimonial-card .testimonial-author { color: #9ca3af; }
+        body.dark-mode .how-card-v2 { background: #1a2320; border-color: #374151; }
+        body.dark-mode .how-card-v2 h3 { color: #e5e7eb; }
+        body.dark-mode .how-card-v2 p { color: #9ca3af; }
+        body.dark-mode .stats-strip { background: #0a1a12; }
+        body.dark-mode .stats-strip__label { color: #9ca3af; }
+        body.dark-mode .shop-preview { background: #0f1712; }
+        body.dark-mode .product-card-v2 { background: #1a2320; border-color: #374151; }
+        body.dark-mode .product-card-v2 .product-name { color: #e5e7eb; }
+        body.dark-mode .product-card-v2 .product-desc { color: #9ca3af; }
+        body.dark-mode .empty-state p { color: #9ca3af; }
+        body.dark-mode #landingNoResults p { color: #9ca3af; }
+        body.dark-mode .footer-v2 { background: #0a1a12; border-top-color: #1a2e24; }
+        body.dark-mode .footer-v2 .footer-tag { color: #9ca3af; }
+        body.dark-mode .footer-v2 .footer-heading { color: #e5e7eb; }
+        body.dark-mode .footer-v2 .footer-links a { color: #9ca3af; }
+        body.dark-mode .footer-bottom { color: #6b7280; border-top-color: #1a2e24; }
     </style>
 </head>
-<body>
+<body class="landing-body">
 
-    <nav>
-        <div class="nav-inner">
-            <a href="index.php" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
-                <div style="width:40px; height:40px; background:var(--brand-primary); border-radius:12px; display:flex; align-items:center; justify-content:center; color:white; font-size:20px;"><i class="ti ti-recycle"></i></div>
-                <span style="color:white; font-weight:900; font-size:22px; letter-spacing:-0.03em;">Notun Alo</span>
-            </a>
-            <div style="display:flex; gap:32px; align-items:center;">
-                <a href="login.php" style="color:white; opacity:0.7; text-decoration:none; font-weight:600; font-size:15px;">Login</a>
-                <a href="register.php" style="background:var(--brand-primary); color:white; padding:10px 24px; border-radius:12px; text-decoration:none; font-weight:800; font-size:15px; box-shadow:0 4px 12px rgba(29,158,117,0.2);">Get Started</a>
+<!-- Navbar -->
+<nav class="navbar navbar--transparent" id="mainNavbar">
+    <div class="nav-container">
+        <a href="index.php" class="nav-brand">
+            <div class="nav-logo-wrap">♻</div>
+            <div class="nav-name-wrap">
+                <span class="nav-name">Notun Alo</span>
+                <span class="nav-tagline"><?= $t('Recycling', 'পুনর্ব্যবহার') ?></span>
+            </div>
+        </a>
+        <div class="nav-right" style="gap: 0.75rem;">
+            <a href="?lang=bn" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.85rem; opacity: 0.85; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; <?= $currentLang === 'bn' ? 'background:rgba(255,255,255,0.15);' : '' ?>">বাং</a>
+            <a href="?lang=en" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.85rem; opacity: 0.85; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; <?= $currentLang === 'en' ? 'background:rgba(255,255,255,0.15);' : '' ?>">EN</a>
+            <span id="themeToggleLanding" style="cursor:pointer; color:white; font-size:1.1rem; opacity:0.8;">🌙</span>
+            <a href="login.php" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.95rem; opacity: 0.85;"><?= $t('Login', 'লগইন') ?></a>
+            <a href="register.php" class="btn btn-primary btn-sm"><?= $t('Get Started', 'নিবন্ধন') ?></a>
+        </div>
+    </div>
+</nav>
+
+<!-- Preloader -->
+<div id="preloader">
+    <div class="preloader-inner">
+        <div class="preloader-icon">♻</div>
+        <div class="preloader-name">Notun Alo</div>
+        <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+</div>
+
+<!-- Hero -->
+<section class="hero-v2">
+    <div class="hero-v2-bg"></div>
+    <div class="hero-particle" style="left: 10%; animation-duration: 12s;"></div>
+    <div class="hero-particle" style="left: 30%; animation-duration: 18s; animation-delay: 2s;"></div>
+    <div class="hero-particle" style="left: 50%; animation-duration: 15s; animation-delay: 1s;"></div>
+    <div class="hero-particle" style="left: 70%; animation-duration: 10s; animation-delay: 3s;"></div>
+    <div class="hero-particle" style="left: 85%; animation-duration: 14s; animation-delay: 0s;"></div>
+
+    <div class="container" style="position: relative; display: flex; width: 100%;">
+        <div class="hero-v2-content">
+            <span class="hero-v2-badge">🌿 <?= $t("Bangladesh's #1 Recycling Platform — Buildfest 2026", "বাংলাদেশের #১ পুনর্ব্যবহার প্ল্যাটফর্ম — বিল্ডফেস্ট ২০২৬") ?></span>
+            <h1 class="hero-v2-title"><?= $t('Recycle. Earn.<br>Build <em>Tomorrow.</em>', 'পুনর্ব্যবহার করুন। উপার্জন করুন।<br>গড়ুন <em>ভবিষ্যত।</em>') ?></h1>
+            <p class="hero-v2-sub"><?= $t('The smartest way to handle household waste. Schedule pickups at your doorstep, earn valuable reward points, and shop for sustainable goods.', 'গৃহস্থালির বর্জ্য ব্যবস্থাপনার সবচেয়ে বুদ্ধিমান উপায়। আপনার দরজায় পিকআপ শিডিউল করুন, মূল্যবান রিওয়ার্ড পয়েন্ট অর্জন করুন এবং টেকসই পণ্য কিনুন।') ?></p>
+            <div class="hero-v2-actions">
+                <a href="register.php" class="btn btn-lg" style="background: #a3e635; color: #14532d; font-weight: 800; border: none; box-shadow: 0 4px 20px rgba(163,230,53,0.3); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(163,230,53,0.5)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(163,230,53,0.3)';"><?= $t('Join the Revolution →', 'আন্দোলনে যোগ দিন →') ?></a>
+                <a href="#how" class="btn btn-outline btn-lg"><?= $t('See How it Works', 'কিভাবে কাজ করে দেখুন') ?></a>
+            </div>
+            <div class="hero-v2-trust">
+                <span>&#10003; <?= $t('Free Signup', 'বিনামূল্যে নিবন্ধন') ?></span>
+                <span>&#10003; <?= $t('Doorstep Pickup', 'দরজায় পিকআপ') ?></span>
+                <span>&#10003; <?= $t('Instant Points', 'তাৎক্ষণিক পয়েন্ট') ?></span>
             </div>
         </div>
-    </nav>
+        
+        <div class="hero-v2-graphic">
+            <svg class="wheel-svg" viewBox="0 0 100 100">
+                <path d="M50 5 a45 45 0 1 0 0 90 a45 45 0 1 0 0 -90 m0 15 a30 30 0 1 1 0 60 a30 30 0 1 1 0 -60" />
+                <path d="M50 0 L60 15 L40 15 Z" />
+                <path d="M11 27 L25 35 L11 43 Z" transform="rotate(-60 25 35)" />
+                <path d="M89 27 L75 35 L89 43 Z" transform="rotate(60 75 35)" />
+            </svg>
+            <div class="hero-float">
+                <div class="float-card" data-reveal><?= $t('📄 Paper → 5 pts/kg', '📄 কাগজ → ৫ পয়েন্ট/কেজি') ?></div>
+                <div class="float-card float-card--2" data-reveal><?= $t('🧴 Plastic → 8 pts/kg', '🧴 প্লাস্টিক → ৮ পয়েন্ট/কেজি') ?></div>
+                <div class="float-card float-card--3" data-reveal><?= $t('🔩 Metal → 12 pts/kg', '🔩 ধাতু → ১২ পয়েন্ট/কেজি') ?></div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-v2-wave">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+            <path d="M0,32L60,42.7C120,53,240,75,360,74.7C480,75,600,53,720,42.7C840,32,960,32,1080,42.7C1200,53,1320,75,1380,85.3L1440,96L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z"></path>
+        </svg>
+    </div>
+</section>
 
-    <section class="hero">
-        <div class="hero-inner">
-            <div class="hero-content">
-                <div class="hero-badge"><i class="ti ti-trophy"></i> Bangladesh's Premier Recycling Platform</div>
-                <h1 class="hero-title">Recycle. Earn.<br>Build <span>Tomorrow.</span></h1>
-                <p class="hero-sub">The smartest way to handle household waste. Schedule pickups at your doorstep, earn valuable reward points, and shop for sustainable goods.</p>
-                <div class="hero-btns">
-                    <a href="register.php" class="btn-xl btn-xl-primary">Join the Revolution &rarr;</a>
-                    <a href="#how" class="btn-xl btn-xl-outline">See How it Works</a>
+<!-- Impact Ticker -->
+<div class="ticker-wrap">
+    <div class="ticker-content">
+        ♻ <?= $t('8,000 tons of waste generated daily in Bangladesh', 'বাংলাদেশে প্রতিদিন ৮,০০০ টন বর্জ্য উৎপন্ন হয়') ?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        🌱 <?= $t('Only 10% currently recycled', 'মাত্র ১০% পুনর্ব্যবহার করা হয়') ?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        💡 <?= $t('Join Notun Alo — be the change', 'নতুন আলোতে যোগ দিন — পরিবর্তন হোন') ?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        🏆 <?= $t('Earn while helping the planet', 'গ্রহকে সাহায্য করার সময় উপার্জন করুন') ?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        ♻ <?= $t('8,000 tons of waste generated daily in Bangladesh', 'বাংলাদেশে প্রতিদিন ৮,০০০ টন বর্জ্য উৎপন্ন হয়') ?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        🌱 <?= $t('Only 10% currently recycled', 'মাত্র ১০% পুনর্ব্যবহার করা হয়') ?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        💡 <?= $t('Join Notun Alo — be the change', 'নতুন আলোতে যোগ দিন — পরিবর্তন হোন') ?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+</div>
+
+<!-- How It Works -->
+<section id="how" class="section">
+    <div class="container">
+        <h2 class="section-title" data-reveal><?= $t('How It Works', 'কিভাবে কাজ করে') ?></h2>
+        <div class="how-grid-v2">
+            <div class="how-card-v2" data-reveal>
+                <div class="how-number-bg">1</div>
+                <div class="how-icon">📅</div>
+                <h3><?= $t('Schedule Pickup', 'পিকআপ শিডিউল করুন') ?></h3>
+                <p><?= $t('Choose your waste type, estimate weight, and pick a convenient date for collection.', 'আপনার বর্জ্যের ধরন বেছে নিন, ওজন অনুমান করুন এবং সংগ্রহের জন্য একটি সুবিধাজনক তারিখ নির্বাচন করুন।') ?></p>
+            </div>
+            <div class="how-card-v2" data-reveal>
+                <div class="how-number-bg">2</div>
+                <div class="how-icon">🚛</div>
+                <h3><?= $t('We Collect', 'আমরা সংগ্রহ করি') ?></h3>
+                <p><?= $t('Our partner agencies arrive at your doorstep to collect and weigh your recyclables.', 'আমাদের অংশীদার সংস্থাগুলি আপনার পুনর্ব্যবহারযোগ্য জিনিস সংগ্রহ এবং ওজন করতে আপনার দরজায় পৌঁছে।') ?></p>
+            </div>
+            <div class="how-card-v2" data-reveal>
+                <div class="how-number-bg">3</div>
+                <div class="how-icon">🏆</div>
+                <h3><?= $t('Earn Points', 'পয়েন্ট অর্জন করুন') ?></h3>
+                <p><?= $t('Points are automatically credited to your account based on the weight collected.', 'সংগৃহীত ওজনের ভিত্তিতে পয়েন্টগুলি স্বয়ংক্রিয়ভাবে আপনার অ্যাকাউন্টে জমা হয়।') ?></p>
+            </div>
+            <div class="how-card-v2" data-reveal>
+                <div class="how-number-bg">4</div>
+                <div class="how-icon">🛍</div>
+                <h3><?= $t('Shop Eco Goods', 'ইকো পণ্য কিনুন') ?></h3>
+                <p><?= $t('Spend your points in our Upcycle Shop for handcrafted eco-friendly products.', 'আমাদের আপসাইকেল শপে হস্তশিল্প ইকো-বন্ধুত্বপূর্ণ পণ্যের জন্য আপনার পয়েন্ট ব্যয় করুন।') ?></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Strip -->
+<section class="stats-strip">
+    <div class="container">
+        <div class="stats-strip-grid">
+            <div class="stat-counter-wrap" data-reveal>
+                <div class="stats-strip__value"><span class="stat-counter" data-target="122">0</span>M+</div>
+                <div class="stats-strip__label"><?= $t('Bangladeshis with a recycling gap', 'পুনর্ব্যবহারের ব্যবধান রয়েছে এমন বাংলাদেশী') ?></div>
+            </div>
+            <div class="stat-counter-wrap" data-reveal>
+                <div class="stats-strip__value"><span class="stat-counter" data-target="5745">0</span> <?= $t('Tons', 'টন') ?></div>
+                <div class="stats-strip__label"><?= $t('Waste generated daily in Dhaka', 'ঢাকায় প্রতিদিন বর্জ্য উৎপন্ন') ?></div>
+            </div>
+            <div class="stat-counter-wrap" data-reveal>
+                <div class="stats-strip__value"><span class="stat-counter" data-target="2">0</span></div>
+                <div class="stats-strip__label"><?= $t('Materials we collect: Paper, Plastic, More!', 'আমরা সংগ্রহ করি: কাগজ, প্লাস্টিক, আরও অনেক কিছু!') ?></div>
+            </div>
+            <div class="stat-counter-wrap" data-reveal>
+                <div class="stats-strip__value"><span class="stat-counter" data-target="<?= $totalPointsEarned ?>">0</span>+</div>
+                <div class="stats-strip__label"><?= $t('Points earned by households', 'পরিবারগুলি দ্বারা অর্জিত পয়েন্ট') ?></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Shop Preview -->
+<section class="section shop-preview">
+    <div class="container">
+        <h2 class="section-title" data-reveal><?= $t('Explore Our Shop', 'আমাদের দোকান দেখুন') ?></h2>
+
+        <?php if (!empty($products)): ?>
+        <div class="shop-search-wrap" data-reveal>
+            <div class="shop-search-inner">
+                <span class="shop-search-icon">🔍</span>
+                <input type="text" id="landingShopSearch" placeholder="<?= $t('Search products…', 'পণ্য খুঁজুন…') ?>" class="shop-search-input" autocomplete="off">
+                <button class="shop-search-clear" id="landingSearchClear" aria-label="Clear search">✕</button>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <?php if (empty($products)): ?>
+            <div class="empty-state" data-reveal>
+                <div class="empty-icon">🌱</div>
+                <p><?= $t('Shop coming soon.', 'শীঘ্রই দোকান আসছে।') ?></p>
+            </div>
+        <?php else: ?>
+        <div class="product-grid" id="landingProductGrid">
+            <?php foreach ($products as $prod): ?>
+            <div class="product-card-v2 <?= (int)($prod['stock'] ?? 0) === 0 ? 'product-card--oos' : '' ?>"
+                 data-reveal
+                 data-name="<?= strtolower(e($prod['name'])) ?>"
+                 data-desc="<?= strtolower(e($prod['description'])) ?>">
+                <div class="product-img-wrap">
+                    <?php if ($prod['image_url']): ?>
+                        <img src="<?= e($prod['image_url']) ?>" alt="<?= e($prod['name']) ?>" class="product-img" loading="lazy">
+                    <?php else: ?>
+                        <div class="product-img-placeholder">🌿</div>
+                    <?php endif; ?>
+                    <div class="pts-badge-float">🏆 <?= number_format($prod['price_points']) ?> pts</div>
+                    <?php if ((int)($prod['stock'] ?? 0) === 0): ?>
+                        <div class="oos-overlay"><?= $t('Out of Stock', 'স্টকে নেই') ?></div>
+                    <?php endif; ?>
+                </div>
+                <div class="product-body">
+                    <h3 class="product-name"><?= e($prod['name']) ?></h3>
+                    <p class="product-desc"><?= e($prod['description']) ?></p>
+                    <div class="product-actions">
+                        <a href="login.php" class="btn btn-outline btn-full" style="color:var(--green-dark); border-color:var(--border);"><?= $t('Login to Buy', 'কিনতে লগইন করুন') ?></a>
+                    </div>
                 </div>
             </div>
+            <?php endforeach; ?>
+        </div>
+        <div id="landingNoResults" style="display:none; text-align:center; padding:3rem 0; color:var(--text-muted);">
+            <div style="font-size:2.5rem; margin-bottom:0.75rem;">🔍</div>
+            <p style="font-size:1.1rem;"><?= $t('No products found matching your search.', 'আপনার অনুসন্ধানের সাথে মেলে এমন কোন পণ্য পাওয়া যায়নি।') ?></p>
+        </div>
+        <?php endif; ?>
+    </div>
+</section>
 
-            <div class="hero-graphic">
-                <div class="float-tag" style="top: -20px; right: 20px;">+500 Points</div>
-                <div class="hero-main-card">
-                    <div style="display:flex; align-items:center; gap:16px; margin-bottom:32px;">
-                        <div style="width:56px; height:56px; background:var(--brand-light); border-radius:16px; display:flex; align-items:center; justify-content:center; color:var(--brand-primary); font-size:24px;"><i class="ti ti-truck-delivery"></i></div>
-                        <div>
-                            <div style="font-size:18px; font-weight:900; color:var(--text-primary);">Next Pickup</div>
-                            <div style="font-size:14px; color:var(--text-muted);">Dhaka Central · Scheduled</div>
-                        </div>
-                    </div>
-                    <div style="padding:24px; background:var(--bg-page); border-radius:20px; border:1px dashed var(--border); text-align:center;">
-                        <i class="ti ti-package" style="font-size:40px; color:var(--text-muted); margin-bottom:12px; display:block;"></i>
-                        <span style="font-size:14px; font-weight:700; color:var(--text-primary);">12.5 kg Recyclables Ready</span>
-                    </div>
+<!-- Testimonials -->
+<section class="section" style="background: var(--testimonial-bg);">
+    <div class="container">
+        <h2 class="section-title" data-reveal><?= $t('Community Impact', 'কমিউনিটি ইমপ্যাক্ট') ?></h2>
+        <div class="testimonial-grid">
+            <div class="testimonial-card" data-reveal>
+                <div class="testimonial-quote"><?= $t('"Every kilogram of plastic I recycle brings me closer to earning eco-products I love."', '"আমি যে প্রতিটি কেজি প্লাস্টিক পুনর্ব্যবহার করি তা আমাকে আমার পছন্দের ইকো-পণ্য অর্জনের কাছাকাছি নিয়ে আসে।"') ?></div>
+                <div class="testimonial-author"><?= $t('— Rina Akter, Dhaka', '— রিনা আক্তার, ঢাকা') ?></div>
+                <div class="testimonial-icon">🌿</div>
+            </div>
+            <div class="testimonial-card" data-reveal>
+                <div class="testimonial-quote"><?= $t('"Finally a platform that turns my recyclables into real rewards."', '"অবশেষে একটি প্ল্যাটফর্ম যা আমার পুনর্ব্যবহারযোগ্য জিনিসকে বাস্তব পুরস্কারে পরিণত করে।"') ?></div>
+                <div class="testimonial-author"><?= $t('— Karim Hossain, Chittagong', '— করিম হোসেন, চট্টগ্রাম') ?></div>
+                <div class="testimonial-icon">🌱</div>
+            </div>
+            <div class="testimonial-card" data-reveal>
+                <div class="testimonial-quote"><?= $t('"Our agency now has a structured system to collect and process waste efficiently."', '"আমাদের এজেন্সির এখন দক্ষতার সাথে বর্জ্য সংগ্রহ এবং প্রক্রিয়াকরণের জন্য একটি কাঠামোগত ব্যবস্থা রয়েছে।"') ?></div>
+                <div class="testimonial-author"><?= $t('— Fatima Rahman, Agency Partner', '— ফাতিমা রহমান, এজেন্সি পার্টনার') ?></div>
+                <div class="testimonial-icon">♻</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Us -->
+<section id="about" class="section" style="background: var(--about-bg);">
+    <div class="container">
+        <div style="text-align:center; margin-bottom: 64px;" data-reveal>
+            <span style="display:inline-block; background:var(--hero-badge-bg); color:var(--hero-badge-text); font-size:0.8rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; padding:6px 18px; border-radius:99px; margin-bottom:20px;"><?= $t('Our Story', 'আমাদের গল্প') ?></span>
+            <h2 class="section-title" style="margin-bottom:20px;"><?= $t('Why Notun Alo Exists', 'কেন নতুন আলো বিদ্যমান') ?></h2>
+            <p style="max-width:700px; margin:0 auto; font-size:1.1rem; line-height:1.8;"><?= $t('A movement born from a simple question — ', 'একটি সহজ প্রশ্ন থেকে জন্ম নেওয়া একটি আন্দোলন — ') ?><em style="color:#16a34a; font-weight:600;"><?= $t('what if every piece of waste was a beginning, not an end?', 'যদি প্রতিটি বর্জ্য একটি শেষ না হয়ে একটি শুরু হয়?') ?></em></p>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #064e3b, #065f46, #0d7556); border-radius:28px; padding: 56px 64px; color:white; margin-bottom:56px; position:relative; overflow:hidden; box-shadow: 0 30px 80px rgba(6,78,59,0.35);" data-reveal>
+            <div style="position:absolute; width:350px; height:350px; background:rgba(52,211,153,0.12); border-radius:50%; top:-100px; right:-80px; filter:blur(60px);"></div>
+            <div style="position:absolute; width:250px; height:250px; background:rgba(163,230,53,0.1); border-radius:50%; bottom:-80px; left:-60px; filter:blur(50px);"></div>
+            <div style="position:relative; z-index:1;">
+                <div style="font-size:3rem; margin-bottom:24px;">&#9851;&#65039;</div>
+                <h3 style="font-family:'Playfair Display', serif; font-size:clamp(1.4rem, 3vw, 2.2rem); font-weight:700; margin-bottom:28px; line-height:1.4;"><?= $t('"Every day, Dhaka alone generates over 5,700 tons of waste. ', '"প্রতিদিন, শুধু ঢাকাই উৎপন্ন করে ৫,৭০০ টনের বেশি বর্জ্য। ') ?><span style="color:#a3e635;"><?= $t('We decided to turn that crisis into an opportunity."', 'আমরা সেই সংকটকে সুযোগে পরিণত করেছি।"') ?></span></h3>
+                <p style="font-size:1.05rem; opacity:0.9; line-height:1.9; max-width:800px; margin-bottom:20px;"><?= $t('Notun Alo — meaning ', 'নতুন আলো — বাংলায় যার অর্থ ') ?><strong style="color:#6ee7b7;"><?= $t('"New Light"', '"নতুন আলো"') ?></strong><?= $t(' in Bengali — was built by a team of passionate students who saw a broken system and chose to fix it. Bangladesh produces millions of tons of recyclable waste each year, yet only a fraction is recovered. The gap exists not because people don\'t care — it\'s because ', ' — তৈরি করেছে একদল আবেগী শিক্ষার্থী যারা একটি ভাঙা ব্যবস্থা দেখেছে এবং এটি ঠিক করতে এগিয়ে এসেছে। বাংলাদেশ প্রতি বছর লক্ষ লক্ষ টন পুনর্ব্যবহারযোগ্য বর্জ্য উৎপাদন করে, অথচ তার সামান্য অংশই পুনরুদ্ধার হয়। এই ব্যবধানটি বিদ্যমান কারণ মানুষ যত্ন নেয় না — বরং ') ?><em><?= $t('there was no easy, rewarding way to act.', 'কাজ করার সহজ ও পুরস্কৃত উপায় ছিল না।') ?></em></p>
+                <p style="font-size:1.05rem; opacity:0.9; line-height:1.9; max-width:800px;"><?= $t('We built a bridge. A platform where households become heroes, where waste becomes worth, and where every kilogram recycled lights up a greener future for all of Bangladesh.', 'আমরা একটি সেতু তৈরি করেছি। একটি প্ল্যাটফর্ম যেখানে পরিবারগুলি হিরো হয়ে ওঠে, যেখানে বর্জ্য মূল্যবান হয়, এবং যেখানে প্রতিটি কেজি পুনর্ব্যবহার সমগ্র বাংলাদেশের জন্য একটি সবুজ ভবিষ্যত আলোকিত করে।') ?></p>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:28px; margin-bottom:56px;">
+            <div style="background:var(--pillar-bg); border:1px solid var(--pillar-border); border-radius:20px; padding:36px 28px; box-shadow:0 4px 20px rgba(0,0,0,0.05); transition:transform 0.3s, box-shadow 0.3s;" data-reveal onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 40px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.05)';">
+                <div style="width:56px; height:56px; background:#dcfce7; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin-bottom:20px;">&#127758;</div>
+                <h4 style="font-size:1.15rem; font-weight:700; margin-bottom:12px;"><?= $t('Our Mission', 'আমাদের লক্ষ্য') ?></h4>
+                <p style="line-height:1.75; font-size:0.95rem;"><?= $t('To make responsible waste disposal accessible, rewarding, and community-driven for every household in Bangladesh — starting from Dhaka and scaling to the nation.', 'প্রত্যেক বাংলাদেশী পরিবারের জন্য দায়িত্বশীল বর্জ্য নিষ্কাশনকে সহজলভ্য, পুরস্কৃত এবং কমিউনিটি-চালিত করা — ঢাকা থেকে শুরু করে সারা দেশে সম্প্রসারণ।') ?></p>
+            </div>
+            <div style="background:var(--pillar-bg); border:1px solid var(--pillar-border); border-radius:20px; padding:36px 28px; box-shadow:0 4px 20px rgba(0,0,0,0.05); transition:transform 0.3s, box-shadow 0.3s;" data-reveal onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 40px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.05)';">
+                <div style="width:56px; height:56px; background:#dbeafe; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin-bottom:20px;">&#128301;</div>
+                <h4 style="font-size:1.15rem; font-weight:700; margin-bottom:12px;"><?= $t('Our Vision', 'আমাদের দৃষ্টিভঙ্গি') ?></h4>
+                <p style="line-height:1.75; font-size:0.95rem;"><?= $t('A Bangladesh where circular economy principles are woven into daily life — where every citizen is empowered as an environmental steward, and recycling is as natural as breathing.', 'একটি বাংলাদেশ যেখানে সার্কুলার ইকোনমি নীতিগুলি দৈনন্দিন জীবনে বোনা — যেখানে প্রতিটি নাগরিক পরিবেশের রক্ষক হিসাবে ক্ষমতায়িত এবং পুনর্ব্যবহার শ্বাস নেওয়ার মতোই স্বাভাবিক।') ?></p>
+            </div>
+            <div style="background:var(--pillar-bg); border:1px solid var(--pillar-border); border-radius:20px; padding:36px 28px; box-shadow:0 4px 20px rgba(0,0,0,0.05); transition:transform 0.3s, box-shadow 0.3s;" data-reveal onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 40px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.05)';">
+                <div style="width:56px; height:56px; background:#fef3c7; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin-bottom:20px;">&#128161;</div>
+                <h4 style="font-size:1.15rem; font-weight:700; margin-bottom:12px;"><?= $t('Our Motivation', 'আমাদের প্রেরণা') ?></h4>
+                <p style="line-height:1.75; font-size:0.95rem;"><?= $t('We are students who refused to accept the status quo. Climate urgency, the SDG goals for 2030, and the raw potential of Bangladesh\'s people ignited us to build something that matters beyond the classroom.', 'আমরা এমন ছাত্র যারা স্থিতাবস্থা মেনে নিতে অস্বীকার করেছি। জলবায়ু জরুরিতা, ২০৩০ সালের এসডিজি লক্ষ্যমাত্রা এবং বাংলাদেশের জনগণের কাঁচা সম্ভাবনা আমাদের ক্লাসরুমের বাইরে কিছু তৈরি করতে প্রজ্বলিত করেছে।') ?></p>
+            </div>
+            <div style="background:var(--pillar-bg); border:1px solid var(--pillar-border); border-radius:20px; padding:36px 28px; box-shadow:0 4px 20px rgba(0,0,0,0.05); transition:transform 0.3s, box-shadow 0.3s;" data-reveal onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 40px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.05)';">
+                <div style="width:56px; height:56px; background:#ede9fe; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin-bottom:20px;">&#129309;</div>
+                <h4 style="font-size:1.15rem; font-weight:700; margin-bottom:12px;"><?= $t('Our Promise', 'আমাদের অঙ্গীকার') ?></h4>
+                <p style="line-height:1.75; font-size:0.95rem;"><?= $t('We promise transparency, fairness, and impact. Every point you earn is real. Every pickup counts. Every eco-product in our shop was chosen because it represents what responsible commerce should look like.', 'আমরা স্বচ্ছতা, ন্যায্যতা এবং প্রভাবের প্রতিশ্রুতি দিই। আপনার অর্জিত প্রতিটি পয়েন্ট বাস্তব। প্রতিটি পিকআপ গণনা করে। আমাদের দোকানের প্রতিটি ইকো-পণ্য বেছে নেওয়া হয়েছে কারণ এটি দায়িত্বশীল বাণিজ্যের প্রতিনিধিত্ব করে।') ?></p>
+            </div>
+        </div>
+
+        <div style="background:var(--team-bg); border:1px solid var(--team-border); border-radius:20px; padding:40px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:24px;" data-reveal>
+            <div>
+                <div style="font-size:0.8rem; font-weight:700; color:#166534; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px;"><?= $t('Built With ❤️ By', 'নির্মিত হয়েছে ❤️ দ্বারা') ?></div>
+                <div style="font-size:1.5rem; font-weight:800; color:#064e3b;"><?= $t('Team GhostRiders', 'টিম ঘোস্টরাইডার্স') ?></div>
+                <div style="color:#4b5563; margin-top:4px; font-size:0.95rem;"><?= $t('University of Liberal Arts Bangladesh', 'ইউনিভার্সিটি অফ লিবারেল আর্টস বাংলাদেশ') ?></div>
+                <div style="color:#16a34a; font-weight:600; font-size:0.9rem; margin-top:4px;"><?= $t('THE INFINITY AI BUILDFEST 2026', 'দ্য ইনফিনিটি এআই বিল্ডফেস্ট ২০২৬') ?></div>
+            </div>
+            <div style="display:flex; gap:16px; flex-wrap:wrap;">
+                <div style="text-align:center; background:var(--team-box-bg); border-radius:14px; padding:16px 24px; box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+                    <div style="font-size:1.6rem; font-weight:800; color:#16a34a;">&#9851;</div>
+                    <div style="font-size:0.75rem; margin-top:4px;"><?= $t('Circular Economy', 'সার্কুলার ইকোনমি') ?></div>
                 </div>
-                <div class="float-tag" style="bottom: -10px; left: -20px; background:#D1FAE5; color:#065F46;">🌱 324kg CO₂ Saved</div>
+                <div style="text-align:center; background:var(--team-box-bg); border-radius:14px; padding:16px 24px; box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+                    <div style="font-size:1.6rem; font-weight:800; color:#2563eb;">&#129302;</div>
+                    <div style="font-size:0.75rem; margin-top:4px;"><?= $t('AI-Powered', 'এআই-চালিত') ?></div>
+                </div>
+                <div style="text-align:center; background:var(--team-box-bg); border-radius:14px; padding:16px 24px; box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+                    <div style="font-size:1.6rem; font-weight:800; color:#d97706;">&#127942;</div>
+                    <div style="font-size:0.75rem; margin-top:4px;"><?= $t('Reward-First', 'পুরস্কার-ভিত্তিক') ?></div>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="section" id="how">
-        <div class="section-header">
-            <span class="section-tag">Our Process</span>
-            <h2 class="section-h">How We Turn Waste Into Value</h2>
+<!-- CTA -->
+<section class="cta-v2">
+    <div class="cta-v2-bg"></div>
+    <div class="container cta-v2-content">
+        <h2 data-reveal><?= $t('Ready to make a difference?', 'পরিবর্তনের অংশ হতে প্রস্তুত?') ?></h2>
+        <p data-reveal style="font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto;"><?= $t('Join thousands of Bangladeshis building a greener future, one pickup at a time.', 'হাজার হাজার বাংলাদেশীর সাথে যান একটি সবুজ ভবিষ্যত গড়তে, এক পিকআপ করে।') ?></p>
+        <div class="cta-v2-actions" data-reveal>
+            <a href="register.php" class="btn btn-gold btn-lg"><?= $t('Start Recycling Free →', 'বিনামূল্যে শুরু করুন →') ?></a>
+            <a href="#how" class="btn btn-outline btn-lg"><?= $t('Learn More', 'আরও জানুন') ?></a>
         </div>
-        <div class="feature-grid">
-            <div class="feature-card">
-                <div class="feat-icon"><i class="ti ti-calendar-event"></i></div>
-                <h3 style="font-size:20px; font-weight:800; color:var(--text-primary); margin-bottom:16px;">1. Schedule</h3>
-                <p style="font-size:15px; line-height:1.6;">Use our intuitive dashboard to book a pickup time that works for you.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feat-icon"><i class="ti ti-home-check"></i></div>
-                <h3 style="font-size:20px; font-weight:800; color:var(--text-primary); margin-bottom:16px;">2. Doorstep</h3>
-                <p style="font-size:15px; line-height:1.6;">Our verified agents arrive at your door to collect and weigh your items.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feat-icon"><i class="ti ti-bolt"></i></div>
-                <h3 style="font-size:20px; font-weight:800; color:var(--text-primary); margin-bottom:16px;">3. Instant</h3>
-                <p style="font-size:15px; line-height:1.6;">Points are credited to your digital wallet immediately after collection.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feat-icon"><i class="ti ti-shopping-bag"></i></div>
-                <h3 style="font-size:20px; font-weight:800; color:var(--text-primary); margin-bottom:16px;">4. Redeem</h3>
-                <p style="font-size:15px; line-height:1.6;">Browse our Upcycle Shop and spend points on handcrafted eco-products.</p>
-            </div>
+        <div class="cta-v2-ticks" data-reveal>
+            <span>&#10003; <?= $t('No credit card required', 'ক্রেডিট কার্ডের প্রয়োজন নেই') ?></span>
+            <span>&#10003; <?= $t('Free forever for households', 'পরিবারের জন্য চিরকাল বিনামূল্যে') ?></span>
+            <span>&#10003; <?= $t('Points never expire', 'পয়েন্ট কখনো মেয়াদ শেষ হয় না') ?></span>
         </div>
-    </section>
+    </div>
+</section>
 
-    <footer style="background:var(--brand-dark); padding:80px 32px 40px; color:white;">
-        <div style="max-width:var(--container-max); margin:0 auto; display:grid; grid-template-columns: 2fr 1fr 1fr; gap:60px; padding-bottom:60px; border-bottom:1px solid rgba(255,255,255,0.1);">
-            <div>
-                <h4 style="font-size:24px; font-weight:900; margin-bottom:20px;">Notun Alo</h4>
-                <p style="opacity:0.6; line-height:1.8; max-width:320px;">Bangladesh's leading circular economy platform. Empowering households to build a sustainable future.</p>
+<!-- Footer -->
+<footer class="footer-v2">
+    <div class="container">
+        <div class="footer-v2-grid">
+            <div class="footer-col" data-reveal>
+                <a href="index.php" class="footer-brand">♻ Notun Alo</a>
+                <p class="footer-tag"><?= $t("Building Bangladesh's circular economy — turning household waste into lasting eco-rewards.", 'বাংলাদেশের সার্কুলার ইকোনমি গড়ে তোলা — গৃহস্থালির বর্জ্যকে টেকসই ইকো-পুরস্কারে রূপান্তর করা।') ?></p>
             </div>
-            <div>
-                <h5 style="font-size:16px; font-weight:800; margin-bottom:24px;">Platform</h5>
-                <a href="login.php" style="display:block; color:white; opacity:0.6; text-decoration:none; margin-bottom:12px;">Login</a>
-                <a href="register.php" style="display:block; color:white; opacity:0.6; text-decoration:none; margin-bottom:12px;">Register</a>
-                <a href="#" style="display:block; color:white; opacity:0.6; text-decoration:none;">Impact Stats</a>
+            <div class="footer-col" data-reveal>
+                <h4 class="footer-heading"><?= $t('Quick Links', 'দ্রুত লিংক') ?></h4>
+                <ul class="footer-links">
+                    <li><a href="index.php"><?= $t('Home', 'হোম') ?></a></li>
+                    <li><a href="login.php"><?= $t('Login', 'লগইন') ?></a></li>
+                    <li><a href="register.php"><?= $t('Register', 'নিবন্ধন') ?></a></li>
+                    <li><a href="shop.php"><?= $t('Upcycle Shop', 'আপসাইকেল শপ') ?></a></li>
+                </ul>
             </div>
-            <div>
-                <h5 style="font-size:16px; font-weight:800; margin-bottom:24px;">Contact</h5>
-                <p style="opacity:0.6; font-size:14px; line-height:1.8;">ULAB Research Lab<br>Dhaka, Bangladesh<br>hello@notunalo.com</p>
+            <div class="footer-col" data-reveal>
+                <h4 class="footer-heading"><?= $t('Hackathon', 'হ্যাকাথন') ?></h4>
+                <p style="opacity: 0.8; font-size: 0.9rem; line-height: 1.6;"><?= $t('Built by Team GhostRiders<br>University of Liberal Arts Bangladesh<br>THE INFINITY AI BUILDFEST 2026', 'নির্মিত হয়েছে টিম ঘোস্টরাইডার্স দ্বারা<br>ইউনিভার্সিটি অফ লিবারেল আর্টস বাংলাদেশ<br>দ্য ইনফিনিটি এআই বিল্ডফেস্ট ২০২৬') ?></p>
             </div>
         </div>
-        <div style="text-align:center; padding-top:40px; font-size:13px; opacity:0.4; font-weight:500;">
-            &copy; <?= date('Y') ?> Notun Alo. All rights reserved. Built with pride in Bangladesh.
+        <div class="footer-bottom">
+            &copy; <?= date('Y') ?> Notun Alo (নতুন আলো). <?= $t('Built for a greener Bangladesh. 🌱', 'একটি সবুজ বাংলাদেশের জন্য নির্মিত। 🌱') ?>
         </div>
-    </footer>
+    </div>
+</footer>
 
+<script>
+(function () {
+    const input   = document.getElementById('landingShopSearch');
+    const clear   = document.getElementById('landingSearchClear');
+    const grid    = document.getElementById('landingProductGrid');
+    const noRes   = document.getElementById('landingNoResults');
+    if (input && grid) {
+        function filterProducts() {
+            const term  = input.value.trim().toLowerCase();
+            const cards = grid.querySelectorAll('.product-card-v2');
+            let visible = 0;
+            cards.forEach(card => {
+                const name = card.dataset.name || '';
+                const desc = card.dataset.desc || '';
+                const match = !term || name.includes(term) || desc.includes(term);
+                card.style.display = match ? '' : 'none';
+                if (match) visible++;
+            });
+            if (noRes) noRes.style.display = visible === 0 ? 'block' : 'none';
+            if (clear) clear.style.display = term ? 'flex' : 'none';
+        }
+        input.addEventListener('input', filterProducts);
+        if (clear) { clear.addEventListener('click', () => { input.value = ''; filterProducts(); input.focus(); }); }
+        filterProducts();
+    }
+
+    // Dark mode toggle for landing page
+    const toggle = document.getElementById('themeToggleLanding');
+    if (toggle) {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark') { document.body.classList.add('dark-mode'); toggle.textContent = '☀️'; }
+        toggle.onclick = () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            toggle.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        };
+    }
+})();
+</script>
+<script src="assets/js/animations.js?v=<?= time() ?>"></script>
 </body>
 </html>
