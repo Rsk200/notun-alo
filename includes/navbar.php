@@ -528,10 +528,9 @@ body{
         <!-- LANGUAGE -->
         <a href="?lang=<?= $nextLang ?>"
            class="tool-btn"
-           title="Language">
-
-            <i class="fa-solid fa-language"></i>
-
+           title="Language"
+           style="font-weight:700; font-size:0.8rem; letter-spacing:0.02em;">
+            <?= $langBtnText ?>
         </a>
 
         <!-- THEME -->

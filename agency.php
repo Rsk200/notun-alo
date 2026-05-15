@@ -255,36 +255,10 @@ $completed = $done->fetchAll();
             <?php endif; ?>
         </section>
 
-        <!-- Completed Tasks -->
-        <section class="card" data-reveal>
-            <div class="card-header" data-reveal>
-                <h2 class="card-title" data-reveal>✅ <?= $lang['recently_completed'] ?? 'Recently Completed' ?></h2>
-                <p class="card-sub" data-reveal><?= $lang['last_10_completed'] ?? 'Last 10 completed pickups' ?> · <a href="agency_completed.php" style="color:var(--brand-primary); font-weight:600;"><?= $lang['view_all'] ?? 'View All' ?> →</a></p>
-            </div>
-            <?php if (empty($completed)): ?>
-                <div class="empty-state">
-                    <p><?= $lang['no_pickups'] ?? 'No completed pickups yet.' ?></p>
-                </div>
-            <?php else: ?>
-                <div class="table-wrap">
-                    <table class="data-table" data-sortable>
-                        <thead>
-                            <tr><th>#</th><th><?= $lang['user'] ?? 'User' ?></th><th><?= $lang['category'] ?? 'Category' ?></th><th><?= $lang['weight'] ?? 'Weight' ?></th><th><?= $lang['date'] ?? 'Date' ?></th></tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($completed as $index => $c): ?>
-                            <tr>
-                                <td><?= en2bn($index + 1) ?></td>
-                                <td><?= e($c['user_name']) ?></td>
-                                <td><?= translateStatus($c['category']) ?></td>
-                                <td><?= en2bn(number_format($c['estimated_weight'], 1)) ?> KG</td>
-                                <td><?= en2bn(date('d M Y', strtotime($c['created_at']))) ?></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php endif; ?>
+        <!-- View All Completed Link -->
+        <section class="card" data-reveal style="text-align:center; padding:24px;">
+            <p style="margin-bottom:12px; color:var(--text-muted);"><?= $lang['view_completed_history'] ?? 'Check your full completion history with search and filters.' ?></p>
+            <a href="agency_completed.php" class="btn btn-primary">✅ <?= $lang['view_all_completed'] ?? 'View All Completed Tasks' ?> →</a>
         </section>
     </div>
 </main>
