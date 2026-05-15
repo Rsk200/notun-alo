@@ -456,17 +456,24 @@ body{
 @media(max-width:768px){
 
     .top-navbar{
-        padding:15px;
+        padding:10px 15px;
+        transition: transform 0.3s ease, padding 0.3s ease;
+    }
+    .top-navbar.nav-hidden {
+        transform: translateY(-100%);
     }
 
     .brand-title{
-        font-size:1.1rem;
+        font-size:1rem;
     }
+    .navbar-brand .brand-icon { width: 34px; height: 34px; font-size: 1rem; }
 
     .nav-link{
-        padding:10px 14px;
-        font-size:0.85rem;
+        padding:8px 12px;
+        font-size:0.8rem;
     }
+    .nav-tools { gap: 4px; }
+    .nav-tools .tool-btn { width: 32px; height: 32px; font-size: 0.75rem; }
 
     .profile-name{
         display:none;
@@ -609,6 +616,20 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     });
 
+    // ── Scroll hide/show navbar on mobile ──
+    let lastScroll = 0;
+    const navbar = document.querySelector('.top-navbar');
+    if (navbar) {
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > 80 && currentScroll > lastScroll) {
+                navbar.classList.add('nav-hidden');
+            } else if (currentScroll < lastScroll || currentScroll <= 80) {
+                navbar.classList.remove('nav-hidden');
+            }
+            lastScroll = currentScroll;
+        });
+    }
 });
 
 </script>
