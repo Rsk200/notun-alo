@@ -325,24 +325,14 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             if (!text) return;
 
             if (currentConvId === 'new') {
-                // Create a new real conversation
                 const id = 'conv_' + Date.now();
                 conversations[id] = { title: text, messages: [] };
-                
-                // Add to sidebar
                 const item = document.createElement('div');
                 item.className = 'chat-item';
                 item.dataset.id = id;
-                item.innerHTML = `
-                    <div class="chat-icon"><i class="ti ti-message"></i></div>
-                    <div class="chat-info">
-                        <div class="chat-title">${text}</div>
-                        <div class="chat-meta">Just now</div>
-                    </div>
-                `;
+                item.innerHTML = `<div class="chat-icon"><i class="ti ti-message"></i></div><div class="chat-info"><div class="chat-title">${text}</div><div class="chat-meta">Just now</div></div>`;
                 item.onclick = () => loadConversation(id);
                 chatList.prepend(item);
-                
                 loadConversation(id);
             }
 
@@ -350,13 +340,38 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             chatInput.value = '';
             sendBtn.disabled = true;
 
-            setTimeout(() => {
-                let reply = "Processing your request...";
-                if (text.toLowerCase().includes('pickup')) reply = "I've initiated a pickup request for you. Please confirm details in the dashboard.";
-                else if (text.toLowerCase().includes('point')) reply = `You have **${userPts}** reward points available.`;
-                
-                appendAiMessage({ text: reply });
-            }, 1000);
+            // Build history array for API
+            const history = (conversations[currentConvId]?.messages || []).slice(-10).map(m => ({
+                role: m.role === 'user' ? 'user' : 'assistant',
+                content: typeof m.content === 'string' ? m.content : m.content?.text || ''
+            }));
+
+            // Call chatbot_api.php
+            fetch('chatbot_api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text, history: history })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.reply) {
+                    appendAiMessage({ text: data.reply });
+                } else {
+                    fallbackReply(text);
+                }
+            })
+            .catch(() => {
+                fallbackReply(text);
+            });
+        }
+
+        function fallbackReply(text) {
+            let reply = "I'm here to help with recycling! Ask me about scheduling pickups, checking points, or recycling tips.";
+            if (text.toLowerCase().includes('pickup')) reply = "I've initiated a pickup request for you. Please confirm details in the dashboard.";
+            else if (text.toLowerCase().includes('point')) reply = `You have **${userPts}** reward points available.`;
+            else if (text.toLowerCase().includes('recycle') || text.toLowerCase().includes('plastic') || text.toLowerCase().includes('paper') || text.toLowerCase().includes('metal')) reply = "We accept Paper (5 pts/kg), Plastic (8 pts/kg), and Metal (12 pts/kg). Schedule a pickup and our partner agencies will collect it from your doorstep!";
+            else if (text.toLowerCase().includes('impact') || text.toLowerCase().includes('co2')) reply = "Every pickup reduces waste and saves CO₂. Your impact is tracked in the Environmental Impact section of your dashboard.";
+            appendAiMessage({ text: reply });
         }
 
         function handleQuickReply(text) { chatInput.value = text; sendMessage(); }
