@@ -96,13 +96,41 @@ $text = $t[$currentLang];
             --text-muted: #9CA3AF;
             --border: #E5E7EB;
             --bg-page: #F5F7F2;
+            --bg-card: #FFFFFF;
         }
 
+        /* ===== DARK MODE ===== */
+        body.dark-mode {
+            --bg-page: #080f09;
+            --bg-card: #0f1a10;
+            --text-primary: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --border: #1e3222;
+            --brand-light: #0d2416;
+            --brand-primary: #34d399;
+        }
+        body.dark-mode .white-card {
+            background: var(--bg-card) !important;
+            border-color: var(--border) !important;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4) !important;
+        }
+        body.dark-mode .tier-card {
+            background: linear-gradient(135deg, #1a1200, #261a00) !important;
+            border-color: #3d2c00 !important;
+        }
+        body.dark-mode .activity-row { border-bottom-color: var(--border) !important; }
+        body.dark-mode .activity-row:hover { background: rgba(52,211,153,0.05) !important; }
+        body.dark-mode .activity-icon { background: #0d2416 !important; }
+        body.dark-mode .leaderboard-item:hover { background: rgba(52,211,153,0.05) !important; }
+        body.dark-mode .avatar { background: #0d2416 !important; }
+        body.dark-mode .cta-banner { box-shadow: 0 20px 40px rgba(0,0,0,0.5) !important; }
+
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-page); color: var(--text-secondary); }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-page); color: var(--text-secondary); transition: background-color 0.4s ease, color 0.4s ease; }
 
         .wrapper { max-width: 1280px; margin: 0 auto; padding: 40px 32px; }
-        .white-card { background: white; border: 1px solid var(--border); border-radius: 24px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .white-card { background: var(--bg-card, white); border: 1px solid var(--border); border-radius: 24px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; }
 
         /* HERO ROW */
         .hero-row { display: grid; grid-template-columns: 1fr 340px; gap: 32px; margin-bottom: 32px; align-items: stretch; }
@@ -250,6 +278,18 @@ $text = $t[$currentLang];
                     </div>
                 <?php endforeach; ?>
             </div>
+        </div>
+
+        <!-- ABOUT US STRIP -->
+        <div style="margin-top: 32px; background: var(--brand-light); border: 1px solid var(--border); border-radius: 16px; padding: 18px 28px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:40px; height:40px; background:var(--brand-primary); border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-size:1.15rem;">&#9851;</div>
+                <div>
+                    <div style="font-size:0.9rem; font-weight:700; color:var(--text-primary);"><?= $lang['notun_alo'] ?? 'Notun Alo' ?></div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);"><?= $currentLang === 'bn' ? 'টিম ঘোস্টরাইডার্স · ইউল্যাব' : 'Team GhostRiders &nbsp;·&nbsp; ULAB' ?></div>
+                </div>
+            </div>
+            <a href="about.php" style="font-size:0.85rem; font-weight:600; color:var(--brand-primary); text-decoration:none; border:1px solid var(--brand-primary); padding:8px 18px; border-radius:8px; transition:0.2s;" onmouseover="this.style.background='var(--brand-primary)'; this.style.color='white';" onmouseout="this.style.background='transparent'; this.style.color='var(--brand-primary)';"><?= $currentLang === 'bn' ? 'পুরো গল্প পড়ুন ↗' : 'Read Our Full Story ↗' ?></a>
         </div>
     </main>
 
