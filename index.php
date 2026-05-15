@@ -49,39 +49,55 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
         }
         body.dark-mode {
             --about-bg: linear-gradient(180deg, #0a1a12 0%, #0f1712 100%);
-            --testimonial-bg: #1a2320;
-            --pillar-bg: #1a2320;
-            --pillar-border: #374151;
-            --team-bg: linear-gradient(135deg, #0a1f15, #0f2e1a);
+            --testimonial-bg: #0f1712;
+            --pillar-bg: #0f1712;
+            --pillar-border: #1f2e24;
+            --team-bg: linear-gradient(135deg, #0a1f15, #0d2a18);
             --team-border: #1b4d2a;
-            --team-box-bg: #1a2320;
+            --team-box-bg: #0f1712;
+            --team-box-bg: #0f1712;
             --hero-badge-bg: #0f2e1a;
             --hero-badge-text: #6ee7b7;
+            --sage: #a8b0a5;
+            --sage-deep: #88998a;
+            --sage-dim: #6a7a6c;
         }
-        body.dark-mode .section-title { color: #e5e7eb; }
-        body.dark-mode .pillar-card h4 { color: #e5e7eb; }
-        body.dark-mode .pillar-card p { color: #9ca3af; }
-        body.dark-mode .testimonial-card { background: #1a2320; border-color: #374151; }
-        body.dark-mode .testimonial-card .testimonial-quote { color: #d1d5db; }
-        body.dark-mode .testimonial-card .testimonial-author { color: #9ca3af; }
-        body.dark-mode .how-card-v2 { background: #1a2320; border-color: #374151; }
-        body.dark-mode .how-card-v2 h3 { color: #e5e7eb; }
-        body.dark-mode .how-card-v2 p { color: #9ca3af; }
+        body.dark-mode .section-title { color: var(--sage); }
+        body.dark-mode .hero-v2-title { color: var(--sage); }
+        body.dark-mode .hero-v2-title em { color: #c4d4c0; }
+        body.dark-mode .hero-v2-sub { color: var(--sage-deep); }
+        body.dark-mode .hero-v2-badge { background: #0f2e1a; color: #6ee7b7; }
+        body.dark-mode .hero-v2-trust span { color: var(--sage-deep); }
+        body.dark-mode .pillar-card h4 { color: var(--sage); }
+        body.dark-mode .pillar-card p { color: var(--sage-deep); }
+        body.dark-mode .testimonial-card { background: #0f1712; border-color: #1f2e24; }
+        body.dark-mode .testimonial-card .testimonial-quote { color: var(--sage); }
+        body.dark-mode .testimonial-card .testimonial-author { color: var(--sage-deep); }
+        body.dark-mode .how-card-v2 { background: #0f1712; border-color: #1f2e24; }
+        body.dark-mode .how-card-v2 h3 { color: var(--sage); }
+        body.dark-mode .how-card-v2 p { color: var(--sage-deep); }
+        body.dark-mode .how-number-bg { color: rgba(168,176,165,0.06); }
         body.dark-mode .stats-strip { background: #0a1a12; }
-        body.dark-mode .stats-strip__label { color: #9ca3af; }
-        body.dark-mode .shop-preview { background: #0f1712; }
-        body.dark-mode .product-card-v2 { background: #1a2320; border-color: #374151; }
-        body.dark-mode .product-card-v2 .product-name { color: #e5e7eb; }
-        body.dark-mode .product-card-v2 .product-desc { color: #9ca3af; }
-        body.dark-mode .empty-state p { color: #9ca3af; }
-        body.dark-mode #landingNoResults p { color: #9ca3af; }
+        body.dark-mode .stats-strip__label { color: var(--sage-dim); }
+        body.dark-mode .stats-strip__value { color: var(--sage); }
+        body.dark-mode .shop-preview { background: #0a1a12; }
+        body.dark-mode .product-card-v2 { background: #0f1712; border-color: #1f2e24; }
+        body.dark-mode .product-card-v2 .product-name { color: var(--sage); }
+        body.dark-mode .product-card-v2 .product-desc { color: var(--sage-deep); }
+        body.dark-mode .pts-badge-float { background: #1a2e24; color: #c4d4c0; }
+        body.dark-mode .empty-state p { color: var(--sage-deep); }
+        body.dark-mode #landingNoResults p { color: var(--sage-deep); }
         body.dark-mode .footer-v2 { background: #0a1a12; border-top-color: #1a2e24; }
-        body.dark-mode .footer-v2 .footer-tag { color: #9ca3af; }
-        body.dark-mode .footer-v2 .footer-heading { color: #e5e7eb; }
-        body.dark-mode .footer-v2 .footer-links a { color: #9ca3af; }
-        body.dark-mode .footer-bottom { color: #6b7280; border-top-color: #1a2e24; }
+        body.dark-mode .footer-v2 .footer-tag { color: var(--sage-deep); }
+        body.dark-mode .footer-v2 .footer-heading { color: var(--sage); }
+        body.dark-mode .footer-v2 .footer-links a { color: var(--sage-deep); }
+        body.dark-mode .footer-bottom { color: var(--sage-dim); border-top-color: #1a2e24; }
         body.dark-mode .ticker-wrap { background: #0a1a12; border-color: #1a2e24; }
         body.dark-mode .ticker-content { color: #6ee7b7; }
+        body.dark-mode .hero-float-card { background: #0f1712; border: 1px solid #1f2e24; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        body.dark-mode .hero-float-card .pts-label { color: var(--sage-dim); }
+        body.dark-mode .hero-float-card .pts-value { color: var(--sage); }
+        body.dark-mode .hero-float-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
 
         /* ── Hero Animations ── */
         @keyframes float {
@@ -93,8 +109,8 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
             100% { transform: rotate(360deg); }
         }
         @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(163,230,53,0.3); }
-            50% { box-shadow: 0 0 40px rgba(163,230,53,0.6); }
+            0%, 100% { box-shadow: 0 4px 20px rgba(163,230,53,0.15); }
+            50% { box-shadow: 0 6px 28px rgba(163,230,53,0.25); }
         }
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(30px); }
@@ -147,8 +163,11 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
         .shop-pagination .pg-num { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 8px; font-weight: 600; cursor: pointer; background: var(--card-bg, white); color: var(--text-secondary); }
         .shop-pagination .pg-num.active { background: var(--brand-primary); color: white; border-color: var(--brand-primary); }
         .shop-pagination .pg-num:hover:not(.active) { background: var(--bg-subtle, #f9fafb); }
-        body.dark-mode .shop-pagination .pg-btn { background: #1a2320; border-color: #374151; }
-        body.dark-mode .shop-pagination .pg-num { background: #1a2320; border-color: #374151; color: #9ca3af; }
+        body.dark-mode .shop-pagination .pg-btn { background: #0f1712; border-color: #1f2e24; color: var(--sage-deep); }
+        body.dark-mode .shop-pagination .pg-num { background: #0f1712; border-color: #1f2e24; color: var(--sage-deep); }
+        body.dark-mode .shop-pagination .pg-num.active { background: var(--brand-primary); color: #fff; border-color: var(--brand-primary); }
+        body.dark-mode .shop-pagination .pg-btn:hover:not(:disabled) { background: #1a2e24; color: var(--sage); }
+        body.dark-mode .shop-pagination .pg-num:hover:not(.active) { background: #1a2e24; }
     </style>
 </head>
 <body class="landing-body">
@@ -191,8 +210,10 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     <div class="hero-particle" style="left: 70%; animation-duration: 10s; animation-delay: 3s;"></div>
     <div class="hero-particle" style="left: 85%; animation-duration: 14s; animation-delay: 0s;"></div>
 
-    <!-- Background rotating emoji behind title only -->
-    <div style="position: absolute; top: 26%; left: 50%; transform: translate(-50%, -50%); font-size: 22rem; opacity: 0.07; animation: spin 20s linear infinite; pointer-events: none; user-select: none; z-index: 0;">♻️</div>
+    <!-- Background rotating emoji behind headline -->
+    <div style="position: absolute; top: 16%; left: 50%; transform: translateX(-50%); width: 100%; display: flex; justify-content: center; pointer-events: none; user-select: none; z-index: 0;">
+        <div style="font-size: 24rem; opacity: 0.06; animation: spin 25s linear infinite; line-height: 1;">♻️</div>
+    </div>
 
     <div class="container" style="position: relative; width: 100%; z-index: 1;">
         <div class="hero-v2-content" style="text-align: center; max-width: 800px; margin: 0 auto;">
@@ -200,8 +221,8 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
             <h1 class="hero-v2-title"><?= $t('Recycle. Earn.<br>Build <em>Tomorrow.</em>', 'পুনর্ব্যবহার করুন। উপার্জন করুন।<br>গড়ুন <em>ভবিষ্যত।</em>') ?></h1>
             <p class="hero-v2-sub"><?= $t('The smartest way to handle household waste. Schedule pickups at your doorstep, earn valuable reward points, and shop for sustainable goods.', 'গৃহস্থালির বর্জ্য ব্যবস্থাপনার সবচেয়ে বুদ্ধিমান উপায়। আপনার দরজায় পিকআপ শিডিউল করুন, মূল্যবান রিওয়ার্ড পয়েন্ট অর্জন করুন এবং টেকসই পণ্য কিনুন।') ?></p>
             <div class="hero-v2-actions" style="justify-content: center;">
-                <a href="register.php" class="btn btn-lg" style="background: #a3e635; color: #14532d; font-weight: 800; border: none; box-shadow: 0 4px 20px rgba(163,230,53,0.3); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(163,230,53,0.5)'; animation: glow 2s ease-in-out infinite;" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(163,230,53,0.3)';"><?= $t('Join the Revolution →', 'আন্দোলনে যোগ দিন →') ?></a>
-                <a href="#how" class="btn btn-outline btn-lg"><?= $t('See How it Works', 'কিভাবে কাজ করে দেখুন') ?></a>
+                <a href="register.php" class="btn btn-lg" style="background: #a3e635; color: #14532d; font-weight: 800; border: none; border-radius: 999px; box-shadow: 0 4px 16px rgba(163,230,53,0.2); transition: all 0.3s ease; padding: 14px 36px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(163,230,53,0.3)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 16px rgba(163,230,53,0.2)';"><?= $t('Join the Revolution →', 'আন্দোলনে যোগ দিন →') ?></a>
+                <a href="#how" class="btn btn-outline btn-lg" style="border-radius: 999px;"><?= $t('See How it Works', 'কিভাবে কাজ করে দেখুন') ?></a>
             </div>
             <div class="hero-v2-trust" style="justify-content: center;">
                 <span>&#10003; <?= $t('Free Signup', 'বিনামূল্যে নিবন্ধন') ?></span>
@@ -384,7 +405,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
 </section>
 
 <!-- Testimonials -->
-<section class="section" style="background: var(--testimonial-bg);">
+<section class="section" style="background: var(--testimonial-bg); transition: background 0.3s;">
     <div class="container">
         <h2 class="section-title" data-reveal><?= $t('Community Impact', 'কমিউনিটি ইমপ্যাক্ট') ?></h2>
         <div class="testimonial-grid">
