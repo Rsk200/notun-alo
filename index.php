@@ -80,6 +80,72 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
         body.dark-mode .footer-v2 .footer-heading { color: #e5e7eb; }
         body.dark-mode .footer-v2 .footer-links a { color: #9ca3af; }
         body.dark-mode .footer-bottom { color: #6b7280; border-top-color: #1a2e24; }
+        body.dark-mode .ticker-wrap { background: #0a1a12; border-color: #1a2e24; }
+        body.dark-mode .ticker-content { color: #6ee7b7; }
+
+        /* ── Hero Animations ── */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(163,230,53,0.3); }
+            50% { box-shadow: 0 0 40px rgba(163,230,53,0.6); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .hero-spin-emoji {
+            display: inline-block;
+            animation: spin 4s linear infinite;
+            font-size: 3.5rem;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+        .hero-v2-content { animation: slideUp 0.8s ease-out; }
+        .hero-v2-badge { animation: fadeIn 1s ease-out 0.3s both; }
+        .hero-v2-title { animation: slideUp 0.8s ease-out 0.2s both; }
+        .hero-v2-sub { animation: slideUp 0.8s ease-out 0.4s both; }
+        .hero-v2-actions { animation: slideUp 0.8s ease-out 0.6s both; }
+        .hero-v2-trust { animation: slideUp 0.8s ease-out 0.8s both; }
+        .hero-float-card {
+            animation: float 3s ease-in-out infinite;
+            background: white;
+            border-radius: 16px;
+            padding: 16px 22px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        body.dark-mode .hero-float-card { background: #1a2320; border: 1px solid #374151; }
+        .hero-float-card:hover { transform: scale(1.05); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
+        .hero-float-card .pts-circle {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .hero-float-card .pts-label { color: #6b7280; font-weight: 400; font-size: 0.8rem; }
+        body.dark-mode .hero-float-card .pts-label { color: #9ca3af; }
+        .hero-float-card .pts-value { font-weight: 800; font-size: 1.1rem; }
+        .float-card-1 { animation-delay: 0s; }
+        .float-card-2 { animation-delay: 0.5s; }
+        .float-card-3 { animation-delay: 1s; }
     </style>
 </head>
 <body class="landing-body">
@@ -122,33 +188,45 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     <div class="hero-particle" style="left: 70%; animation-duration: 10s; animation-delay: 3s;"></div>
     <div class="hero-particle" style="left: 85%; animation-duration: 14s; animation-delay: 0s;"></div>
 
-    <div class="container" style="position: relative; display: flex; width: 100%;">
-        <div class="hero-v2-content">
+    <div class="container" style="position: relative; width: 100%;">
+        <div class="hero-v2-content" style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <div class="hero-spin-emoji">♻️</div>
             <span class="hero-v2-badge">🌿 <?= $t("Bangladesh's #1 Recycling Platform — Buildfest 2026", "বাংলাদেশের #১ পুনর্ব্যবহার প্ল্যাটফর্ম — বিল্ডফেস্ট ২০২৬") ?></span>
             <h1 class="hero-v2-title"><?= $t('Recycle. Earn.<br>Build <em>Tomorrow.</em>', 'পুনর্ব্যবহার করুন। উপার্জন করুন।<br>গড়ুন <em>ভবিষ্যত।</em>') ?></h1>
             <p class="hero-v2-sub"><?= $t('The smartest way to handle household waste. Schedule pickups at your doorstep, earn valuable reward points, and shop for sustainable goods.', 'গৃহস্থালির বর্জ্য ব্যবস্থাপনার সবচেয়ে বুদ্ধিমান উপায়। আপনার দরজায় পিকআপ শিডিউল করুন, মূল্যবান রিওয়ার্ড পয়েন্ট অর্জন করুন এবং টেকসই পণ্য কিনুন।') ?></p>
-            <div class="hero-v2-actions">
-                <a href="register.php" class="btn btn-lg" style="background: #a3e635; color: #14532d; font-weight: 800; border: none; box-shadow: 0 4px 20px rgba(163,230,53,0.3); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(163,230,53,0.5)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(163,230,53,0.3)';"><?= $t('Join the Revolution →', 'আন্দোলনে যোগ দিন →') ?></a>
+            <div class="hero-v2-actions" style="justify-content: center;">
+                <a href="register.php" class="btn btn-lg" style="background: #a3e635; color: #14532d; font-weight: 800; border: none; box-shadow: 0 4px 20px rgba(163,230,53,0.3); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(163,230,53,0.5)'; animation: glow 2s ease-in-out infinite;" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(163,230,53,0.3)';"><?= $t('Join the Revolution →', 'আন্দোলনে যোগ দিন →') ?></a>
                 <a href="#how" class="btn btn-outline btn-lg"><?= $t('See How it Works', 'কিভাবে কাজ করে দেখুন') ?></a>
             </div>
-            <div class="hero-v2-trust">
+            <div class="hero-v2-trust" style="justify-content: center;">
                 <span>&#10003; <?= $t('Free Signup', 'বিনামূল্যে নিবন্ধন') ?></span>
                 <span>&#10003; <?= $t('Doorstep Pickup', 'দরজায় পিকআপ') ?></span>
                 <span>&#10003; <?= $t('Instant Points', 'তাৎক্ষণিক পয়েন্ট') ?></span>
             </div>
         </div>
-        
-        <div class="hero-v2-graphic">
-            <svg class="wheel-svg" viewBox="0 0 100 100">
-                <path d="M50 5 a45 45 0 1 0 0 90 a45 45 0 1 0 0 -90 m0 15 a30 30 0 1 1 0 60 a30 30 0 1 1 0 -60" />
-                <path d="M50 0 L60 15 L40 15 Z" />
-                <path d="M11 27 L25 35 L11 43 Z" transform="rotate(-60 25 35)" />
-                <path d="M89 27 L75 35 L89 43 Z" transform="rotate(60 75 35)" />
-            </svg>
-            <div class="hero-float">
-                <div class="float-card" data-reveal><?= $t('📄 Paper → 5 pts/kg', '📄 কাগজ → ৫ পয়েন্ট/কেজি') ?></div>
-                <div class="float-card float-card--2" data-reveal><?= $t('🧴 Plastic → 8 pts/kg', '🧴 প্লাস্টিক → ৮ পয়েন্ট/কেজি') ?></div>
-                <div class="float-card float-card--3" data-reveal><?= $t('🔩 Metal → 12 pts/kg', '🔩 ধাতু → ১২ পয়েন্ট/কেজি') ?></div>
+
+        <!-- Rate Cards Row -->
+        <div style="display: flex; justify-content: center; gap: 20px; margin-top: 48px; flex-wrap: wrap; position: relative; z-index: 2;">
+            <div class="hero-float-card float-card-1">
+                <div class="pts-circle" style="background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534;">📄</div>
+                <div>
+                    <div class="pts-value" style="color: #166534;"><?= $t('Paper', 'কাগজ') ?></div>
+                    <div class="pts-label"><?= $t('5 pts / kg', '৫ পয়েন্ট/কেজি') ?></div>
+                </div>
+            </div>
+            <div class="hero-float-card float-card-2">
+                <div class="pts-circle" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af;">🧴</div>
+                <div>
+                    <div class="pts-value" style="color: #1e40af;"><?= $t('Plastic', 'প্লাস্টিক') ?></div>
+                    <div class="pts-label"><?= $t('8 pts / kg', '৮ পয়েন্ট/কেজি') ?></div>
+                </div>
+            </div>
+            <div class="hero-float-card float-card-3">
+                <div class="pts-circle" style="background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e;">🔩</div>
+                <div>
+                    <div class="pts-value" style="color: #92400e;"><?= $t('Metal', 'ধাতু') ?></div>
+                    <div class="pts-label"><?= $t('12 pts / kg', '১২ পয়েন্ট/কেজি') ?></div>
+                </div>
             </div>
         </div>
     </div>
