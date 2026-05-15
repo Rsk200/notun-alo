@@ -146,6 +146,16 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
         .float-card-1 { animation-delay: 0s; }
         .float-card-2 { animation-delay: 0.5s; }
         .float-card-3 { animation-delay: 1s; }
+
+        /* Shop Pagination */
+        .shop-pagination .pg-btn { border: 1px solid var(--border); background: var(--card-bg, white); color: var(--text-secondary); padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .shop-pagination .pg-btn:hover:not(:disabled) { background: var(--bg-subtle, #f9fafb); color: var(--brand-primary); }
+        .shop-pagination .pg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .shop-pagination .pg-num { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 8px; font-weight: 600; cursor: pointer; background: var(--card-bg, white); color: var(--text-secondary); }
+        .shop-pagination .pg-num.active { background: var(--brand-primary); color: white; border-color: var(--brand-primary); }
+        .shop-pagination .pg-num:hover:not(.active) { background: var(--bg-subtle, #f9fafb); }
+        body.dark-mode .shop-pagination .pg-btn { background: #1a2320; border-color: #374151; }
+        body.dark-mode .shop-pagination .pg-num { background: #1a2320; border-color: #374151; color: #9ca3af; }
     </style>
 </head>
 <body class="landing-body">
@@ -188,7 +198,10 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     <div class="hero-particle" style="left: 70%; animation-duration: 10s; animation-delay: 3s;"></div>
     <div class="hero-particle" style="left: 85%; animation-duration: 14s; animation-delay: 0s;"></div>
 
-    <div class="container" style="position: relative; width: 100%;">
+    <!-- Background rotating emoji -->
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28rem; opacity: 0.06; animation: spin 20s linear infinite; pointer-events: none; user-select: none; z-index: 0;">♻️</div>
+
+    <div class="container" style="position: relative; width: 100%; z-index: 1;">
         <div class="hero-v2-content" style="text-align: center; max-width: 800px; margin: 0 auto;">
             <div class="hero-spin-emoji">♻️</div>
             <span class="hero-v2-badge">🌿 <?= $t("Bangladesh's #1 Recycling Platform — Buildfest 2026", "বাংলাদেশের #১ পুনর্ব্যবহার প্ল্যাটফর্ম — বিল্ডফেস্ট ২০২৬") ?></span>
@@ -313,12 +326,26 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
         <h2 class="section-title" data-reveal><?= $t('Explore Our Shop', 'আমাদের দোকান দেখুন') ?></h2>
 
         <?php if (!empty($products)): ?>
-        <div class="shop-search-wrap" data-reveal>
-            <div class="shop-search-inner">
+        <div class="shop-search-wrap" data-reveal style="display:flex; gap:12px; flex-wrap:wrap;">
+            <div class="shop-search-inner" style="flex:1; min-width:200px;">
                 <span class="shop-search-icon">🔍</span>
                 <input type="text" id="landingShopSearch" placeholder="<?= $t('Search products…', 'পণ্য খুঁজুন…') ?>" class="shop-search-input" autocomplete="off">
                 <button class="shop-search-clear" id="landingSearchClear" aria-label="Clear search">✕</button>
             </div>
+            <select id="landingCatFilter" style="padding: 12px 20px; border-radius: 30px; border: 2px solid var(--border); font-size: 0.95rem; background: var(--card-bg, white); color: var(--text-primary, #111); outline: none; cursor: pointer; min-width: 170px;">
+                <option value="ALL"><?= $t('All Categories', 'সব বিভাগ') ?></option>
+                <?php
+                $cats = [];
+                foreach ($products as $p) {
+                    $c = $p['category'] ?? 'General';
+                    if (!in_array($c, $cats)) $cats[] = $c;
+                }
+                sort($cats);
+                foreach ($cats as $c) {
+                    echo '<option value="' . e($c) . '">' . e($c) . '</option>';
+                }
+                ?>
+            </select>
         </div>
         <?php endif; ?>
 
@@ -330,10 +357,10 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
         <?php else: ?>
         <div class="product-grid" id="landingProductGrid">
             <?php foreach ($products as $prod): ?>
-            <div class="product-card-v2 <?= (int)($prod['stock'] ?? 0) === 0 ? 'product-card--oos' : '' ?>"
-                 data-reveal
+            <div class="product-card-v2 <?= (int)($prod['stock'] ?? 0) === 0 ? 'product-card--oos' : '' ?> product-card-v2-landing"
                  data-name="<?= strtolower(e($prod['name'])) ?>"
-                 data-desc="<?= strtolower(e($prod['description'])) ?>">
+                 data-desc="<?= strtolower(e($prod['description'])) ?>"
+                 data-category="<?= e($prod['category'] ?? 'General') ?>">
                 <div class="product-img-wrap">
                     <?php if ($prod['image_url']): ?>
                         <img src="<?= e($prod['image_url']) ?>" alt="<?= e($prod['name']) ?>" class="product-img" loading="lazy">
@@ -359,6 +386,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
             <div style="font-size:2.5rem; margin-bottom:0.75rem;">🔍</div>
             <p style="font-size:1.1rem;"><?= $t('No products found matching your search.', 'আপনার অনুসন্ধানের সাথে মেলে এমন কোন পণ্য পাওয়া যায়নি।') ?></p>
         </div>
+        <div id="landingShopPagination" class="shop-pagination" style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:32px;"></div>
         <?php endif; ?>
     </div>
 </section>
@@ -507,25 +535,61 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     const clear   = document.getElementById('landingSearchClear');
     const grid    = document.getElementById('landingProductGrid');
     const noRes   = document.getElementById('landingNoResults');
-    if (input && grid) {
-        function filterProducts() {
-            const term  = input.value.trim().toLowerCase();
-            const cards = grid.querySelectorAll('.product-card-v2');
-            let visible = 0;
-            cards.forEach(card => {
-                const name = card.dataset.name || '';
-                const desc = card.dataset.desc || '';
-                const match = !term || name.includes(term) || desc.includes(term);
-                card.style.display = match ? '' : 'none';
-                if (match) visible++;
-            });
-            if (noRes) noRes.style.display = visible === 0 ? 'block' : 'none';
-            if (clear) clear.style.display = term ? 'flex' : 'none';
+    const pagWrap = document.getElementById('landingShopPagination');
+    const catSel  = document.getElementById('landingCatFilter');
+    if (!grid) return;
+
+    const cards = Array.from(grid.querySelectorAll('.product-card-v2-landing'));
+    const itemsPerPage = 9;
+    const prevText = "<?= $currentLang === 'bn' ? '← পূর্ববর্তী' : '← Previous' ?>";
+    const nextText = "<?= $currentLang === 'bn' ? 'পরবর্তী →' : 'Next →' ?>";
+    let currentPage = 1;
+
+    function renderShop() {
+        const term = input ? input.value.trim().toLowerCase() : '';
+        const cat = catSel ? catSel.value : 'ALL';
+
+        let filtered = cards.filter(card => {
+            const name = (card.dataset.name || '').toLowerCase();
+            const desc = (card.dataset.desc || '').toLowerCase();
+            const cardCat = card.dataset.category || 'General';
+            const matchSearch = !term || name.includes(term) || desc.includes(term);
+            const matchCat = cat === 'ALL' || cardCat === cat;
+            return matchSearch && matchCat;
+        });
+
+        if (noRes) noRes.style.display = filtered.length === 0 ? 'block' : 'none';
+
+        const totalPages = Math.ceil(filtered.length / itemsPerPage);
+        if (currentPage > totalPages) currentPage = totalPages || 1;
+
+        cards.forEach(c => c.style.display = 'none');
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = Math.min(start + itemsPerPage, filtered.length);
+        for (let i = start; i < end; i++) {
+            filtered[i].style.display = '';
         }
-        input.addEventListener('input', filterProducts);
-        if (clear) { clear.addEventListener('click', () => { input.value = ''; filterProducts(); input.focus(); }); }
-        filterProducts();
+
+        // Pagination
+        if (!pagWrap) return;
+        if (totalPages <= 1) { pagWrap.innerHTML = ''; return; }
+
+        let html = `<button class="pg-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="window.landingShopPage(${currentPage - 1})">${prevText}</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<div class="pg-num ${i === currentPage ? 'active' : ''}" onclick="window.landingShopPage(${i})">${i}</div>`;
+        }
+        html += `<button class="pg-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="window.landingShopPage(${currentPage + 1})">${nextText}</button>`;
+        pagWrap.innerHTML = html;
     }
+
+    window.landingShopPage = function(p) { currentPage = p; renderShop(); };
+
+    if (input) input.addEventListener('input', () => { currentPage = 1; renderShop(); });
+    if (clear) clear.addEventListener('click', () => { input.value = ''; currentPage = 1; renderShop(); input.focus(); });
+    if (catSel) catSel.addEventListener('change', () => { currentPage = 1; renderShop(); });
+
+    renderShop();
+})();
 
     // Dark mode toggle for landing page
     const toggle = document.getElementById('themeToggleLanding');
@@ -539,7 +603,6 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         };
     }
-})();
 </script>
 <script src="assets/js/animations.js?v=<?= time() ?>"></script>
 </body>
