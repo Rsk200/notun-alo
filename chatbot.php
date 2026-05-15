@@ -150,6 +150,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
 <body>
 
 <?php $pageEmoji = '🤖'; include 'includes/mobile_nav.php'; ?>
+<div class="desktop-only"><?php include 'includes/navbar.php'; ?></div>
 
 <main class="main-chat">
             <header class="chat-header">
