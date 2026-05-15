@@ -12,6 +12,7 @@ if ($_SESSION['role'] !== 'user') redirect('dashboard.php');
 $userId = (int)$_SESSION['user_id'];
 $user   = getCurrentUser($pdo);
 $flashMsg = null;
+$currentLang = $_SESSION['lang'] ?? 'en';
 
 $impactCategories = [
     'Paper'   => ['Mixed paper', 'Newspaper', 'Cardboard / OCC', 'Office paper (HGP)'],
@@ -47,7 +48,7 @@ $flash = $flashMsg ?? getFlash();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Request Pickup — Notun Alo</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
@@ -59,27 +60,65 @@ $flash = $flashMsg ?? getFlash();
             --text-secondary: #4B5563;
             --border: #E5E7EB;
             --bg-page: #F5F7F2;
+            --bg-card: #FFFFFF;
         }
 
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-page); color: var(--text-secondary); }
+        /* ===== DARK MODE ===== */
+        body.dark-mode {
+            --bg-page: #080f09;
+            --bg-card: #0f1a10;
+            --text-primary: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --border: #1e3222;
+            --brand-light: #0d2416;
+            --brand-primary: #34d399;
+        }
+        body.dark-mode .white-card {
+            background: var(--bg-card) !important;
+            border-color: var(--border) !important;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4) !important;
+        }
+        body.dark-mode label { color: #94A3B8 !important; }
+        body.dark-mode select, body.dark-mode input {
+            background: #0b130c !important;
+            border-color: #1e3222 !important;
+            color: #E2E8F0 !important;
+        }
+        body.dark-mode .points-box {
+            background: #0d2416 !important;
+            border-color: #1e3222 !important;
+        }
+        body.dark-mode .points-label { color: #34d399 !important; }
+        body.dark-mode .back-link {
+            background: #0d2416 !important;
+            border-color: #1e3222 !important;
+            color: #34d399 !important;
+        }
+        body.dark-mode .page-title { color: #a3e9cb !important; }
+        body.dark-mode .page-subtitle { color: #64748b !important; }
+
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-page); color: var(--text-secondary); transition: background-color 0.4s ease, color 0.4s ease; }
         .wrapper { max-width: 600px; margin: 0 auto; padding: 40px 24px; }
         
-        .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--brand-primary); text-decoration: none; font-size: 14px; font-weight: 600; margin-bottom: 24px; transition: 0.2s; }
-        .back-link:hover { transform: translateX(-5px); }
+        .back-link { display: inline-flex; align-items: center; gap: 8px; color: #065f46; background: #ecfdf5; border: 1px solid #d1fae5; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.2s; }
+        .back-link:hover { background: #d1fae5; transform: translateX(-2px); }
 
-        .white-card { background: white; border: 1px solid var(--border); border-radius: 20px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        h1 { font-size: 28px; font-weight: 800; color: var(--text-primary); margin-bottom: 8px; }
-        .sub-text { font-size: 14px; color: #9CA3AF; margin-bottom: 32px; }
+        .page-header-flex { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 24px; padding-top: 20px; }
+        .header-text { display: flex; flex-direction: column; }
+        .page-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #064e3b; font-weight: 700; margin-bottom: 4px; line-height: 1.1; }
+        .page-subtitle { font-size: 1.05rem; color: #64748b; margin: 0; }
+
+        .white-card { background: var(--bg-card, white); border: 1px solid var(--border); border-radius: 20px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: background-color 0.4s ease, border-color 0.4s ease; }
 
         .form-group { margin-bottom: 24px; }
-        label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+        label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 8px; transition: color 0.3s; }
         select, input { width: 100%; height: 48px; background: #F9FAFB; border: 1px solid var(--border); border-radius: 12px; padding: 0 16px; font-size: 14px; outline: none; transition: 0.2s; }
         select:focus, input:focus { border-color: var(--brand-primary); background: white; box-shadow: 0 0 0 3px rgba(29,158,117,0.1); }
         
         .btn-submit { width: 100%; height: 52px; background: var(--brand-primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 10px; }
         .btn-submit:hover { background: #065F46; transform: translateY(-1px); }
 
-        .points-box { background: var(--brand-light); border: 1px solid #D1FAE5; padding: 16px; border-radius: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
+        .points-box { background: var(--brand-light); border: 1px solid #D1FAE5; padding: 16px; border-radius: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s, border-color 0.3s; }
         .points-label { font-size: 13px; font-weight: 600; color: #065F46; }
         .points-val { font-size: 18px; font-weight: 800; color: var(--brand-primary); }
 
@@ -87,17 +126,25 @@ $flash = $flashMsg ?? getFlash();
         .alert-success { background: #DCFCE7; color: #166534; border: 1px solid #BBF7D0; }
         .alert-error { background: #FEF2F2; color: #B91C1C; border: 1px solid #FEE2E2; }
     </style>
+<style>
+@media (max-width:767px) { .mobile-only { display:block; } .desktop-only { display:none; } }
+@media (min-width:768px) { .mobile-only { display:none; } .desktop-only { display:block; } }
+</style>
 </head>
 <body>
 
-    <?php include 'includes/navbar.php'; ?>
+<?php $pageEmoji = '🚛'; include 'includes/mobile_nav.php'; ?>
 
-    <main class="wrapper">
-        <a href="dashboard.php" class="back-link">← Back to Dashboard</a>
+<main class="wrapper">
+        <header class="page-header-flex">
+            <a href="dashboard.php" class="back-link">&larr; <?= $lang['dashboard'] ?? 'Dashboard' ?></a>
+            <div class="header-text">
+                <h1 class="page-title"><?= $lang['request_pickup'] ?? 'Request a Pickup' ?></h1>
+                <p class="page-subtitle"><?= $lang['schedule_hint'] ?? 'Schedule your next recycling collection' ?></p>
+            </div>
+        </header>
         
         <div class="white-card">
-            <h1>Schedule Pickup</h1>
-            <p class="sub-text">We'll collect your items within 48 hours of your chosen date.</p>
 
             <?php if ($flash): ?>
                 <div class="alert alert-<?= e($flash['type']) ?>"><?= e($flash['message']) ?></div>
@@ -105,9 +152,9 @@ $flash = $flashMsg ?? getFlash();
 
             <form method="POST">
                 <div class="form-group">
-                    <label>Waste Category</label>
+                    <label><?= $lang['waste_category'] ?? 'Waste Category' ?></label>
                     <select id="category" name="category" required>
-                        <option value="">Select type</option>
+                        <option value=""><?= $lang['select_type'] ?? '— Select type —' ?></option>
                         <?php foreach ($impactCategories as $cat => $subs): ?>
                             <option value="<?= e($cat) ?>"><?= e($cat) ?></option>
                         <?php endforeach; ?>
@@ -122,12 +169,12 @@ $flash = $flashMsg ?? getFlash();
                 </div>
 
                 <div class="form-group">
-                    <label>Estimated Weight (KG)</label>
+                    <label><?= $lang['estimated_weight'] ?? 'Estimated Weight (KG)' ?></label>
                     <input type="number" id="weight" name="estimated_weight" placeholder="e.g. 5.5" min="0.1" step="0.1" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Preferred Date</label>
+                    <label><?= $lang['preferred_date'] ?? 'Preferred Pickup Date' ?></label>
                     <input type="date" name="schedule_date" min="<?= date('Y-m-d') ?>" required>
                 </div>
 
@@ -136,7 +183,7 @@ $flash = $flashMsg ?? getFlash();
                     <span class="points-val" id="previewValue">0 pts</span>
                 </div>
 
-                <button type="submit" class="btn-submit">Request Pickup</button>
+                <button type="submit" class="btn-submit"><?= $lang['submit_request'] ?? 'Submit Request' ?></button>
             </form>
         </div>
     </main>

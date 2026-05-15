@@ -10,13 +10,14 @@ requireLogin();
 $user     = getCurrentUser($pdo);
 $userName = e($user['name'] ?? 'User');
 $userPts  = getUserPoints($pdo, (int)($user['id'] ?? 0));
+$currentLang = $_SESSION['lang'] ?? 'en';
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= $currentLang ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Assistant — Notun Alo</title>
+    <title><?= $lang['ai_assistant'] ?? 'AI Assistant' ?> — Notun Alo</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -35,10 +36,43 @@ $userPts  = getUserPoints($pdo, (int)($user['id'] ?? 0));
             --bg-page: #F5F7F2;
             --bg-sidebar: #FFFFFF;
             --bg-chat: #F9FAFB;
+            --bg-subtle: #F3F4F6;
         }
 
+        /* ===== PREMIUM DARK MODE ===== */
+        body.dark-mode {
+            --bg-page: #080f09;
+            --bg-sidebar: #0d1610;
+            --bg-chat: #0b120c;
+            --bg-subtle: #0f1a10;
+            --text-primary: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --border: #1e3222;
+            --brand-light: #0d2416;
+            --brand-border: #1a4a2a;
+            --brand-primary: #34d399;
+        }
+        body.dark-mode .app-shell { background: var(--bg-page) !important; border-top-color: var(--border) !important; }
+        body.dark-mode .sidebar { background: var(--bg-sidebar) !important; border-right-color: var(--border) !important; }
+        body.dark-mode .sidebar-header { border-bottom-color: var(--border) !important; }
+        body.dark-mode .chat-item:hover { background: rgba(52,211,153,0.05) !important; }
+        body.dark-mode .chat-item.active { background: #0d2416 !important; border-color: #1a4a2a !important; }
+        body.dark-mode .chat-icon { background: #0d2416 !important; }
+        body.dark-mode .main-chat { background: var(--bg-chat) !important; }
+        body.dark-mode .chat-header { background: var(--bg-sidebar) !important; border-bottom-color: var(--border) !important; }
+        body.dark-mode .ai-bubble { background: var(--bg-sidebar) !important; border-color: var(--border) !important; }
+        body.dark-mode .chip { background: var(--bg-sidebar) !important; border-color: var(--border) !important; color: var(--text-secondary) !important; }
+        body.dark-mode .chip:hover { border-color: var(--brand-primary) !important; color: var(--brand-primary) !important; background: #0d2416 !important; }
+        body.dark-mode .input-bar { background: var(--bg-sidebar) !important; border-top-color: var(--border) !important; }
+        body.dark-mode .text-input-wrap { background: var(--bg-chat) !important; border-color: var(--border) !important; }
+        body.dark-mode #chatInput { color: var(--text-primary) !important; }
+        body.dark-mode .suggest-card { background: var(--bg-sidebar) !important; border-color: var(--border) !important; }
+        body.dark-mode .suggest-card:hover { border-color: var(--brand-primary) !important; box-shadow: 0 8px 20px rgba(0,0,0,0.4) !important; }
+        body.dark-mode .btn-send:disabled { background: #1e3222 !important; }
+
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-page); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-page); height: 100vh; overflow: hidden; display: flex; flex-direction: column; transition: background-color 0.4s ease; }
 
         .app-shell { flex: 1; display: flex; overflow: hidden; background: white; border-top: 1px solid var(--border); }
         
@@ -108,50 +142,22 @@ $userPts  = getUserPoints($pdo, (int)($user['id'] ?? 0));
 
         @media (max-width: 800px) { .sidebar { display: none; } .message-viewport { padding: 20px; } .chat-header { padding: 0 20px; } .input-bar { padding: 0 20px; } .suggest-grid { grid-template-columns: 1fr; } }
     </style>
+<style>
+@media (max-width:767px) { .mobile-only { display:block; } .desktop-only { display:none; } }
+@media (min-width:768px) { .mobile-only { display:none; } .desktop-only { display:block; } }
+</style>
 </head>
 <body>
 
-    <?php include 'includes/navbar.php'; ?>
+<?php $pageEmoji = '🤖'; include 'includes/mobile_nav.php'; ?>
 
-    <div class="app-shell">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <button class="btn-new-chat" id="btnNewChat">
-                    <i class="ti ti-plus"></i> New Conversation
-                </button>
-            </div>
-            <div class="chat-list" id="chatList">
-                <div class="chat-item active" data-id="main">
-                    <div class="chat-icon"><i class="ti ti-message-code"></i></div>
-                    <div class="chat-info">
-                        <div class="chat-title">General Assistant</div>
-                        <div class="chat-meta">Online · Active now</div>
-                    </div>
-                </div>
-                <div class="chat-item" data-id="points">
-                    <div class="chat-icon"><i class="ti ti-history"></i></div>
-                    <div class="chat-info">
-                        <div class="chat-title">Point Calculation Help</div>
-                        <div class="chat-meta">2 days ago</div>
-                    </div>
-                </div>
-                <div class="chat-item" data-id="pickup">
-                    <div class="chat-icon"><i class="ti ti-truck"></i></div>
-                    <div class="chat-info">
-                        <div class="chat-title">Pickup Schedule Update</div>
-                        <div class="chat-meta">1 week ago</div>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <main class="main-chat">
+<main class="main-chat">
             <header class="chat-header">
                 <div class="ai-info">
                     <div class="ai-avatar"><i class="ti ti-robot"></i></div>
                     <div>
                         <div style="font-weight:700; color:var(--text-primary);" id="chatTitle">Notun Alo AI</div>
-                        <div style="font-size:11px; color:var(--text-muted);" id="chatSubtitle">Secure · Bilingual Assistant</div>
+                        <div style="font-size:11px; color:var(--text-muted);" id="chatSubtitle"><?= $currentLang === 'bn' ? 'নিরাপদ · দ্বিভাষিক সহকারী' : 'Secure · Bilingual Assistant' ?></div>
                     </div>
                 </div>
                 <div class="status-pill">
@@ -167,7 +173,7 @@ $userPts  = getUserPoints($pdo, (int)($user['id'] ?? 0));
             <footer class="input-bar">
                 <div class="input-container">
                     <div class="text-input-wrap">
-                        <input type="text" id="chatInput" placeholder="Message Notun Alo AI..." autocomplete="off">
+                        <input type="text" id="chatInput" placeholder="<?= $currentLang === 'bn' ? 'নতুন আলো এআই-কে মেসেজ দিন...' : 'Message Notun Alo AI...' ?>" autocomplete="off">
                     </div>
                     <button class="btn-send" id="sendBtn" disabled><i class="ti ti-send"></i></button>
                 </div>
@@ -187,11 +193,15 @@ $userPts  = getUserPoints($pdo, (int)($user['id'] ?? 0));
         const userPts = "<?= number_format($userPts) ?>";
 
         // MOCK CONVERSATION DATA
+        const msgAiGreeting = "<?= $currentLang === 'bn' ? 'হ্যালো' : 'Hello' ?> " + userName + "! <?= $currentLang === 'bn' ? 'আমি আপনাকে কীভাবে সাহায্য করতে পারি?' : 'How can I help you today?' ?>";
+        const lblSchedule = "<?= $lang['schedule_pickup'] ?? 'Schedule a Pickup' ?>";
+        const lblPoints = "<?= $currentLang === 'bn' ? 'পয়েন্ট চেক করুন' : 'Check Points' ?>";
+
         const conversations = {
             main: {
-                title: "General Assistant",
+                title: "<?= $currentLang === 'bn' ? 'সাধারণ সহকারী' : 'General Assistant' ?>",
                 messages: [
-                    { type: 'ai', text: `Hello ${userName}! How can I help you today?`, quickReplies: ['Schedule a Pickup', 'Check Points'] }
+                    { type: 'ai', text: msgAiGreeting, quickReplies: [lblSchedule, lblPoints] }
                 ]
             },
             points: {
@@ -245,8 +255,8 @@ $userPts  = getUserPoints($pdo, (int)($user['id'] ?? 0));
                     <div style="width:64px; height:64px; background:var(--brand-light); border-radius:20px; display:flex; align-items:center; justify-content:center; color:var(--brand-primary); font-size:32px; margin:0 auto 24px;">
                         <i class="ti ti-leaf"></i>
                     </div>
-                    <h2 style="font-size:24px; font-weight:800; color:var(--text-primary);">New Conversation</h2>
-                    <p style="font-size:15px; color:var(--text-secondary); margin-top:8px;">Ask me anything about your recycling journey.</p>
+                    <h2 style="font-size:24px; font-weight:800; color:var(--text-primary);"><?= $currentLang === 'bn' ? 'নতুন কথোপকথন' : 'New Conversation' ?></h2>
+                    <p style="font-size:15px; color:var(--text-secondary); margin-top:8px;"><?= $currentLang === 'bn' ? 'রিসাইক্লিং সম্পর্কে যেকোনো কিছু জিজ্ঞাসা করুন।' : 'Ask me anything about your recycling journey.' ?></p>
                     
                     <div class="suggest-grid">
                         <div class="suggest-card" onclick="handleSuggestion('Schedule a Pickup')">
