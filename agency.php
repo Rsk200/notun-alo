@@ -228,7 +228,7 @@ $completed = $done->fetchAll();
                         <div class="task-card__footer">
                             <form method="POST" class="collect-form">
                                 <input type="hidden" name="pickup_id" value="<?= $t['id'] ?>">
-                                <input type="hidden" name="task_type" value="<?= e($t['task_type']) ?>">
+                                <input type="hidden" name="task_type" value="<?= e($t['task_type'] ?? '') ?>">
                                     <?php if (($t['task_type'] ?? '') !== 'delivery'): ?>
                                     <div class="form-group">
                                         <label><?= $lang['actual_weight_collected'] ?? 'Actual Weight Collected (KG)' ?></label>
@@ -259,7 +259,7 @@ $completed = $done->fetchAll();
         <section class="card" data-reveal>
             <div class="card-header" data-reveal>
                 <h2 class="card-title" data-reveal>✅ <?= $lang['recently_completed'] ?? 'Recently Completed' ?></h2>
-                <p class="card-sub" data-reveal><?= $lang['last_10_completed'] ?? 'Last 10 completed pickups' ?></p>
+                <p class="card-sub" data-reveal><?= $lang['last_10_completed'] ?? 'Last 10 completed pickups' ?> · <a href="agency_completed.php" style="color:var(--brand-primary); font-weight:600;"><?= $lang['view_all'] ?? 'View All' ?> →</a></p>
             </div>
             <?php if (empty($completed)): ?>
                 <div class="empty-state">
