@@ -102,6 +102,18 @@ if ($searchTerm !== '') {
             </div>
         </div>
 
+        <!-- Documentation & Pitch Control (New) -->
+        <div class="card" data-reveal style="margin-bottom: 2.5rem; padding: 2rem; border-radius: 20px; border-left: 6px solid #38bdf8; background: var(--bg-card);">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+                <div>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">📄 YC-Style Documentation & Pitch</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Manage the live /docs endpoint, scheduling, and technical whitepaper.</p>
+                    <a href="admin_docs.php" class="btn btn-primary" style="background: #38bdf8; border: none; padding: 0.8rem 1.5rem; color: #fff; font-weight: 600; text-decoration: none; border-radius: 8px;">Manage Documentation ↗</a>
+                </div>
+                <div style="background: rgba(56, 189, 248, 0.1); padding: 1.5rem; border-radius: 50%; font-size: 2rem;">🚀</div>
+            </div>
+        </div>
+
         <!-- Global Leaderboard (Top 10) -->
         <div class="leaderboard-card" data-reveal>
             <div class="leaderboard-header">
