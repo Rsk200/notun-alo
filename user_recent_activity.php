@@ -44,15 +44,7 @@ foreach($realPickups as $p) {
     if ($p['status'] === 'completed') { $statsCompleted++; $statsWeight += (float)$p['estimated_weight']; $statsPoints += $pts; }
 }
 
-// Fallback data if user has no pickups (to show off the UI as requested)
-if (empty($jsActivities)) {
-    $jsActivities = [
-        ['id'=>1, 'name'=>'Paper (Mixed Paper)', 'category'=>'Paper', 'address'=>'Mirpur-10, Dhaka', 'date'=>'Oct 21, 2025', 'weight'=>'12.5 kg', 'points'=>50, 'status'=>'COMPLETED'],
-        ['id'=>2, 'name'=>'Paper (Mixed Paper)', 'category'=>'Paper', 'address'=>'Mirpur-10, Dhaka', 'date'=>'Sep 15, 2025', 'weight'=>'8.2 kg', 'points'=>33, 'status'=>'COMPLETED'],
-        ['id'=>3, 'name'=>'Paper (Mixed Paper)', 'category'=>'Paper', 'address'=>'Mirpur-10, Dhaka', 'date'=>'May 30, 2025', 'weight'=>'15.0 kg', 'points'=>60, 'status'=>'COMPLETED'],
-        ['id'=>4, 'name'=>'Paper (Mixed Paper)', 'category'=>'Paper', 'address'=>'Mirpur-10, Dhaka', 'date'=>'May 15, 2025', 'weight'=>'Pending weigh-in', 'points'=>0, 'status'=>'PENDING']
-    ];
-}
+
 $currentLang = $_SESSION['lang'] ?? 'en';
 ?>
 <!DOCTYPE html>
