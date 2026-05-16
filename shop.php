@@ -4,11 +4,10 @@
 // Notun Alo (New Light) Recycling Platform
 // ============================================
 require_once 'includes/config.php';
-requireLogin();
 startSession();
 
-$userId = (int)$_SESSION['user_id'];
-$points = getUserPoints($pdo, $userId);
+$userId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+$points = $userId ? getUserPoints($pdo, $userId) : 0;
 $flash  = null;
 $currentLang = $_SESSION['lang'] ?? 'en';
 
@@ -52,8 +51,13 @@ $products = $pdo->query("SELECT * FROM products ORDER BY created_at DESC")->fetc
                 <p class="page-sub"><?= $currentLang === 'bn' ? 'পরিবেশবান্ধব পণ্যের জন্য আপনার গ্রিন পয়েন্ট রিডিম করুন' : 'Redeem your green points for eco-friendly goods' ?></p>
             </div>
             <div class="points-display">
+                <?php if ($userId): ?>
                 <span class="points-label"><?= $currentLang === 'bn' ? 'আপনার ব্যালেন্স' : 'Your Balance' ?></span>
                 <span class="points-amount">🏆 <?= $currentLang === 'bn' ? en2bn(number_format($points)) : number_format($points) ?> <?= $currentLang === 'bn' ? 'পয়েন্ট' : 'pts' ?></span>
+                <?php else: ?>
+                <span class="points-label"><?= $currentLang === 'bn' ? 'পণ্য দেখতে' : 'Browse Products' ?></span>
+                <span class="points-amount">🔓 <a href="login.php" style="color:var(--gold-dark);"><?= $currentLang === 'bn' ? 'লগইন করুন' : 'Login to buy' ?></a></span>
+                <?php endif; ?>
             </div>
         </div>
 
