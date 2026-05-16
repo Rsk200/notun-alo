@@ -88,6 +88,17 @@ try {
             }
         }
 
+        // Create rank cache table if not exists
+        $pdo->exec("CREATE TABLE IF NOT EXISTS user_rank_cache (
+            user_id INT PRIMARY KEY,
+            percentile INT NOT NULL DEFAULT 0,
+            city VARCHAR(100) NOT NULL DEFAULT '',
+            total_in_city INT NOT NULL DEFAULT 0,
+            metric VARCHAR(50) NOT NULL DEFAULT 'co2_prevented',
+            calculated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_calculated (calculated_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
         echo "<p>AUTO_INCREMENT: $ok/6 tables fixed. Unique: $uk/1 added. Constraints: $ck/7 added.</p>";
 
         // Fix collation mismatch (MySQL 8.0 default utf8mb4_0900_ai_ci vs MariaDB/older utf8mb4_general_ci)

@@ -302,11 +302,22 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         </div>
     </div>
 
-    <!-- SECTION 7: Footer -->
-    <div class="impact-footer">
-        <p class="footer-text">🌍 <?= $currentLang === 'bn' ? 'আপনি ঢাকার শীর্ষ ১৫% রিসাইক্লারদের মধ্যে আছেন। চালিয়ে যান!' : 'You\'re in the top 15% of recyclers in Dhaka. Keep it up!' ?></p>
+    <!-- SECTION 7: Footer / Rank Banner -->
+    <div class="impact-footer" id="rankBanner">
+        <div id="rankSkeleton" style="display:flex; align-items:center; gap:10px; width:100%;">
+            <div style="width:24px; height:24px; border-radius:50%; background:var(--border); animation:pulse 1.5s infinite;"></div>
+            <div style="flex:1; height:16px; border-radius:8px; background:var(--border); animation:pulse 1.5s infinite;"></div>
+        </div>
+        <p class="footer-text" id="rankText" style="display:none;"></p>
         <a href="user_request_pickup.php" class="footer-cta"><?= $currentLang === 'bn' ? 'পরবর্তী পিকআপ শিডিউল করুন →' : 'Schedule Next Pickup →' ?></a>
     </div>
+    <style>
+        @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+        #rankBanner .footer-text { transition: all .3s ease; }
+        .rank-improve { animation: rankPop .8s ease; }
+        @keyframes rankPop { 0%{transform:scale(1)} 30%{transform:scale(1.12)} 60%{transform:scale(.95)} 100%{transform:scale(1)} }
+        #rankBanner.hidden { display:none !important; }
+    </style>
 
     <!-- Share Progress Container (Hidden Off-screen) -->
     <div id="shareImageContainer" style="position: absolute; top: -9999px; left: -9999px; width: 600px; background: linear-gradient(135deg, #065F46 0%, #1D9E75 100%); color: white; padding: 40px; border-radius: 24px; font-family: 'Inter', sans-serif; box-sizing: border-box;">
@@ -368,6 +379,69 @@ $currentLang = $_SESSION['lang'] ?? 'en';
     fetch(`api_impact.php?action=forecast&user_id=${userId}`).then(r=>r.json()).then(data=>{
         initForecastChart(data.forecast || []);
     }).catch(e => console.error(e));
+
+    // 1b. Percentile Rank Banner
+    let lastPercentile = null;
+    const rankBanner = document.getElementById('rankBanner');
+    const rankSkeleton = document.getElementById('rankSkeleton');
+    const rankText = document.getElementById('rankText');
+    const bn = (root.dataset.lang || 'en') === 'bn';
+
+    function fetchPercentile() {
+        fetch(`api_impact.php?action=percentile_rank&user_id=${userId}`)
+            .then(r => r.json())
+            .then(data => {
+                rankSkeleton.style.display = 'none';
+                rankText.style.display = '';
+                if (data.hide || data.error) {
+                    rankBanner.classList.add('hidden');
+                    return;
+                }
+                rankBanner.classList.remove('hidden');
+
+                if (data.oneOf && data.totalUsersInCity < 10) {
+                    // Less than 10 users — show "one of N" style
+                    rankText.innerHTML = bn
+                        ? `🌍 <strong>${data.city}</strong>-এ <strong>${data.totalUsersInCity}</strong> জন সক্রিয় রিসাইক্লারের মধ্যে একজন!`
+                        : `🌍 One of <strong>${data.totalUsersInCity}</strong> active recyclers in <strong>${data.city}</strong>!`;
+                    return;
+                }
+
+                const pct = data.percentile;
+                const city = data.city;
+
+                // Special message for #1
+                if (pct === 1) {
+                    rankText.innerHTML = bn
+                        ? `🏆 <strong>${city}</strong>-এ #১ রিসাইক্লার! দারুণ কাজ!`
+                        : `🏆 <strong>#1 recycler</strong> in ${city}! Amazing work!`;
+                    return;
+                }
+
+                // Build display text
+                rankText.innerHTML = bn
+                    ? `🌍 আপনি <strong>${city}</strong>-এর শীর্ষ <strong>${pct}%</strong> রিসাইক্লারদের মধ্যে আছেন। চালিয়ে যান!`
+                    : `🌍 You're in the top <strong>${pct}%</strong> of recyclers in <strong>${city}</strong>. Keep it up!`;
+
+                // Animate improvement
+                if (lastPercentile !== null && pct < lastPercentile) {
+                    rankText.classList.remove('rank-improve');
+                    void rankText.offsetWidth; // reflow
+                    rankText.classList.add('rank-improve');
+                }
+                lastPercentile = pct;
+            })
+            .catch(() => {
+                rankSkeleton.style.display = 'none';
+                rankBanner.classList.add('hidden');
+            });
+    }
+
+    fetchPercentile();
+    // Poll every 10 minutes
+    setInterval(fetchPercentile, 600000);
+    // Re-fetch on visibility change (user returns to tab)
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) fetchPercentile(); });
 
     // 2. Gamification UI
     function updateGamification(g) {

@@ -74,6 +74,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_collected'])) {
                     total_points = total_points + VALUES(total_points),
                     lifetime_points = lifetime_points + VALUES(lifetime_points)"
             )->execute([$uid, $earnedPts, $earnedPts]);
+
+            // Invalidate percentile rank cache for this user
+            try { $pdo->exec("DELETE FROM user_rank_cache WHERE user_id = $uid"); } catch (Throwable $_) {}
         }
 
         $flash = ['type' => 'success', 'message' => "Pickup #$pickupId marked as collected! User rewarded."];
