@@ -180,7 +180,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             <p class="hero-m-sub"><?= $currentLang === 'bn' ? 'আপনি ব্যক্তিগতভাবে' : 'You have personally prevented the equivalent of' ?> <span id="m-co2-sub" class="summary-highlight">880</span> <?= $currentLang === 'bn' ? 'টি গাড়ির ট্রিপের সমতুল্য নির্গমন রোধ করেছেন।' : 'car trips worth of emissions.' ?></p>
             <div class="m-trend" style="color:var(--brand-primary); margin-top:16px;">
                 <i class="ti ti-trending-up"></i>
-                <span>+12.4 <?= $currentLang === 'bn' ? 'কেজি এই মাসে' : 'kg this month' ?></span>
+                <span id="m-month">— <?= $currentLang === 'bn' ? 'কেজি এই মাসে' : 'kg this month' ?></span>
             </div>
         </div>
         <div class="hero-m-visual">
@@ -467,6 +467,8 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         
         const co2Sub = document.getElementById('m-co2-sub');
         if(co2Sub) co2Sub.textContent = data.car_trip_equivalent.toLocaleString();
+        const monthEl = document.getElementById('m-month');
+        if(monthEl) monthEl.innerHTML = `+${data.this_month_kg.toLocaleString(undefined, {minimumFractionDigits:1, maximumFractionDigits:1})} ${bn ? 'কেজি এই মাসে' : 'kg this month'}`;
         
         const shareCo2 = document.getElementById('share-co2');
         if(shareCo2) shareCo2.innerHTML = `${data.co2_saved_kg.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1})}<span style="font-size: 16px;">kg</span>`;

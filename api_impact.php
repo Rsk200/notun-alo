@@ -169,9 +169,9 @@ if ($action === 'impact') {
                 COUNT(p.id) AS total_pickups,
                 SUM(CASE WHEN p.status = 'completed' THEN 1 ELSE 0 END) AS completed_pickups,
                 COALESCE(SUM(p.estimated_weight), 0) AS total_kg_recycled,
-                COALESCE(SUM(p.estimated_weight * COALESCE(ef.co2_sa_adjusted, ca.avg_co2, 0)), 0) AS co2_saved_kg,
-                COALESCE(SUM(p.estimated_weight * COALESCE(ef.water_liters_per_kg, ca.avg_water_liters_per_kg, 0)), 0) AS water_saved_liters,
-                COALESCE(SUM(p.estimated_weight * COALESCE(ef.energy_kwh_per_kg, ca.avg_energy_kwh_per_kg, 0)), 0) AS energy_saved_kwh,
+                COALESCE(SUM(p.estimated_weight * COALESCE(ef.co2_sa_adjusted, ca.avg_co2, 1.2)), 0) AS co2_saved_kg,
+                COALESCE(SUM(p.estimated_weight * COALESCE(ef.water_liters_per_kg, ca.avg_water_liters_per_kg, 20)), 0) AS water_saved_liters,
+                COALESCE(SUM(p.estimated_weight * COALESCE(ef.energy_kwh_per_kg, ca.avg_energy_kwh_per_kg, 5)), 0) AS energy_saved_kwh,
                 SUM(CASE WHEN p.category = 'E-waste' THEN 1 ELSE 0 END) AS ewaste_pickups
             FROM users u
             LEFT JOIN pickups p ON p.user_id = u.id AND p.status IN ('completed', 'scheduled')
@@ -200,6 +200,11 @@ if ($action === 'impact') {
         $co2 = (float)$row['co2_saved_kg'];
         $water = (float)$row['water_saved_liters'];
         $energy = (float)$row['energy_saved_kwh'];
+
+        // This month's recycling
+        $monthStmt = $pdo->prepare("SELECT COALESCE(SUM(estimated_weight), 0) FROM pickups WHERE user_id = ? AND status = 'completed' AND YEAR(created_at) = YEAR(CURDATE()) AND MONTH(created_at) = MONTH(CURDATE())");
+        $monthStmt->execute([$userId]);
+        $thisMonthKg = (float)$monthStmt->fetchColumn();
 
         // Gamification Algorithm: Eco-Rank
         // Base XP for even starting a journey + impact-based XP
@@ -251,6 +256,7 @@ if ($action === 'impact') {
             "total_pickups" => (int)$row['total_pickups'],
             "completed_pickups" => (int)$row['completed_pickups'],
             "total_kg_recycled" => round((float)$row['total_kg_recycled'], 2),
+            "this_month_kg" => round($thisMonthKg, 2),
             "co2_saved_kg" => round($co2, 2),
             "water_saved_liters" => round($water, 2),
             "energy_saved_kwh" => round($energy, 2),
