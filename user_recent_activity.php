@@ -11,25 +11,37 @@ if ($_SESSION['role'] !== 'user') redirect('dashboard.php');
 $userId = (int)$_SESSION['user_id'];
 $user   = getCurrentUser($pdo);
 
-// Fetch real data to pass to JS
-$stmt = $pdo->prepare("SELECT id, category as name, category, created_at as date, estimated_weight as weight, status 
+// Real points rates
+$RATES = ['Paper' => 5, 'Plastic' => 8, 'Metal' => 12];
+
+// Fetch real pickups
+$stmt = $pdo->prepare("SELECT id, category, created_at, estimated_weight, status 
     FROM pickups WHERE user_id = ? ORDER BY created_at DESC");
 $stmt->execute([$userId]);
 $realPickups = $stmt->fetchAll();
 
-// Map real pickups to match the JS structure
+// Map to JS structure with real points calculation
 $jsActivities = [];
+$statsTotal = 0;
+$statsCompleted = 0;
+$statsWeight = 0.0;
+$statsPoints = 0;
 foreach($realPickups as $p) {
+    $pts = ($p['status'] === 'completed' && $p['estimated_weight'] > 0)
+        ? (int)($p['estimated_weight'] * ($RATES[$p['category']] ?? 5))
+        : 0;
     $jsActivities[] = [
-        'id' => $p['id'],
-        'name' => $p['name'],
-        'category' => $p['category'],
-        'address' => $user['address'] ?? 'Dhaka, Bangladesh',
-        'date' => date('M j, Y', strtotime($p['date'])),
-        'weight' => $p['weight'] . ' kg',
-        'points' => (int)($p['weight'] * 10), // Dummy calculation for now
-        'status' => strtoupper($p['status'])
+        'id'          => (int)$p['id'],
+        'name'        => $p['category'],
+        'category'    => $p['category'],
+        'address'     => $user['address'] ?? 'Dhaka, Bangladesh',
+        'date'        => date('M j, Y', strtotime($p['created_at'])),
+        'weight'      => $p['estimated_weight'] > 0 ? $p['estimated_weight'] . ' kg' : 'Pending weigh-in',
+        'points'      => $pts,
+        'status'      => strtoupper($p['status'])
     ];
+    $statsTotal++;
+    if ($p['status'] === 'completed') { $statsCompleted++; $statsWeight += (float)$p['estimated_weight']; $statsPoints += $pts; }
 }
 
 // Fallback data if user has no pickups (to show off the UI as requested)
@@ -313,27 +325,27 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         <div class="stats-grid">
             <div class="white-card stat-card">
                 <div class="stat-icon" style="background:#EFF6FF; color:#2563EB;"><i class="ti ti-truck"></i></div>
-                <span class="stat-num" id="stat-total" data-target="8">0</span>
+                <span class="stat-num" id="stat-total" data-target="<?= $statsTotal ?>">0</span>
                 <span class="stat-label"><?= $currentLang === 'bn' ? 'মোট পিকআপ' : 'Total Pickups' ?></span>
                 <span class="stat-sub"><?= $currentLang === 'bn' ? 'যোগদানের পর থেকে' : 'Since joining' ?></span>
             </div>
             <div class="white-card stat-card">
                 <div class="stat-icon" style="background:#E6F5EE; color:#1D9E75;"><i class="ti ti-circle-check"></i></div>
-                <span class="stat-num" id="stat-completed" data-target="6">0</span>
+                <span class="stat-num" id="stat-completed" data-target="<?= $statsCompleted ?>">0</span>
                 <span class="stat-label"><?= $currentLang === 'bn' ? 'সম্পন্ন' : 'Completed' ?></span>
-                <span class="stat-sub"><?= $currentLang === 'bn' ? '৭৫% সাফল্যের হার' : '75% success rate' ?></span>
+                <span class="stat-sub"><?= $currentLang === 'bn' ? ($statsTotal > 0 ? round(($statsCompleted/$statsTotal)*100) . '% সাফল্যের হার' : 'কোনো পিকআপ নেই') : ($statsTotal > 0 ? round(($statsCompleted/$statsTotal)*100) . '% success rate' : 'No pickups') ?></span>
             </div>
             <div class="white-card stat-card">
                 <div class="stat-icon" style="background:#EDE9FE; color:#7C3AED;"><i class="ti ti-weight"></i></div>
-                <span class="stat-num" id="stat-weight" data-target="66.3">0</span>
+                <span class="stat-num" id="stat-weight" data-target="<?= $statsWeight ?>">0</span>
                 <span class="stat-label"><?= $currentLang === 'bn' ? 'কেজি রিসাইকেল করা হয়েছে' : 'KG Recycled' ?></span>
                 <span class="stat-sub"><?= $currentLang === 'bn' ? 'সব পিকআপ জুড়ে' : 'Across all pickups' ?></span>
             </div>
             <div class="white-card stat-card">
                 <div class="stat-icon" style="background:#FEF3C7; color:#D97706;"><i class="ti ti-star"></i></div>
-                <span class="stat-num" id="stat-points" data-target="200">0</span>
+                <span class="stat-num" id="stat-points" data-target="<?= $statsPoints ?>">0</span>
                 <span class="stat-label"><?= $currentLang === 'bn' ? 'পয়েন্ট অর্জিত' : 'Points Earned' ?></span>
-                <span class="stat-sub"><?= $currentLang === 'bn' ? 'ব্রোঞ্জ স্তর' : 'Bronze tier' ?></span>
+                <span class="stat-sub"><?= $currentLang === 'bn' ? 'অর্জিত মোট' : 'Total earned' ?></span>
             </div>
         </div>
 
@@ -355,7 +367,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                 <span id="dateRangeText"><?= $currentLang === 'bn' ? 'গত ৩০ দিন' : 'Last 30 days' ?></span>
                 <i class="ti ti-chevron-down"></i>
             </div>
-            <div style="width:100%; margin-top:10px; font-size:12px; color:var(--text-muted);" id="resultCount"><?= $currentLang === 'bn' ? '৮ টি পিকআপ দেখানো হচ্ছে' : 'Showing 8 pickups' ?></div>
+            <div style="width:100%; margin-top:10px; font-size:12px; color:var(--text-muted);" id="resultCount"><?= $currentLang === 'bn' ? count($jsActivities) . ' টি পিকআপ দেখানো হচ্ছে' : 'Showing ' . count($jsActivities) . ' pickups' ?></div>
         </div>
 
         <!-- SECTION 3: ACTIVITY LIST -->
@@ -370,27 +382,35 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         </div>
 
         <!-- SECTION 4: IMPACT -->
+        <?php
+        $impactCO2 = round($statsWeight * 1.2, 1);
+        $impactWater = round($statsWeight * 20);
+        $impactEnergy = round($statsWeight * 5);
+        $carTrips = $impactCO2 > 0 ? max(1, round($impactCO2 / 24)) : 0;
+        $waterBottles = $impactWater > 0 ? max(1, round($impactWater / 1.5)) : 0;
+        $phoneCharges = $impactEnergy > 0 ? max(1, round($impactEnergy)) : 0;
+        ?>
         <div class="white-card impact-card">
             <h2 style="font-size:16px; font-weight:600;"><?= $currentLang === 'bn' ? 'আপনার পরিবেশগত অবদান' : 'Your Environmental Contribution' ?></h2>
             <p style="font-size:12px; color:var(--text-muted);"><?= $currentLang === 'bn' ? 'আপনার সম্পন্ন হওয়া পিকআপের উপর ভিত্তি করে' : 'Based on your completed pickups' ?></p>
             <div class="impact-grid">
                 <div class="impact-stat">
                     <div class="impact-icon" style="background:#E6F5EE; color:#1D9E75;"><i class="ti ti-cloud"></i></div>
-                    <span class="impact-val" style="color:#1D9E75;">336.5 kg</span>
+                    <span class="impact-val" style="color:#1D9E75;"><?= number_format($impactCO2, 1) ?> kg</span>
                     <span style="font-size:12px; color:var(--text-muted);"><?= $currentLang === 'bn' ? 'CO₂ প্রতিরোধ' : 'CO₂ Prevented' ?></span>
-                    <div style="font-size:11px; color:#1D9E75; margin-top:2px;"><?= $currentLang === 'bn' ? '= ১৪ গাড়ির ট্রিপ এড়ানো গেছে' : '= 14 car trips avoided' ?></div>
+                    <div style="font-size:11px; color:#1D9E75; margin-top:2px;"><?= $currentLang === 'bn' ? '= ' . $carTrips . ' গাড়ির ট্রিপ এড়ানো গেছে' : '= ' . $carTrips . ' car trips avoided' ?></div>
                 </div>
                 <div class="impact-stat">
                     <div class="impact-icon" style="background:#DBEAFE; color:#2563EB;"><i class="ti ti-droplet"></i></div>
-                    <span class="impact-val" style="color:#2563EB;">8,412 L</span>
+                    <span class="impact-val" style="color:#2563EB;"><?= number_format($impactWater) ?> L</span>
                     <span style="font-size:12px; color:var(--text-muted);"><?= $currentLang === 'bn' ? 'পানি সাশ্রয়' : 'Water Saved' ?></span>
-                    <div style="font-size:11px; color:#2563EB; margin-top:2px;"><?= $currentLang === 'bn' ? '= ৫,৬০৮ বোতল' : '= 5,608 bottles' ?></div>
+                    <div style="font-size:11px; color:#2563EB; margin-top:2px;"><?= $currentLang === 'bn' ? '= ' . $waterBottles . ' বোতল' : '= ' . $waterBottles . ' bottles' ?></div>
                 </div>
                 <div class="impact-stat">
                     <div class="impact-icon" style="background:#FEF3C7; color:#D97706;"><i class="ti ti-bolt"></i></div>
-                    <span class="impact-val" style="color:#D97706;">1,245 kWh</span>
+                    <span class="impact-val" style="color:#D97706;"><?= number_format($impactEnergy) ?> kWh</span>
                     <span style="font-size:12px; color:var(--text-muted);"><?= $currentLang === 'bn' ? 'শক্তি সাশ্রয়' : 'Energy Saved' ?></span>
-                    <div style="font-size:11px; color:#D97706; margin-top:2px;"><?= $currentLang === 'bn' ? '= ১,২৪৫ ফোন চার্জ' : '= 1,245 phone charges' ?></div>
+                    <div style="font-size:11px; color:#D97706; margin-top:2px;"><?= $currentLang === 'bn' ? '= ' . $phoneCharges . ' ফোন চার্জ' : '= ' . $phoneCharges . ' phone charges' ?></div>
                 </div>
             </div>
         </div>
@@ -406,7 +426,14 @@ $currentLang = $_SESSION['lang'] ?? 'en';
 
         <!-- SECTION 6: FOOTER -->
         <div class="footer-strip">
-            <span style="font-weight:500;">🌿 <?= $currentLang === 'bn' ? 'চালিয়ে যান! সিলভার টিয়ার থেকে আপনি ৩০০ পয়েন্ট দূরে।' : 'Keep going! You\'re 300 pts away from Silver tier.' ?></span>
+            <span style="font-weight:500;">🌿 <?php
+            $nextTierPts = $statsPoints >= 1500 ? 0 : ($statsPoints >= 500 ? 1500 - $statsPoints : 500 - $statsPoints);
+            if ($statsPoints >= 1500) {
+                echo $currentLang === 'bn' ? 'আপনি প্লাটিনাম স্তরে পৌঁছেছেন!' : 'You reached Platinum tier!';
+            } else {
+                echo $currentLang === 'bn' ? "চালিয়ে যান! পরবর্তী স্তর থেকে আপনি {$nextTierPts} পয়েন্ট দূরে।" : "Keep going! You're {$nextTierPts} pts away from next tier.";
+            }
+            ?></span>
             <a href="user_request_pickup.php" class="btn-schedule"><?= $currentLang === 'bn' ? 'পরবর্তী পিকআপ শিডিউল করুন →' : 'Schedule Next Pickup →' ?></a>
         </div>
         

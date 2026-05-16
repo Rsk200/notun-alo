@@ -17,8 +17,10 @@ $pickupStats = $pdo->prepare("SELECT
 $pickupStats->execute([$userId]);
 $pData = $pickupStats->fetch();
 
-$totalImpactKg = 66.3; 
-$co2Saved = 336.5;
+$impactQuery = $pdo->prepare("SELECT COALESCE(SUM(estimated_weight),0) as total_kg FROM pickups WHERE user_id = ? AND status = 'completed'");
+$impactQuery->execute([$userId]);
+$totalImpactKg = (float)$impactQuery->fetchColumn();
+$co2Saved = round($totalImpactKg * 1.2, 1); // ~1.2 kg CO₂ saved per kg recycled
 
 $leaderboardQuery = $pdo->query("SELECT u.name, r.lifetime_points 
     FROM users u JOIN rewards r ON u.id = r.user_id 

@@ -70,6 +70,17 @@ try {
             "ALTER TABLE user_ml_scores ADD CONSTRAINT fk_user_ml_scores_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE",
         ];
 
+        // Add UNIQUE constraint on email (prevents duplicate accounts)
+        $uniqueFixes = [
+            "ALTER TABLE users ADD CONSTRAINT uq_users_email UNIQUE (email)",
+        ];
+        $uk = 0;
+        foreach ($uniqueFixes as $uq) {
+            if (runAlter($pdo, $uq)) {
+                $uk++;
+            }
+        }
+
         $ck = 0;
         foreach ($constraints as $con) {
             if (runAlter($pdo, $con)) {
@@ -77,7 +88,7 @@ try {
             }
         }
 
-        echo "<p>AUTO_INCREMENT: $ok/6 tables fixed. Constraints: $ck/7 added.</p>";
+        echo "<p>AUTO_INCREMENT: $ok/6 tables fixed. Unique: $uk/1 added. Constraints: $ck/7 added.</p>";
 
         // Fix collation mismatch (MySQL 8.0 default utf8mb4_0900_ai_ci vs MariaDB/older utf8mb4_general_ci)
         echo "<p>Fixing table collations...</p>";

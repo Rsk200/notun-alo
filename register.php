@@ -37,20 +37,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($pass !== $pass2) {
         $error = $t('Passwords do not match.', 'পাসওয়ার্ড মেলে না।');
     } else {
+        $pass = trim($pass);
         $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
         $stmt->execute([$email]);
         if ($stmt->fetch()) {
             $error = $t('An account with this email already exists.', 'এই ইমেলে ইতিমধ্যে একটি অ্যাকাউন্ট বিদ্যমান।');
         } else {
-            $hashed = password_hash($pass, PASSWORD_BCRYPT);
-            $stmt = $pdo->prepare(
-                "INSERT INTO users (name, email, password, address, phone, role) VALUES (?, ?, ?, ?, ?, 'user')"
-            );
-            $stmt->execute([$name, $email, $hashed, $address, $phone]);
-            $newId = $pdo->lastInsertId();
-            $pdo->prepare("INSERT INTO rewards (user_id, total_points) VALUES (?, 0)")->execute([$newId]);
-            setFlash('success', $t('Account created! Please log in.', 'অ্যাকাউন্ট তৈরি! অনুগ্রহ করে লগইন করুন।'));
-            redirect('login.php');
+            try {
+                $pdo->beginTransaction();
+                $hashed = password_hash($pass, PASSWORD_BCRYPT);
+                $stmt = $pdo->prepare(
+                    "INSERT INTO users (name, email, password, address, phone, role) VALUES (?, ?, ?, ?, ?, 'user')"
+                );
+                $stmt->execute([$name, $email, $hashed, $address, $phone]);
+                $newId = $pdo->lastInsertId();
+                $pdo->prepare("INSERT INTO rewards (user_id, total_points) VALUES (?, 0)")->execute([$newId]);
+                $pdo->commit();
+                setFlash('success', $t('Account created! Please log in.', 'অ্যাকাউন্ট তৈরি! অনুগ্রহ করে লগইন করুন।'));
+                redirect('login.php');
+            } catch (Throwable $e) {
+                $pdo->rollBack();
+                $error = $t('Registration failed. Please try again.', 'রেজিস্ট্রেশন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।');
+            }
         }
     }
 }
