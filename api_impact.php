@@ -12,9 +12,72 @@ header('Content-Type: application/json');
 $action = $_GET['action'] ?? '';
 $userId = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
 
-if (!$userId || !in_array($action, ['impact', 'forecast', 'percentile_rank'])) {
+if (!$userId || !in_array($action, ['impact', 'forecast', 'percentile_rank', 'monthly'])) {
     echo json_encode(['error' => 'invalid_request']);
     exit;
+}
+
+// --------------- Action: monthly ---------------
+if ($action === 'monthly') {
+    try {
+        $stmt = $pdo->prepare("
+            SELECT 
+                MONTH(created_at) AS m,
+                YEAR(created_at) AS y,
+                category,
+                SUM(estimated_weight) AS kg
+            FROM pickups
+            WHERE user_id = ? AND status = 'completed'
+              AND created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+            GROUP BY y, m, category
+            ORDER BY y, m, category
+        ");
+        $stmt->execute([$userId]);
+        $rows = $stmt->fetchAll();
+
+        // Build month labels for the last 12 months
+        $months = [];
+        $now = new DateTime();
+        for ($i = 11; $i >= 0; $i--) {
+            $d = (clone $now)->modify("-{$i} months");
+            $months[$d->format('Y-n')] = $d->format('M Y');
+        }
+
+        // Collect all unique categories
+        $cats = [];
+        foreach ($rows as $r) {
+            $key = $r['y'] . '-' . $r['m'];
+            if (!isset($cats[$r['category']])) $cats[$r['category']] = [];
+            $cats[$r['category']][$key] = (float)$r['kg'];
+        }
+
+        // Build datasets
+        $colors = ['#1D9E75', '#2563EB', '#7C3AED', '#D97706', '#EF4444', '#EC4899'];
+        $ci = 0;
+        $datasets = [];
+        foreach ($cats as $cat => $data) {
+            $vals = [];
+            foreach (array_keys($months) as $key) {
+                $vals[] = $data[$key] ?? 0;
+            }
+            $datasets[] = [
+                'label' => $cat,
+                'backgroundColor' => $colors[$ci % count($colors)],
+                'data' => $vals,
+                'borderRadius' => 4,
+            ];
+            $ci++;
+        }
+
+        echo json_encode([
+            'labels' => array_values($months),
+            'datasets' => $datasets,
+        ]);
+        exit;
+    } catch (Throwable $e) {
+        echo json_encode(['error' => 'database_error', 'message' => $e->getMessage()]);
+        exit;
+    }
 }
 
 // --------------- Action: percentile_rank ---------------
@@ -206,42 +269,6 @@ if ($action === 'impact') {
         $monthStmt->execute([$userId]);
         $thisMonthKg = (float)$monthStmt->fetchColumn();
 
-        // City averages for comparison
-        $cityAvg = ['co2' => 0, 'water' => 0, 'energy' => 0];
-        $userAddr = $row['address'] ?? '';
-        $userCity = extractCity($userAddr);
-        if ($userCity) {
-            $cityLike = '%' . $userCity . '%';
-            $avgStmt = $pdo->prepare("
-                SELECT
-                    AVG(u_stats.co2) AS avg_co2,
-                    AVG(u_stats.water) AS avg_water,
-                    AVG(u_stats.energy) AS avg_energy
-                FROM (
-                    SELECT
-                        u.id,
-                        COALESCE(SUM(p.estimated_weight * COALESCE(ef.co2_sa_adjusted, ca.avg_co2, 1.2)), 0) AS co2,
-                        COALESCE(SUM(p.estimated_weight * COALESCE(ef.water_liters_per_kg, ca.avg_water_liters_per_kg, 20)), 0) AS water,
-                        COALESCE(SUM(p.estimated_weight * COALESCE(ef.energy_kwh_per_kg, ca.avg_energy_kwh_per_kg, 5)), 0) AS energy
-                    FROM users u
-                    LEFT JOIN pickups p ON p.user_id = u.id AND p.status = 'completed'
-                    LEFT JOIN emission_factors ef ON ef.category = p.category COLLATE utf8mb4_unicode_ci AND p.subcategory IS NOT NULL AND p.subcategory <> '' AND ef.subcategory = p.subcategory COLLATE utf8mb4_unicode_ci
-                    LEFT JOIN category_averages ca ON ca.category = p.category COLLATE utf8mb4_unicode_ci
-                    WHERE u.address LIKE ? COLLATE utf8mb4_unicode_ci AND u.role = 'user'
-                    GROUP BY u.id
-                ) u_stats
-            ");
-            $avgStmt->execute([$cityLike]);
-            $avgRow = $avgStmt->fetch();
-            if ($avgRow) {
-                $cityAvg = [
-                    'co2'    => round((float)$avgRow['avg_co2'], 1),
-                    'water'  => round((float)$avgRow['avg_water']),
-                    'energy' => round((float)$avgRow['avg_energy'], 1),
-                ];
-            }
-        }
-
         // Gamification Algorithm: Eco-Rank
         // Base XP for even starting a journey + impact-based XP
         $baseXp = (int)$row['total_pickups'] > 0 ? 50 : 0;
@@ -293,8 +320,6 @@ if ($action === 'impact') {
             "completed_pickups" => (int)$row['completed_pickups'],
             "total_kg_recycled" => round((float)$row['total_kg_recycled'], 2),
             "this_month_kg" => round($thisMonthKg, 2),
-            "city" => $userCity ?? '',
-            "city_averages" => $cityAvg,
             "co2_saved_kg" => round($co2, 2),
             "water_saved_liters" => round($water, 2),
             "energy_saved_kwh" => round($energy, 2),

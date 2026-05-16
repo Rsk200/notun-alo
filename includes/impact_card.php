@@ -260,25 +260,25 @@ $currentLang = $_SESSION['lang'] ?? 'en';
     </div>
 
     <!-- SECTION 6: Comparison -->
-    <div class="white-card comp-card" id="compCard" style="display:none;">
+    <div class="white-card comp-card">
         <h3 class="chart-title" style="font-size:18px; margin-bottom:8px;"><?= $currentLang === 'bn' ? 'আপনি কীভাবে তুলনা করেন' : 'How You Compare' ?></h3>
-        <p class="chart-sub" style="margin-bottom:32px;" id="compSub"><?= $currentLang === 'bn' ? 'আপনার পারফরম্যান্স বনাম শহরের গড়' : 'Your performance vs. city average' ?></p>
+        <p class="chart-sub" style="margin-bottom:32px;"><?= $currentLang === 'bn' ? 'আপনার পারফরম্যান্স বনাম ঢাকার শহরের গড়' : 'Your performance vs. Dhaka\'s city average' ?></p>
         
         <div>
             <!-- CO2 -->
             <div class="comp-row">
                 <div class="comp-header">
                     <span class="comp-cat"><i class="ti ti-cloud" style="color:var(--brand-primary)"></i> <?= $currentLang === 'bn' ? 'CO₂ প্রতিরোধ' : 'CO₂ Prevented' ?></span>
-                    <span class="comp-badge badge" style="background:var(--success-bg); color:var(--success-text);" id="compCo2Badge">—</span>
+                    <span class="comp-badge badge" style="background:var(--success-bg); color:var(--success-text);">2.4× <?= $currentLang === 'bn' ? 'গড়ের চেয়ে বেশি' : 'ABOVE AVG' ?></span>
                 </div>
                 <div class="comp-bar-container">
                     <div class="comp-label-top">
-                        <span id="compCo2You"><?= $currentLang === 'bn' ? 'আপনি' : 'You' ?>: —</span>
-                        <span style="position:absolute; left:50%; margin-left:-25px; color:var(--text-muted)" id="compCo2Avg"><?= $currentLang === 'bn' ? 'গড়' : 'Avg' ?>: —</span>
+                        <span><?= $currentLang === 'bn' ? 'আপনি' : 'You' ?>: 184.8 kg</span>
+                        <span style="position:absolute; left:41%; margin-left:-25px; color:var(--text-muted)"><?= $currentLang === 'bn' ? 'গড়' : 'Avg' ?>: 76.2 kg</span>
                     </div>
                     <div class="comp-bar-bg">
-                        <div class="comp-bar-fill" id="compCo2Fill" style="background:var(--brand-primary); width:50%;"></div>
-                        <div class="avg-marker" id="compCo2Marker" style="left:50%;"></div>
+                        <div class="comp-bar-fill" style="background:var(--brand-primary); width:100%;"></div>
+                        <div class="avg-marker" style="left:41%;"></div>
                     </div>
                 </div>
             </div>
@@ -286,16 +286,16 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             <div class="comp-row">
                 <div class="comp-header">
                     <span class="comp-cat"><i class="ti ti-droplet" style="color:var(--blue)"></i> <?= $currentLang === 'bn' ? 'পানি সাশ্রয়' : 'Water Saved' ?></span>
-                    <span class="comp-badge badge" style="background:var(--success-bg); color:var(--success-text);" id="compWaterBadge">—</span>
+                    <span class="comp-badge badge" style="background:var(--success-bg); color:var(--success-text);">1.7× <?= $currentLang === 'bn' ? 'গড়ের চেয়ে বেশি' : 'ABOVE AVG' ?></span>
                 </div>
                 <div class="comp-bar-container">
                     <div class="comp-label-top">
-                        <span id="compWaterYou"><?= $currentLang === 'bn' ? 'আপনি' : 'You' ?>: —</span>
-                        <span style="position:absolute; left:50%; margin-left:-25px; color:var(--text-muted)" id="compWaterAvg"><?= $currentLang === 'bn' ? 'গড়' : 'Avg' ?>: —</span>
+                        <span><?= $currentLang === 'bn' ? 'আপনি' : 'You' ?>: 1,516 L</span>
+                        <span style="position:absolute; left:58%; margin-left:-25px; color:var(--text-muted)"><?= $currentLang === 'bn' ? 'গড়' : 'Avg' ?>: 892 L</span>
                     </div>
                     <div class="comp-bar-bg">
-                        <div class="comp-bar-fill" id="compWaterFill" style="background:var(--blue); width:50%;"></div>
-                        <div class="avg-marker" id="compWaterMarker" style="left:50%;"></div>
+                        <div class="comp-bar-fill" style="background:var(--blue); width:100%;"></div>
+                        <div class="avg-marker" style="left:58%;"></div>
                     </div>
                 </div>
             </div>
@@ -469,9 +469,6 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         if(co2Sub) co2Sub.textContent = data.car_trip_equivalent.toLocaleString();
         const monthEl = document.getElementById('m-month');
         if(monthEl) monthEl.innerHTML = `+${data.this_month_kg.toLocaleString(undefined, {minimumFractionDigits:1, maximumFractionDigits:1})} ${bn ? 'কেজি এই মাসে' : 'kg this month'}`;
-
-        // Comparison section
-        updateComparison(data);
         
         const shareCo2 = document.getElementById('share-co2');
         if(shareCo2) shareCo2.innerHTML = `${data.co2_saved_kg.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1})}<span style="font-size: 16px;">kg</span>`;
@@ -479,31 +476,6 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         if(shareWater) shareWater.innerHTML = `${data.water_saved_liters.toLocaleString()}<span style="font-size: 16px;">L</span>`;
         const shareEnergy = document.getElementById('share-energy');
         if(shareEnergy) shareEnergy.innerHTML = `${data.energy_saved_kwh.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1})}<span style="font-size: 16px;">kWh</span>`;
-    }
-
-    function updateComparison(data) {
-        const compCard = document.getElementById('compCard');
-        const ca = data.city_averages;
-        if (!ca || !data.city || ca.co2 <= 0) { compCard.style.display = 'none'; return; }
-        compCard.style.display = '';
-
-        // CO2
-        const co2Ratio = data.co2_saved_kg / ca.co2;
-        const co2Pct = Math.min(co2Ratio * 50, 100);
-        document.getElementById('compCo2Badge').textContent = co2Ratio >= 1.1 ? `${co2Ratio.toFixed(1)}× ${bn ? 'গড়ের চেয়ে বেশি' : 'ABOVE AVG'}` : `${bn ? 'গড়ের নিচে' : 'BELOW AVG'}`;
-        document.getElementById('compCo2You').textContent = `${bn ? 'আপনি' : 'You'}: ${data.co2_saved_kg.toLocaleString(undefined, {minimumFractionDigits:1, maximumFractionDigits:1})} kg`;
-        document.getElementById('compCo2Avg').textContent = `${bn ? 'গড়' : 'Avg'}: ${ca.co2.toLocaleString(undefined, {minimumFractionDigits:1, maximumFractionDigits:1})} kg`;
-        document.getElementById('compCo2Fill').style.width = co2Pct + '%';
-        document.getElementById('compCo2Marker').style.left = Math.min(50, co2Pct) + '%';
-
-        // Water
-        const waterRatio = data.water_saved_liters / ca.water;
-        const waterPct = Math.min(waterRatio * 50, 100);
-        document.getElementById('compWaterBadge').textContent = waterRatio >= 1.1 ? `${waterRatio.toFixed(1)}× ${bn ? 'গড়ের চেয়ে বেশি' : 'ABOVE AVG'}` : `${bn ? 'গড়ের নিচে' : 'BELOW AVG'}`;
-        document.getElementById('compWaterYou').textContent = `${bn ? 'আপনি' : 'You'}: ${data.water_saved_liters.toLocaleString()} L`;
-        document.getElementById('compWaterAvg').textContent = `${bn ? 'গড়' : 'Avg'}: ${ca.water.toLocaleString()} L`;
-        document.getElementById('compWaterFill').style.width = waterPct + '%';
-        document.getElementById('compWaterMarker').style.left = Math.min(50, waterPct) + '%';
     }
 
     function animateValue(id, start, end, duration, decimals) {
@@ -639,29 +611,28 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         const canvas = document.getElementById('monthlyChart');
         if(!canvas) return;
         const ctx = canvas.getContext('2d');
-        window.monthlyChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: (function() {
-                    const yr = <?= date('Y') ?>;
-                    return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].map(m => m + " " + yr);
-                }()),
-                datasets: [
-                    { label: 'Paper', backgroundColor: '#1D9E75', data: [8,10,12,9,15,11,13,14,10,12,11,9], borderRadius: 4 },
-                    { label: 'Plastic', backgroundColor: '#2563EB', data: [5,6,4,7,8,6,9,7,5,8,6,7], borderRadius: 4 },
-                    { label: 'Electronics', backgroundColor: '#7C3AED', data: [2,0,3,0,4,0,2,1,0,3,0,2], borderRadius: 4 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6, font: { size: 11 } } } },
-                scales: {
-                    y: { stacked: false, grid: { color: '#F3F4F6' }, border: { display: false } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
+        fetch(`api_impact.php?action=monthly&user_id=${userId}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data.error) { canvas.parentElement.innerHTML = '<p style="color:var(--text-muted);padding:2rem;text-align:center;">Unable to load chart data.</p>'; return; }
+                window.monthlyChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: data.datasets.map(d => ({ ...d, borderRadius: 4 }))
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6, font: { size: 11 } } } },
+                        scales: {
+                            y: { stacked: false, grid: { color: '#F3F4F6' }, border: { display: false }, beginAtZero: true },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            })
+            .catch(() => { canvas.parentElement.innerHTML = '<p style="color:var(--text-muted);padding:2rem;text-align:center;">Unable to load chart data.</p>'; });
     }
     initMonthlyChart();
 
