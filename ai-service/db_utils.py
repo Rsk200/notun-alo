@@ -1,10 +1,14 @@
 import os
 import mysql.connector
-from dotenv import load_dotenv
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
-load_dotenv(BASE_DIR / ".env")
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv(BASE_DIR / ".env")
+except ImportError:
+    pass
 
 DB_CONFIG = {
     "host": os.getenv("NOTUN_ALO_DB_HOST") or os.getenv("DB_HOST") or "localhost",
@@ -36,6 +40,6 @@ SELECT
 FROM pickups p
 LEFT JOIN emission_factors ef ON ef.category = p.category COLLATE utf8mb4_unicode_ci AND p.subcategory IS NOT NULL AND p.subcategory <> '' AND ef.subcategory = p.subcategory COLLATE utf8mb4_unicode_ci
 LEFT JOIN category_averages ca ON ca.category = p.category COLLATE utf8mb4_unicode_ci
-WHERE p.user_id = %s AND p.status = 'completed'
+WHERE p.user_id = %s AND p.status IN ('completed', 'scheduled')
 ORDER BY p.schedule_date ASC, p.id ASC
 """

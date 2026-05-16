@@ -1,268 +1,632 @@
 <?php
 $impactUserId = isset($impactUserId) ? (int)$impactUserId : (int)($_SESSION['user_id'] ?? 1);
 $currentLang = $_SESSION['lang'] ?? 'en';
-
-// Page-specific bilingual dictionary
-$i18n = [
-    'en' => [
-        'hero_title' => 'Start Your Eco-Journey',
-        'hero_sub' => 'Your recycling can save 100+ kg of CO2 per year. Request your first pickup to see your impact!',
-        'req_pickup' => 'Request Pickup',
-        'lvl' => 'LVL',
-        'rank_sub' => 'Keep recycling to unlock the next rank!',
-        'xp_to_next' => 'XP (Rank Progress: %s%%)',
-        'next_tier' => 'Next Tier',
-        'streak' => '1 Month Streak',
-        'co2_label' => 'CO₂ PREVENTED',
-        'water_label' => 'WATER SAVED',
-        'energy_label' => 'ENERGY SAVED',
-        'co2_sub' => 'Total emissions avoided',
-        'water_sub' => 'Clean water preserved',
-        'energy_sub' => 'Total power preserved',
-        'forecast_title' => '90-Day AI Forecast',
-        'forecast_sub' => 'Projected impact based on your recycling trends.',
-        'locked_title' => 'Complete 1 pickup to unlock your 90-day AI forecast.',
-        'book_pickup' => 'Book a Pickup',
-        'trend_title' => 'Monthly Impact Trend',
-        'trend_sub' => 'Breakdown of CO₂ saved by category each month.',
-        'trend_empty' => 'Your impact chart is waiting',
-        'trend_steps' => 'How to get started in 3 easy steps:',
-        'step1' => 'Request a recycling pickup from your dashboard',
-        'step2' => 'Wait for our agent to collect and weigh items',
-        'step3' => 'Watch your impact grow with every completion!',
-    ],
-    'bn' => [
-        'hero_title' => 'আপনার পরিবেশবান্ধব যাত্রা শুরু করুন',
-        'hero_sub' => 'আপনার রিসাইক্লিং বছরে ১০০+ কেজি CO2 সাশ্রয় করতে পারে। আপনার প্রভাব দেখতে প্রথম পিকআপ অনুরোধ করুন!',
-        'req_pickup' => 'পিকআপ অনুরোধ করুন',
-        'lvl' => 'লেভেল',
-        'rank_sub' => 'পরবর্তী র‍্যাঙ্ক আনলক করতে রিসাইক্লিং চালিয়ে যান!',
-        'xp_to_next' => 'XP (অগ্রগতি: %s%%)',
-        'next_tier' => 'পরবর্তী ধাপ',
-        'streak' => '১ মাসের ধারাবাহিকতা',
-        'co2_label' => 'প্রতিরোধকৃত CO₂',
-        'water_label' => 'সাশ্রয়কৃত পানি',
-        'energy_label' => 'সাশ্রয়কৃত শক্তি',
-        'co2_sub' => 'মোট নির্গমন এড়ানো হয়েছে',
-        'water_sub' => 'বিশুদ্ধ পানি সংরক্ষিত',
-        'energy_sub' => 'মোট বিদ্যুৎ সংরক্ষিত',
-        'forecast_title' => '৯০-দিনের AI পূর্বাভাস',
-        'forecast_sub' => 'আপনার রিসাইক্লিং প্রবণতার উপর ভিত্তি করে সম্ভাব্য প্রভাব।',
-        'locked_title' => 'আপনার ৯০-দিনের AI পূর্বাভাস আনলক করতে ১টি পিকআপ সম্পন্ন করুন।',
-        'book_pickup' => 'পিকআপ বুক করুন',
-        'trend_title' => 'মাসিক প্রভাবের প্রবণতা',
-        'trend_sub' => 'প্রতি মাসে ক্যাটাগরি অনুযায়ী সাশ্রয়কৃত CO₂ এর বিভাজন।',
-        'trend_empty' => 'আপনার প্রভাব চার্ট অপেক্ষা করছে',
-        'trend_steps' => 'কিভাবে শুরু করবেন ৩টি সহজ ধাপে:',
-        'step1' => 'আপনার ড্যাশবোর্ড থেকে একটি পিকআপ অনুরোধ করুন',
-        'step2' => 'আমাদের এজেন্টের সংগ্রহ এবং ওজন করার জন্য অপেক্ষা করুন',
-        'step3' => 'প্রতিটি কাজ সম্পন্ন হওয়ার সাথে সাথে আপনার প্রভাব বাড়তে দেখুন!',
-    ]
-];
-
-$t = $i18n[$currentLang];
 ?>
 <div class="impact-content-root" id="impact-root" data-user-id="<?= $impactUserId ?>" data-lang="<?= $currentLang ?>">
     <style>
-        :root {
-            --brand-primary: #1D9E75;
-            --brand-light: #E6F5EE;
-            --brand-dark: #0A2E1E;
-            --text-primary: #111827;
-            --text-secondary: #6B7280;
-            --text-muted: #9CA3AF;
-            --border: #E5E7EB;
-            --white-card: #FFFFFF;
-            --gold: #D97706;
-            --blue: #2563EB;
+        /* ===== IMPACT CARD DARK MODE OVERRIDES ===== */
+        body.dark-mode .impact-callout {
+            background: #0a1f12 !important;
+            border-color: #1e3222 !important;
+            border-left-color: #34d399 !important;
         }
-
-        .impact-content-root { font-family: 'Inter', 'Noto Sans Bengali', sans-serif; color: var(--text-secondary); }
-        
-        .white-card {
-            background: var(--white-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.02);
-            margin-bottom: 24px;
+        body.dark-mode .callout-main { color: #34d399 !important; }
+        body.dark-mode .tab-btn {
+            background: #0b130c !important;
+            border-color: #1e3222 !important;
+            color: #64748B !important;
         }
-
-        /* Banner */
-        .hero-banner { 
-            background: linear-gradient(135deg, #065F46, #1D9E75);
-            display: flex; 
-            align-items: center; 
-            gap: 20px; 
-            position: relative;
-            color: white;
-            border: none;
+        body.dark-mode .tab-btn.active {
+            background: #0f1a10 !important;
+            color: #E2E8F0 !important;
+            border-top-color: #34d399 !important;
         }
-        .banner-icon { width: 56px; height: 56px; border-radius: 16px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; }
-        .banner-text h3 { font-size: 20px; font-weight: 700; margin: 0; }
-        .banner-text p { font-size: 14px; opacity: 0.85; margin: 6px 0 0 0; }
-        .banner-cta { margin-left: auto; background: white; color: #065F46; border: none; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; transition: 0.2s; }
-        .banner-cta:hover { transform: scale(1.03); }
-        .banner-close { position: absolute; top: 12px; right: 12px; background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 22px; }
+        body.dark-mode .tab-content {
+            background: #0f1a10 !important;
+            border-color: #1e3222 !important;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.4) !important;
+        }
+        body.dark-mode .forecast-pill {
+            background: #0b130c !important;
+            border-color: #1e3222 !important;
+        }
+        body.dark-mode .f-month { color: #94A3B8 !important; }
+        body.dark-mode .impact-footer {
+            background: #0a1f12 !important;
+            border-color: #1e3222 !important;
+        }
+        body.dark-mode .footer-text { color: #34d399 !important; }
+        body.dark-mode .comp-bar-bg { background: #152018 !important; }
+        body.dark-mode .xp-bar-wrapper { background: #152018 !important; }
+        body.dark-mode .badge-name { color: #E2E8F0 !important; }
+        body.dark-mode .gami-hero { border-left-color: #FBBF24 !important; }
+        body.dark-mode .toggle-btn {
+            border-color: #1e3222 !important;
+            color: #94A3B8 !important;
+        }
+        body.dark-mode .toggle-btn.active { background: #34d399 !important; border-color: #34d399 !important; color: #0a1f12 !important; }
+        /* Section 1: Gamification Hero */
+        .gami-hero { display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 32px; border-left: 6px solid var(--gold); }
+        .lvl-badge-block { display: flex; align-items: center; }
+        .lvl-circle { width: 80px; height: 80px; border: 4px solid var(--gold); border-radius: 50%; background: var(--gold-bg); display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(217,119,6,0.15); }
+        .lvl-circle .lvl-label { font-size: 11px; font-weight: 600; color: var(--gold-text); text-transform: uppercase; }
+        .lvl-circle .lvl-val { font-size: 32px; font-weight: 800; color: var(--gold); line-height: 1; }
+        .badge-info { margin-left: 20px; }
+        .badge-name { font-size: 24px; font-weight: 800; color: var(--text-primary); margin: 0; }
+        .badge-sub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+        .streak-pill { display: inline-block; background: var(--gold-bg); color: var(--gold-text); font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 99px; margin-top: 8px; }
 
-        /* Gamification */
-        .gami-card { display: flex; align-items: center; gap: 24px; border-left: 4px solid var(--gold); }
-        .level-badge { width: 64px; height: 64px; border-radius: 16px; background: #FFFBEB; border: 1.5px solid var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
-        .lvl-label { font-size: 10px; font-weight: 700; color: var(--gold); text-transform: uppercase; }
-        .lvl-num { font-size: 22px; font-weight: 800; color: var(--gold); }
-        .rank-name { font-size: 20px; font-weight: 700; color: var(--text-primary); margin: 0; }
-        .xp-bar-wrapper { margin-top: 14px; height: 8px; background: #F3F4F6; border-radius: 99px; overflow: hidden; }
-        .xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), #F59E0B); width: 0%; transition: width 1.4s ease; }
-        .streak-pill { display: inline-block; background: #F0FDF4; color: #166534; font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 99px; margin-top: 12px; border: 1px solid #D1FAE5; }
+        .xp-container { flex: 1; max-width: 450px; }
+        .xp-label-row { display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 10px; }
+        .xp-bar-wrapper { height: 14px; background: var(--border-light); border-radius: 99px; position: relative; overflow: hidden; margin-bottom: 10px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
+        .xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), #F59E0B); width: 0%; border-radius: 99px; transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .xp-sub { font-size: 11px; color: var(--text-muted); text-align: center; }
 
-        /* Metrics */
-        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px; }
-        .metric-label { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
-        .metric-val { font-size: 32px; font-weight: 700; margin: 12px 0 6px 0; color: var(--text-primary); }
-        .co2-val { color: var(--brand-primary); }
-        .water-val { color: var(--blue); }
-        .energy-val { color: var(--gold); }
-        .metric-divider { height: 1px; background: var(--border); margin: 16px 0 12px 0; }
-        .metric-equiv { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; font-weight: 500; }
+        .next-tier-preview { text-align: right; }
+        .next-label { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+        .next-badge { font-size: 14px; font-weight: 600; color: var(--text-secondary); margin: 4px 0; }
+        .streak-pill-outline { border: 1px solid var(--border); font-size: 12px; color: var(--text-secondary); padding: 4px 12px; border-radius: 99px; display: inline-block; margin-top: 8px; }
 
-        /* Fun Fact */
-        .fun-fact-box { background: #F0FDF4; border: 1px solid #D1FAE5; border-radius: 16px; padding: 18px 24px; display: flex; gap: 16px; align-items: center; margin-bottom: 24px; min-height: 80px; }
-        .fact-icon { color: var(--brand-primary); font-size: 24px; flex-shrink: 0; }
-        .fact-content { font-size: 14px; color: var(--text-primary); line-height: 1.6; }
+        /* HERO STAT (CO2) */
+        .hero-metric-card { grid-column: span 3; display: flex; align-items: center; gap: 40px; padding: 40px; border-bottom: 4px solid var(--brand-primary); }
+        .hero-metric-info { flex: 1; }
+        .hero-m-label { font-size: 12px; font-weight: 700; color: var(--brand-primary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: block; }
+        .hero-m-num { font-size: 56px; font-weight: 800; color: var(--text-primary); line-height: 1; }
+        .hero-m-unit { font-size: 24px; font-weight: 500; color: var(--text-muted); }
+        .hero-m-sub { font-size: 16px; color: var(--text-secondary); margin-top: 16px; font-weight: 500; }
+        .summary-highlight { font-weight: 800; color: var(--brand-primary); }
+        .hero-m-visual { width: 120px; height: 120px; background: var(--brand-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 64px; color: var(--brand-primary); flex-shrink: 0; }
 
-        /* Forecast */
-        .forecast-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-radius: 12px; background: var(--bg-subtle); border: 1px solid var(--border); margin-bottom: 8px; }
-        .forecast-month { font-weight: 600; color: var(--text-primary); }
-        .forecast-vals { font-size: 14px; color: var(--brand-primary); font-weight: 600; }
-        .locked-overlay { padding: 40px; text-align: center; background: var(--bg-subtle); border: 1px dashed var(--border); border-radius: 16px; }
+        /* SUPPORTING METRICS */
+        .supporting-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 24px; }
+        .s-metric-card { padding: 24px; display: flex; align-items: center; gap: 20px; }
+        .s-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+        .s-info .m-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; display: block; }
+        .s-info .m-num { font-size: 28px; font-weight: 700; color: var(--text-primary); }
+        .s-info .m-unit { font-size: 16px; font-weight: 400; color: var(--text-muted); }
+        .m-trend { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; }
 
-        @media (max-width: 768px) { .metrics-grid { grid-template-columns: 1fr; } .hero-banner, .gami-card { flex-direction: column; text-align: center; } .banner-cta { margin: 10px 0 0 0; } }
+        /* Section 3: Summary Callout */
+        .impact-callout { background: #F0FDF4; border: 1px solid #D1FAE5; border-left: 4px solid var(--brand-primary); border-radius: 0 12px 12px 0; padding: 16px 20px; display: flex; align-items: flex-start; gap: 14px; position: relative; }
+        .callout-icon { font-size: 22px; color: var(--brand-primary); flex-shrink: 0; margin-top: 2px; }
+        .callout-main { font-size: 14px; color: #065F46; line-height: 1.7; }
+        .callout-sub { font-size: 13px; color: var(--brand-primary); font-weight: 500; margin-top: 6px; }
+        .share-btn { border: 1px solid var(--brand-primary); color: var(--brand-primary); background: transparent; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-left: auto; align-self: center; transition: 0.2s; }
+        .share-btn:hover { background: var(--brand-primary); color: white; }
+
+        /* TABS */
+        .tab-component { margin-bottom: 24px; }
+        .tab-nav { display: flex; gap: 8px; margin-bottom: 0; padding: 0 12px; }
+        .tab-btn { padding: 12px 24px; border-radius: 12px 12px 0 0; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); border-bottom: none; background: var(--bg-subtle, #F9FAFB); color: var(--text-muted); transition: background 0.3s, color 0.3s, border-color 0.3s; position: relative; top: 1px; }
+        .tab-btn.active { background: var(--bg-card, white); color: var(--text-primary); z-index: 1; border-top: 3px solid var(--brand-primary); }
+        .tab-content { background: var(--bg-card, white); border: 1px solid var(--border); border-radius: 0 16px 16px 16px; padding: 32px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); min-height: 350px; transition: background 0.3s, border-color 0.3s; }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CHARTS */
+        .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .chart-title { font-size: 18px; font-weight: 600; color: var(--text-primary); }
+        .chart-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .ai-pill { background: var(--purple-bg); color: var(--purple); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 99px; }
+        .forecast-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+        .forecast-pill { background: var(--bg-subtle, #F9FAFB); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; transition: background 0.3s, border-color 0.3s; }
+        .f-month { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+        .f-vals { font-size: 14px; font-weight: 600; margin-top: 4px; }
+        .toggle-btn { padding: 5px 10px; border-radius: 99px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); color: var(--text-secondary); background: transparent; transition: 0.2s; }
+        .toggle-btn.active { background: var(--brand-primary); color: white; border-color: var(--brand-primary); }
+
+        /* COMPARISON */
+        .comp-card { padding: 32px; }
+        .comp-row { margin-bottom: 24px; }
+        .comp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .comp-cat { font-size: 14px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+        .comp-badge { font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 99px; }
+        .comp-bar-container { position: relative; }
+        .comp-label-top { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+        .comp-bar-bg { height: 12px; background: var(--border-light, #F3F4F6); border-radius: 99px; position: relative; overflow: hidden; transition: background 0.3s; }
+        .comp-bar-fill { height: 100%; border-radius: 99px; }
+        .avg-marker { position: absolute; top: 0; height: 100%; width: 2px; background: #9CA3AF; z-index: 2; }
+
+        /* IMPACT CALLOUT */
+        .impact-callout { background: var(--brand-light, #F0FDF4); border: 1px solid #D1FAE5; border-left: 4px solid var(--brand-primary); border-radius: 0 12px 12px 0; padding: 16px 20px; display: flex; align-items: flex-start; gap: 14px; position: relative; transition: background 0.3s, border-color 0.3s; }
+
+        /* FOOTER */
+        .impact-footer { background: var(--brand-light, #F0FDF4); border: 1px solid #D1FAE5; border-radius: 16px; padding: 20px 28px; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s, border-color 0.3s; }
+        .footer-text { font-size: 14px; font-weight: 500; color: #065F46; }
+        .footer-cta { border: 1.5px solid var(--brand-primary); color: var(--brand-primary); background: transparent; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; transition: 0.2s; }
+        .footer-cta:hover { background: var(--brand-primary); color: white; }
+
+        @media (max-width: 768px) { .supporting-grid, .forecast-grid { grid-template-columns: 1fr; } .gami-hero { flex-direction: column; text-align: center; } .next-tier-preview { text-align: center; } }
     </style>
 
-    <!-- 1. Hero CTA Banner -->
-    <div id="hero-banner" class="white-card hero-banner" style="display: none;">
-        <button class="banner-close" onclick="document.getElementById('hero-banner').remove()">×</button>
-        <div class="banner-icon"><i class="ti ti-leaf"></i></div>
-        <div class="banner-text">
-            <h3><?= $t['hero_title'] ?></h3>
-            <p><?= $t['hero_sub'] ?></p>
-        </div>
-        <a href="user_request_pickup.php" class="banner-cta"><?= $t['req_pickup'] ?></a>
-    </div>
-
-    <!-- 2. Gamification Card -->
-    <div class="white-card gami-card">
-        <div class="level-badge">
-            <span class="lvl-label"><?= $t['lvl'] ?></span>
-            <span class="lvl-num" id="eco-level-num">১</span>
-        </div>
-        <div style="flex:1">
-            <h4 class="rank-name" id="eco-rank-name">...</h4>
-            <div class="xp-bar-wrapper">
-                <div class="xp-bar-fill" id="eco-progress-fill"></div>
+    <!-- SECTION 1: Gamification Hero -->
+    <div class="white-card gami-hero">
+        <div class="lvl-badge-block">
+            <div class="lvl-circle">
+                <span class="lvl-label"><?= $currentLang === 'bn' ? 'লেভেল' : 'Lvl' ?></span>
+                <span class="lvl-val" id="g-lvl">7</span>
             </div>
-            <p style="font-size:12px; color:var(--text-muted); margin-top:8px;" id="eco-xp-label">...</p>
+            <div class="badge-info">
+                <h2 class="badge-name" id="g-name">Earth Hero 🌍</h2>
+                <p class="badge-sub"><span id="g-xp">22,377</span> <?= $currentLang === 'bn' ? 'এক্সপি অর্জিত' : 'XP earned' ?></p>
+                <div class="streak-pill">🔥 <?= $currentLang === 'bn' ? 'সক্রিয় রিসাইক্লার' : 'Active recycler' ?></div>
+            </div>
         </div>
-        <div style="text-align:right">
-            <div style="font-size:11px; font-weight:600; color:var(--gold); text-transform:uppercase;"><?= $t['next_tier'] ?></div>
-            <div id="eco-next-tier" style="font-weight:600; color:var(--text-primary);">...</div>
-            <div class="streak-pill" id="eco-streak"><?= $t['streak'] ?></div>
+
+        <div class="xp-container">
+            <div class="xp-label-row">
+                <span id="curr-rank-label">Earth Hero</span>
+                <span id="next-rank-label">Climatic Commander</span>
+            </div>
+            <div class="xp-bar-wrapper">
+                <div class="xp-bar-fill" id="g-fill"></div>
+            </div>
+            <p class="xp-sub"><span id="g-needed">22,377 / 33,000</span> <?= $currentLang === 'bn' ? 'পরবর্তী স্তরের জন্য এক্সপি' : 'XP to next tier' ?></p>
+        </div>
+
+        <div class="next-tier-preview">
+            <div class="next-label"><?= $currentLang === 'bn' ? 'পরবর্তী স্তর' : 'NEXT TIER' ?></div>
+            <div class="next-badge" id="g-next-name">Climatic Commander 🌤️</div>
+            <div class="streak-pill-outline"><?= $currentLang === 'bn' ? '১ মাসের ধারা' : '1 month streak' ?></div>
         </div>
     </div>
 
-    <!-- 3. Metrics Grid -->
-    <div class="metrics-grid">
-        <div class="white-card">
-            <div class="metric-label"><i class="ti ti-cloud-storm"></i> <?= $t['co2_label'] ?></div>
-            <div class="metric-val co2-val" id="impact-co2">০ কেজি</div>
-            <div class="metric-divider"></div>
-            <div class="metric-equiv" id="impact-car-equiv"><i class="ti ti-car"></i> ...</div>
+    <!-- SECTION 2: Hero Metric (CO2) -->
+    <div class="white-card hero-metric-card">
+        <div class="hero-metric-info">
+            <span class="hero-m-label"><?= $currentLang === 'bn' ? 'প্রাথমিক প্রভাব হিরো' : 'Primary Impact Hero' ?></span>
+            <div class="hero-m-num"><span id="m-co2">0</span><span class="hero-m-unit"> <?= $currentLang === 'bn' ? 'কেজি CO₂' : 'kg CO₂' ?></span></div>
+            <p class="hero-m-sub"><?= $currentLang === 'bn' ? 'আপনি ব্যক্তিগতভাবে' : 'You have personally prevented the equivalent of' ?> <span id="m-co2-sub" class="summary-highlight">880</span> <?= $currentLang === 'bn' ? 'টি গাড়ির ট্রিপের সমতুল্য নির্গমন রোধ করেছেন।' : 'car trips worth of emissions.' ?></p>
+            <div class="m-trend" style="color:var(--brand-primary); margin-top:16px;">
+                <i class="ti ti-trending-up"></i>
+                <span>+12.4 <?= $currentLang === 'bn' ? 'কেজি এই মাসে' : 'kg this month' ?></span>
+            </div>
         </div>
-        <div class="white-card">
-            <div class="metric-label"><i class="ti ti-droplet-filled"></i> <?= $t['water_label'] ?></div>
-            <div class="metric-val water-val" id="impact-water">০ লিটার</div>
-            <div class="metric-divider"></div>
-            <div class="metric-equiv" id="impact-water-equiv"><i class="ti ti-bottle"></i> ...</div>
-        </div>
-        <div class="white-card">
-            <div class="metric-label"><i class="ti ti-bolt"></i> <?= $t['energy_label'] ?></div>
-            <div class="metric-val energy-val" id="impact-energy">০ kWh</div>
-            <div class="metric-divider"></div>
-            <div class="metric-equiv" id="impact-energy-equiv"><i class="ti ti-device-mobile-charging"></i> ...</div>
+        <div class="hero-m-visual">
+            <i class="ti ti-cloud"></i>
         </div>
     </div>
 
-    <!-- 4. Fun Fact -->
-    <div class="fun-fact-box">
-        <i class="ti ti-bulb-filled fact-icon"></i>
-        <div class="fact-content" id="rotating-fact"></div>
+    <!-- SECTION 3: Supporting Metrics -->
+    <div class="supporting-grid">
+        <div class="white-card s-metric-card">
+            <div class="s-icon" style="background:var(--blue-bg); color:var(--blue);"><i class="ti ti-droplet"></i></div>
+            <div class="s-info">
+                <span class="m-label"><?= $currentLang === 'bn' ? 'পানি সাশ্রয়' : 'Water Saved' ?></span>
+                <div class="s-info-val"><span class="m-num" id="m-water">0</span><span class="m-unit"> <?= $currentLang === 'bn' ? 'লিটার' : 'L' ?></span></div>
+                <div class="m-trend" style="color:var(--blue); font-size:11px; margin-top:4px;"><i class="ti ti-trending-up"></i> +124 <?= $currentLang === 'bn' ? 'লিটার' : 'L' ?></div>
+            </div>
+        </div>
+        <div class="white-card s-metric-card">
+            <div class="s-icon" style="background:var(--gold-bg); color:var(--gold);"><i class="ti ti-bolt"></i></div>
+            <div class="s-info">
+                <span class="m-label"><?= $currentLang === 'bn' ? 'শক্তি সাশ্রয়' : 'Energy Saved' ?></span>
+                <div class="s-info-val"><span class="m-num" id="m-energy">0</span><span class="m-unit"> <?= $currentLang === 'bn' ? 'কিলোওয়াট ঘণ্টা' : 'kWh' ?></span></div>
+                <div class="m-trend" style="color:var(--gold); font-size:11px; margin-top:4px;"><i class="ti ti-trending-up"></i> +89 <?= $currentLang === 'bn' ? 'কিলোওয়াট ঘণ্টা' : 'kWh' ?></div>
+            </div>
+        </div>
     </div>
 
-    <!-- 5. 90-Day Forecast -->
-    <div class="white-card">
-        <h3 style="font-size:20px; font-weight:700; color:var(--text-primary); margin-bottom:4px;"><?= $t['forecast_title'] ?></h3>
-        <p style="font-size:14px; color:var(--text-muted); margin-bottom:20px;"><?= $t['forecast_sub'] ?></p>
-        <div id="forecast-locked" class="locked-overlay" style="display: none;">
-            <p style="margin-bottom:12px;"><?= $t['locked_title'] ?></p>
-            <a href="user_request_pickup.php" style="background:var(--brand-primary); color:white; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:600;"><?= $t['book_pickup'] ?></a>
+    <!-- SECTION 4: AI Insight Highlight -->
+    <div class="impact-callout" style="margin-bottom:32px;">
+        <i class="ti ti-bulb-filled callout-icon"></i>
+        <div class="callout-content">
+            <div class="callout-main" style="font-size:15px; font-weight:600;">
+                <?= $currentLang === 'bn' ? 'প্রো টিপ: মোবাইল ফোন রিসাইক্লিং-এর প্রভাব' : 'Pro Tip: Mobile phone recycling has' ?> <span style="color:var(--brand-primary)">29× <?= $currentLang === 'bn' ? 'বেশি' : 'higher impact' ?></span> <?= $currentLang === 'bn' ? 'মিশ্র প্লাস্টিকের চেয়ে।' : 'than mixed plastic.' ?>
+            </div>
+            <p class="callout-sub"><?= $currentLang === 'bn' ? 'আপনার ই-বর্জ্য অবদান বায়ুমণ্ডল রক্ষার সবচেয়ে কার্যকর উপায়।' : 'Your e-waste contributions are the most effective way to protect the atmosphere.' ?></p>
         </div>
-        <div id="forecast-list"></div>
+        <button class="share-btn" onclick="shareProgress(this)"><i class="ti ti-share"></i> <?= $currentLang === 'bn' ? 'অগ্রগতি শেয়ার করুন' : 'Share Progress' ?></button>
     </div>
+
+    <!-- SECTION 5: Tabbed Analytics -->
+    <div class="tab-component">
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="openTab(event, 'forecast-tab')"><?= $currentLang === 'bn' ? '৯০-দিনের এআই পূর্বাভাস' : '90-Day AI Forecast' ?></button>
+            <button class="tab-btn" onclick="openTab(event, 'history-tab')"><?= $currentLang === 'bn' ? 'প্রভাবের ইতিহাস' : 'Impact History' ?></button>
+        </div>
+        <div class="tab-content">
+            <!-- Forecast Tab -->
+            <div id="forecast-tab" class="tab-pane active">
+                <div class="chart-header">
+                    <div>
+                        <h3 class="chart-title"><?= $currentLang === 'bn' ? 'এআই পূর্বাভাস' : 'AI Projections' ?></h3>
+                        <p class="chart-sub"><?= $currentLang === 'bn' ? 'আপনার গত ৬ মাসের রিসাইক্লিংয়ের ওপর ভিত্তি করে অনুমিত প্রভাব।' : 'Projected impact based on your last 6 months of recycling.' ?></p>
+                    </div>
+                    <div class="ai-pill"><?= $currentLang === 'bn' ? 'এআই চালিত 🤖' : 'AI Powered 🤖' ?></div>
+                </div>
+                <div style="height: 250px; position: relative;">
+                    <canvas id="forecastChart"></canvas>
+                </div>
+                <div class="forecast-grid" id="forecast-details"></div>
+            </div>
+            <!-- History Tab -->
+            <div id="history-tab" class="tab-pane">
+                <div class="chart-header">
+                    <div>
+                        <h3 class="chart-title"><?= $currentLang === 'bn' ? 'মাসিক বিশ্লেষণ' : 'Monthly Analytics' ?></h3>
+                        <p class="chart-sub"><?= $currentLang === 'bn' ? 'বিভাগ অনুযায়ী আপনার CO₂ সাশ্রয়ের ঐতিহাসিক বিবরণ।' : 'Historical breakdown of your CO₂ savings by category.' ?></p>
+                    </div>
+                    <div class="toggle-group">
+                        <button class="toggle-btn active"><?= $currentLang === 'bn' ? 'বার্ষিক ভিউ' : 'Yearly View' ?></button>
+                    </div>
+                </div>
+                <div style="height: 250px; position: relative;">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 6: Comparison -->
+    <div class="white-card comp-card">
+        <h3 class="chart-title" style="font-size:18px; margin-bottom:8px;"><?= $currentLang === 'bn' ? 'আপনি কীভাবে তুলনা করেন' : 'How You Compare' ?></h3>
+        <p class="chart-sub" style="margin-bottom:32px;"><?= $currentLang === 'bn' ? 'আপনার পারফরম্যান্স বনাম ঢাকার শহরের গড়' : 'Your performance vs. Dhaka\'s city average' ?></p>
+        
+        <div>
+            <!-- CO2 -->
+            <div class="comp-row">
+                <div class="comp-header">
+                    <span class="comp-cat"><i class="ti ti-cloud" style="color:var(--brand-primary)"></i> <?= $currentLang === 'bn' ? 'CO₂ প্রতিরোধ' : 'CO₂ Prevented' ?></span>
+                    <span class="comp-badge badge" style="background:var(--success-bg); color:var(--success-text);">2.4× <?= $currentLang === 'bn' ? 'গড়ের চেয়ে বেশি' : 'ABOVE AVG' ?></span>
+                </div>
+                <div class="comp-bar-container">
+                    <div class="comp-label-top">
+                        <span><?= $currentLang === 'bn' ? 'আপনি' : 'You' ?>: 184.8 kg</span>
+                        <span style="position:absolute; left:41%; margin-left:-25px; color:var(--text-muted)"><?= $currentLang === 'bn' ? 'গড়' : 'Avg' ?>: 76.2 kg</span>
+                    </div>
+                    <div class="comp-bar-bg">
+                        <div class="comp-bar-fill" style="background:var(--brand-primary); width:100%;"></div>
+                        <div class="avg-marker" style="left:41%;"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Water -->
+            <div class="comp-row">
+                <div class="comp-header">
+                    <span class="comp-cat"><i class="ti ti-droplet" style="color:var(--blue)"></i> <?= $currentLang === 'bn' ? 'পানি সাশ্রয়' : 'Water Saved' ?></span>
+                    <span class="comp-badge badge" style="background:var(--success-bg); color:var(--success-text);">1.7× <?= $currentLang === 'bn' ? 'গড়ের চেয়ে বেশি' : 'ABOVE AVG' ?></span>
+                </div>
+                <div class="comp-bar-container">
+                    <div class="comp-label-top">
+                        <span><?= $currentLang === 'bn' ? 'আপনি' : 'You' ?>: 1,516 L</span>
+                        <span style="position:absolute; left:58%; margin-left:-25px; color:var(--text-muted)"><?= $currentLang === 'bn' ? 'গড়' : 'Avg' ?>: 892 L</span>
+                    </div>
+                    <div class="comp-bar-bg">
+                        <div class="comp-bar-fill" style="background:var(--blue); width:100%;"></div>
+                        <div class="avg-marker" style="left:58%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 7: Footer -->
+    <div class="impact-footer">
+        <p class="footer-text">🌍 <?= $currentLang === 'bn' ? 'আপনি ঢাকার শীর্ষ ১৫% রিসাইক্লারদের মধ্যে আছেন। চালিয়ে যান!' : 'You\'re in the top 15% of recyclers in Dhaka. Keep it up!' ?></p>
+        <a href="user_request_pickup.php" class="footer-cta"><?= $currentLang === 'bn' ? 'পরবর্তী পিকআপ শিডিউল করুন →' : 'Schedule Next Pickup →' ?></a>
+    </div>
+
+    <!-- Share Progress Container (Hidden Off-screen) -->
+    <div id="shareImageContainer" style="position: absolute; top: -9999px; left: -9999px; width: 600px; background: linear-gradient(135deg, #065F46 0%, #1D9E75 100%); color: white; padding: 40px; border-radius: 24px; font-family: 'Inter', sans-serif; box-sizing: border-box;">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 30px;">
+            <div style="background: white; color: #065F46; width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px;">
+                <i class="ti ti-recycle"></i>
+            </div>
+            <div>
+                <h2 style="margin: 0; font-size: 28px; font-weight: 800; font-family: 'Playfair Display', serif;"><?= $currentLang === 'bn' ? 'নতুন আলো' : 'Notun Alo' ?></h2>
+                <p style="margin: 0; font-size: 14px; opacity: 0.9;"><?= $currentLang === 'bn' ? 'স্মার্ট রিসাইক্লিং সিস্টেম' : 'Smart Recycling System' ?></p>
+            </div>
+        </div>
+        
+        <div style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.2);">
+            <h3 style="margin: 0 0 8px 0; font-size: 22px; font-weight: 600;"><?= $_SESSION['name'] ?? 'Eco Hero' ?></h3>
+            <p style="margin: 0 0 24px 0; font-size: 16px; opacity: 0.9;"><?= $currentLang === 'bn' ? 'আমাদের গ্রহে একটি বাস্তব প্রভাব ফেলছে!' : 'is making a real impact on our planet!' ?></p>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 32px; font-weight: 800; margin-bottom: 4px;" id="share-co2">0<span style="font-size: 16px;">kg</span></div>
+                    <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8;"><?= $currentLang === 'bn' ? 'CO₂ প্রতিরোধ' : 'CO₂ Prevented' ?></div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 32px; font-weight: 800; margin-bottom: 4px;" id="share-water">0<span style="font-size: 16px;">L</span></div>
+                    <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8;"><?= $currentLang === 'bn' ? 'পানি সাশ্রয়' : 'Water Saved' ?></div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 32px; font-weight: 800; margin-bottom: 4px;" id="share-energy">0<span style="font-size: 16px;">kWh</span></div>
+                    <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8;"><?= $currentLang === 'bn' ? 'শক্তি সাশ্রয়' : 'Energy Saved' ?></div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 24px;">
+                <span style="background: #F59E0B; color: white; padding: 6px 16px; border-radius: 99px; font-weight: 700; font-size: 14px;" id="share-tier">
+                    <i class="ti ti-star"></i> Bronze Tier
+                </span>
+            </div>
+        </div>
+        
+        <div style="text-align: center; font-size: 14px; opacity: 0.8;">
+            <?= $currentLang === 'bn' ? 'আমাদের সাথে যোগ দিন <strong>notunalo.com</strong>-এ' : 'Join the movement at <strong>notunalo.com</strong>' ?>
+        </div>
+    </div>
+
 </div>
 
 <script>
 (function(){
     const root = document.getElementById('impact-root');
     const userId = root.dataset.userId;
-    const isBn = root.dataset.lang === 'bn';
-    
-    const en2bn = (n) => { if (!isBn) return n; const eng=['0','1','2','3','4','5','6','7','8','9'], bng=['০','১','২','৩','৪','৫','৬','৭','৮','৯']; return String(n).replace(/[0-9]/g, w => bng[eng.indexOf(w)]); };
-    const fmt = (n, d = 0) => { let val = Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: d }); return isBn ? en2bn(val) : val; };
 
-    const facts = [
-        { en: "Mobile phone recycling has <b>29×</b> higher impact than mixed plastic.", bn: "মোবাইল ফোন রিসাইক্লিংয়ের প্রভাব প্লাস্টিকের চেয়ে <b>২৯ গুণ</b> বেশি।" },
-        { en: "Recycling one aluminum can saves energy for <b>3 hours of TV</b>.", bn: "একটি ক্যান রিসাইক্লিং করলে <b>৩ ঘণ্টা টিভি</b> দেখার শক্তি সাশ্রয় হয়।" }
-    ];
-    let fIdx = 0;
-    const showFact = () => {
-        const el = document.getElementById('rotating-fact');
-        const f = facts[fIdx];
-        el.style.opacity = '0';
-        setTimeout(() => {
-            el.innerHTML = isBn ? f.bn : f.en;
-            el.style.opacity = '1';
-            fIdx = (fIdx + 1) % facts.length;
-        }, 500);
-    };
-    setInterval(showFact, 8000); showFact();
-
+    // 1. Fetch Data
     fetch(`api_impact.php?action=impact&user_id=${userId}`).then(r=>r.json()).then(data=>{
-        if(data.total_pickups === 0) document.getElementById('hero-banner').style.display = 'flex';
-        if(data.gamification){
-            document.getElementById('eco-level-num').textContent = en2bn(data.gamification.level_number);
-            document.getElementById('eco-rank-name').textContent = data.gamification.level_name;
-            document.getElementById('eco-progress-fill').style.width = data.gamification.progress_percent + '%';
-            document.getElementById('eco-xp-label').textContent = `${fmt(data.gamification.xp)} XP (${fmt(data.gamification.progress_percent)}%)`;
-            document.getElementById('eco-next-tier').textContent = data.gamification.next_level_name;
-        }
-        document.getElementById('impact-co2').textContent = fmt(data.co2_saved_kg, 1) + (isBn ? ' কেজি' : ' kg');
-        document.getElementById('impact-water').textContent = fmt(data.water_saved_liters, 0) + (isBn ? ' লিটার' : ' L');
-        document.getElementById('impact-energy').textContent = fmt(data.energy_saved_kwh, 1) + ' kWh';
-        document.getElementById('impact-car-equiv').innerHTML = `<i class="ti ti-car"></i> ${fmt(data.car_trip_equivalent)} ${isBn ? 'গাড়ির ট্রিপ এড়ানো হয়েছে' : 'car trips'}`;
-        document.getElementById('impact-water-equiv').innerHTML = `<i class="ti ti-bottle"></i> ${fmt(data.water_bottle_equivalent)} ${isBn ? 'বোতল সাশ্রয়' : 'bottles'}`;
-        document.getElementById('impact-energy-equiv').innerHTML = `<i class="ti ti-device-mobile-charging"></i> ${fmt(data.phone_charge_equivalent)} ${isBn ? 'ফোন চার্জ' : 'charges'}`;
-    });
+        if(data.error) return console.error(data.error);
+        updateGamification(data.gamification);
+        updateMetrics(data);
+    }).catch(e => console.error(e));
 
     fetch(`api_impact.php?action=forecast&user_id=${userId}`).then(r=>r.json()).then(data=>{
-        if (data.cold_start || !data.forecast || data.forecast.length === 0) document.getElementById('forecast-locked').style.display = 'block';
-        else {
-            document.getElementById('forecast-list').innerHTML = data.forecast.map(item => `
-                <div class="forecast-item">
-                    <span class="forecast-month">${item.month}</span>
-                    <span class="forecast-vals">${fmt(item.co2_saved_kg, 1)} kg CO₂</span>
+        initForecastChart(data.forecast || []);
+    }).catch(e => console.error(e));
+
+    // 2. Gamification UI
+    function updateGamification(g) {
+        if(!g) return;
+        document.getElementById('g-lvl').textContent = g.level_number;
+        document.getElementById('g-name').textContent = g.level_name + ' 🌍';
+        document.getElementById('g-xp').textContent = g.xp.toLocaleString();
+        document.getElementById('g-fill').style.width = g.progress_percent + '%';
+        document.getElementById('g-needed').textContent = `${g.xp.toLocaleString()} / ${g.next_level_xp.toLocaleString()}`;
+        document.getElementById('g-next-name').textContent = g.next_level_name + ' 🌤️';
+        document.getElementById('curr-rank-label').textContent = g.level_name;
+        document.getElementById('next-rank-label').textContent = g.next_level_name;
+        
+        const shareTier = document.getElementById('share-tier');
+        if (shareTier) shareTier.innerHTML = `<i class="ti ti-star"></i> ${g.level_name}`;
+    }
+
+    // 3. Metrics Count-up
+    function updateMetrics(data) {
+        animateValue("m-co2", 0, data.co2_saved_kg, 1500, 1);
+        animateValue("m-water", 0, data.water_saved_liters, 1500, 0);
+        animateValue("m-energy", 0, data.energy_saved_kwh, 1500, 1);
+        
+        const co2Sub = document.getElementById('m-co2-sub');
+        if(co2Sub) co2Sub.textContent = data.car_trip_equivalent.toLocaleString();
+        
+        const shareCo2 = document.getElementById('share-co2');
+        if(shareCo2) shareCo2.innerHTML = `${data.co2_saved_kg.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1})}<span style="font-size: 16px;">kg</span>`;
+        const shareWater = document.getElementById('share-water');
+        if(shareWater) shareWater.innerHTML = `${data.water_saved_liters.toLocaleString()}<span style="font-size: 16px;">L</span>`;
+        const shareEnergy = document.getElementById('share-energy');
+        if(shareEnergy) shareEnergy.innerHTML = `${data.energy_saved_kwh.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1})}<span style="font-size: 16px;">kWh</span>`;
+    }
+
+    function animateValue(id, start, end, duration, decimals) {
+        const obj = document.getElementById(id);
+        if(!obj) return;
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.innerHTML = (progress * (end - start) + start).toLocaleString(undefined, {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
+            });
+            if (progress < 1) window.requestAnimationFrame(step);
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    // 4. Forecast Chart
+    function initForecastChart(forecast) {
+        const canvas = document.getElementById('forecastChart');
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const labels = forecast.map(f => f.month);
+        
+        const config = {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'CO₂ (kg)',
+                        data: forecast.map(f => f.co2_saved_kg),
+                        borderColor: '#1D9E75',
+                        backgroundColor: 'rgba(29,158,117,0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Water (L)',
+                        data: forecast.map(f => f.water_saved_liters),
+                        borderColor: '#2563EB',
+                        backgroundColor: 'rgba(37,99,235,0.05)',
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: 'Energy (kWh)',
+                        data: forecast.map(f => f.energy_saved_kwh),
+                        borderColor: '#D97706',
+                        backgroundColor: 'rgba(217,119,6,0.05)',
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: { padding: { left: 10, right: 10, top: 20, bottom: 0 } },
+                interaction: { mode: 'index', intersect: false },
+                plugins: { 
+                    legend: { 
+                        display: true, 
+                        position: 'top',
+                        align: 'end',
+                        labels: { usePointStyle: true, pointStyle: 'circle', padding: 20, font: { size: 11, weight: '500' } }
+                    },
+                    tooltip: {
+                        backgroundColor: 'white',
+                        titleColor: '#111827',
+                        bodyColor: '#6B7280',
+                        borderColor: '#E5E7EB',
+                        borderWidth: 1,
+                        padding: 12,
+                        boxPadding: 6,
+                        usePointStyle: true,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed.y !== null) label += context.parsed.y.toFixed(1);
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'CO₂ (kg)', color: '#1D9E75', font: { size: 11, weight: 'bold' }, padding: { bottom: 10 } },
+                        grid: { color: '#F3F4F6', drawTicks: false },
+                        border: { display: false },
+                        ticks: { padding: 8, color: '#9CA3AF', font: { size: 10 } },
+                        grace: '10%'
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: 'Water & Energy', color: '#6B7280', font: { size: 11, weight: 'bold' }, padding: { bottom: 10 } },
+                        grid: { drawOnChartArea: false, drawTicks: false },
+                        border: { display: false },
+                        ticks: { padding: 8, color: '#9CA3AF', font: { size: 10 } },
+                        grace: '10%'
+                    },
+                    x: { grid: { display: false }, ticks: { color: '#9CA3AF', font: { size: 10 }, padding: 10 } }
+                }
+            }
+        };
+        window.forecastChart = new Chart(ctx, config);
+
+        // Inject Pills
+        document.getElementById('forecast-details').innerHTML = forecast.map(f => `
+            <div class="forecast-pill">
+                <div class="f-month">${f.month}</div>
+                <div class="f-vals">
+                    <span style="color:#1D9E75">${f.co2_saved_kg.toFixed(1)} kg</span> · 
+                    <span style="color:#2563EB">${f.water_saved_liters.toFixed(0)} L</span> · 
+                    <span style="color:#D97706">${f.energy_saved_kwh.toFixed(1)} kWh</span>
                 </div>
-            `).join('');
+            </div>
+        `).join('');
+    }
+
+    // 5. Monthly Chart
+    function initMonthlyChart() {
+        const canvas = document.getElementById('monthlyChart');
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+        window.monthlyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: (function() {
+                    const yr = <?= date('Y') ?>;
+                    return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].map(m => m + " " + yr);
+                }()),
+                datasets: [
+                    { label: 'Paper', backgroundColor: '#1D9E75', data: [8,10,12,9,15,11,13,14,10,12,11,9], borderRadius: 4 },
+                    { label: 'Plastic', backgroundColor: '#2563EB', data: [5,6,4,7,8,6,9,7,5,8,6,7], borderRadius: 4 },
+                    { label: 'Electronics', backgroundColor: '#7C3AED', data: [2,0,3,0,4,0,2,1,0,3,0,2], borderRadius: 4 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6, font: { size: 11 } } } },
+                scales: {
+                    y: { stacked: false, grid: { color: '#F3F4F6' }, border: { display: false } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+    initMonthlyChart();
+
+    // 6. Tab Logic
+    window.openTab = function(evt, tabName) {
+        let i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-pane");
+        for (i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove("active");
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) tablinks[i].classList.remove("active");
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+        
+        setTimeout(() => {
+            if (window.forecastChart) window.forecastChart.resize();
+            if (window.monthlyChart) window.monthlyChart.resize();
+        }, 50);
+    };
+
+    // 7. Share Progress Image Generation
+    window.shareProgress = function(btn) {
+        const ogText = btn.innerHTML;
+        btn.innerHTML = '<i class="ti ti-loader" style="display:inline-block; animation: spin 1s linear infinite;"></i> Generating...';
+        
+        // Add spin animation dynamically if it doesn't exist
+        if (!document.getElementById('spin-keyframes')) {
+            const style = document.createElement('style');
+            style.id = 'spin-keyframes';
+            style.innerHTML = `@keyframes spin { 100% { transform: rotate(360deg); } }`;
+            document.head.appendChild(style);
         }
-    });
+        
+        function run() {
+            const el = document.getElementById('shareImageContainer');
+            // Temporarily move it to viewport to ensure proper rendering by html2canvas
+            const oldTop = el.style.top;
+            const oldLeft = el.style.left;
+            el.style.top = '0px';
+            el.style.left = '0px';
+            el.style.zIndex = '-9999';
+            
+            html2canvas(el, { scale: 2, backgroundColor: null }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'NotunAlo_Impact.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                // Restore hidden position
+                el.style.top = oldTop;
+                el.style.left = oldLeft;
+                btn.innerHTML = ogText;
+            }).catch(e => {
+                console.error(e);
+                el.style.top = oldTop;
+                el.style.left = oldLeft;
+                btn.innerHTML = ogText;
+                alert('Failed to generate image. Please try again.');
+            });
+        }
+        
+        if (typeof html2canvas === 'undefined') {
+            const script = document.createElement('script');
+            script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+            script.onload = run;
+            document.head.appendChild(script);
+        } else {
+            run();
+        }
+    };
+
 })();
 </script>

@@ -126,17 +126,12 @@ $flash = $flashMsg ?? getFlash();
         .alert-success { background: #DCFCE7; color: #166534; border: 1px solid #BBF7D0; }
         .alert-error { background: #FEF2F2; color: #B91C1C; border: 1px solid #FEE2E2; }
     </style>
-<style>
-@media (max-width:767px) { .mobile-only { display:block; } .desktop-only { display:none; } }
-@media (min-width:768px) { .mobile-only { display:none; } .desktop-only { display:block; } }
-</style>
 </head>
 <body>
 
-<?php $pageEmoji = '🚛'; include 'includes/mobile_nav.php'; ?>
-<div class="desktop-only"><?php include 'includes/navbar.php'; ?></div>
+    <?php include 'includes/navbar.php'; ?>
 
-<main class="wrapper">
+    <main class="wrapper">
         <header class="page-header-flex">
             <a href="dashboard.php" class="back-link">&larr; <?= $lang['dashboard'] ?? 'Dashboard' ?></a>
             <div class="header-text">

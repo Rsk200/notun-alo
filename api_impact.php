@@ -29,13 +29,14 @@ if ($action === 'impact') {
                 u.id AS user_id,
                 u.name AS user_name,
                 COUNT(p.id) AS total_pickups,
+                SUM(CASE WHEN p.status = 'completed' THEN 1 ELSE 0 END) AS completed_pickups,
                 COALESCE(SUM(p.estimated_weight), 0) AS total_kg_recycled,
                 COALESCE(SUM(p.estimated_weight * COALESCE(ef.co2_sa_adjusted, ca.avg_co2, 0)), 0) AS co2_saved_kg,
                 COALESCE(SUM(p.estimated_weight * COALESCE(ef.water_liters_per_kg, ca.avg_water_liters_per_kg, 0)), 0) AS water_saved_liters,
                 COALESCE(SUM(p.estimated_weight * COALESCE(ef.energy_kwh_per_kg, ca.avg_energy_kwh_per_kg, 0)), 0) AS energy_saved_kwh,
                 SUM(CASE WHEN p.category = 'E-waste' THEN 1 ELSE 0 END) AS ewaste_pickups
             FROM users u
-            LEFT JOIN pickups p ON p.user_id = u.id AND p.status = 'completed'
+            LEFT JOIN pickups p ON p.user_id = u.id AND p.status IN ('completed', 'scheduled')
             LEFT JOIN emission_factors ef 
               ON ef.category = p.category COLLATE utf8mb4_unicode_ci 
              AND p.subcategory IS NOT NULL AND p.subcategory <> '' 
@@ -53,7 +54,7 @@ if ($action === 'impact') {
             exit;
         }
 
-        // Environmental constants (matching environmental_engine.py)
+        // Environmental constants
         $CAR_CO2 = 0.21;
         $PHONE_KWH = 0.012;
         $WATER_BOTTLE = 0.5;
@@ -63,8 +64,9 @@ if ($action === 'impact') {
         $energy = (float)$row['energy_saved_kwh'];
 
         // Gamification Algorithm: Eco-Rank
-        // 1 kg CO2 = 10 XP, 1 L Water = 1 XP, 1 kWh Energy = 10 XP
-        $xp = ($co2 * 10) + ($water * 1) + ($energy * 10);
+        // Base XP for even starting a journey + impact-based XP
+        $baseXp = (int)$row['total_pickups'] > 0 ? 50 : 0;
+        $xp = $baseXp + ($co2 * 10) + ($water * 1) + ($energy * 10);
         
         $levels = [
             ["name" => "Eco-Seed", "xp" => 0],
@@ -80,7 +82,9 @@ if ($action === 'impact') {
         ];
 
         $currentLevel = $levels[0];
-        $nextLevel = null;
+        $currentLevel['index'] = 1;
+        $nextLevel = $levels[1];
+
         foreach ($levels as $i => $l) {
             if ($xp >= $l['xp']) {
                 $currentLevel = $l;
@@ -107,6 +111,7 @@ if ($action === 'impact') {
             "user_id" => $userId,
             "user_name" => $row['user_name'],
             "total_pickups" => (int)$row['total_pickups'],
+            "completed_pickups" => (int)$row['completed_pickups'],
             "total_kg_recycled" => round((float)$row['total_kg_recycled'], 2),
             "co2_saved_kg" => round($co2, 2),
             "water_saved_liters" => round($water, 2),
@@ -135,10 +140,18 @@ if ($action === 'impact') {
 }
 
 // Action: forecast - Still uses Python CLI
-$pythonBin = '/opt/venv/bin/python3';
-if (!file_exists($pythonBin)) { $pythonBin = 'python3'; }
+$isWindows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+$pythonBin = $isWindows ? 'python' : '/opt/venv/bin/python3';
+
+// On Windows, 'python' is usually in PATH for XAMPP users if they installed it, 
+// otherwise we might need the full path. Let's try 'python' first.
+if (!$isWindows && !file_exists($pythonBin)) { $pythonBin = 'python3'; }
+
 $scriptPath = __DIR__ . '/ai-service/cli_impact.py';
-$cmd = "timeout 15 $pythonBin " . escapeshellarg($scriptPath) . " forecast " . escapeshellarg((string)$userId) . " 2>&1";
+$cmd = $isWindows 
+    ? "$pythonBin " . escapeshellarg($scriptPath) . " forecast " . escapeshellarg((string)$userId) . " 2>&1"
+    : "timeout 15 $pythonBin " . escapeshellarg($scriptPath) . " forecast " . escapeshellarg((string)$userId) . " 2>&1";
+
 $output = shell_exec($cmd);
 $output = trim($output);
 

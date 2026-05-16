@@ -8,22 +8,26 @@ services:
     plan: free
     region: oregon
     envVars:
-      # ── Database Connection (Set these in Render Dashboard for security) ──
+      # ── Database Connection ────────────────────────────────────────────────
+      # IMPORTANT: Override DB_HOST, DB_PASS, DB_SSL in Render Dashboard env vars
+      # (values in this YAML are fallbacks only — never commit real passwords!)
       - key: DB_HOST
-        value: "your-aiven-db-host.a.aivencloud.com"
+        value: "mysql-bec79d9-yaadrabbykhan-7cb5.h.aivencloud.com"
       - key: DB_PORT
         value: "20764"
       - key: DB_USER
         value: "avnadmin"
       - key: DB_PASS
-        value: "your-secure-password"
+        value: "set-this-in-dashboard"
       - key: DB_NAME
         value: "defaultdb"
-      # ── Cloud Run RAG service URL (set after deploying to Cloud Run) ──
+      - key: DB_SSL
+        value: "true"
+      # ── Cloud Run RAG service ───────────────────────────────────────────────
       - key: RAG_API_URL
         value: https://notun-alo-rag-xxx-uc.a.run.app
       - key: RAG_ENABLED
-        value: "true"
-      # ── Public site URL (for correct redirects) ──
+        value: "false"
+      # ── Public URL ──────────────────────────────────────────────────────────
       - key: BASE_URL
         value: https://notun-alo.onrender.com

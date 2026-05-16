@@ -30,9 +30,9 @@ $activityQuery = $pdo->prepare("SELECT category, status, created_at
 $activityQuery->execute([$userId]);
 $activityData = $activityQuery->fetchAll();
 
-$tier = 'Bronze'; $maxPoints = 500;
-if ($userPoints >= 500) { $tier = 'Silver'; $maxPoints = 1500; }
-if ($userPoints >= 1500) { $tier = 'Gold'; $maxPoints = 5000; }
+$tier = 'Bronze'; $nextTier = 'Silver'; $maxPoints = 500;
+if ($userPoints >= 500) { $tier = 'Silver'; $nextTier = 'Gold'; $maxPoints = 1500; }
+if ($userPoints >= 1500) { $tier = 'Gold'; $nextTier = 'Platinum'; $maxPoints = 5000; }
 $progressPercent = min(100, ($userPoints / $maxPoints) * 100);
 $profilePic = $user['picture_url'] ?? '';
 $initial = strtoupper(mb_substr($userName, 0, 1));

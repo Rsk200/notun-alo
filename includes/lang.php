@@ -180,7 +180,8 @@ $translations = [
         'monthly_impact' => 'Monthly Environmental Impact',
         'monthly_impact_sub' => 'CO2 saved by category over the last 12 months',
         'no_data_yet' => 'No data yet',
-        'monthly_impact_chart_title' => 'Your Monthly Environmental Impact (CO₂ kg Saved)'
+        'monthly_impact_chart_title' => 'Your Monthly Environmental Impact (CO₂ kg Saved)',
+        'back_to_dashboard' => 'Back to Dashboard'
     ],
     'bn' => [
         'edit_profile_sub' => 'আপনার ব্যক্তিগত তথ্য আপডেট করুন',
@@ -198,9 +199,9 @@ $translations = [
         'recycling_overview' => 'আপনার রিসাইক্লিং ওভারভিউ',
         'visit_shop' => 'শপ ভিজিট করুন',
         'leaderboard_progress' => 'লিডারবোর্ড অগ্রগতি',
-        'current_rank' => 'বর্তমান র‍্যাঙ্ক:',
-        'next_rank' => 'পরবর্তী র‍্যাঙ্ক:',
-        'max_rank_reached' => 'সর্বোচ্চ র‍্যাঙ্ক অর্জিত!',
+        'current_rank' => 'বর্তমান র্যাঙ্ক:',
+        'next_rank' => 'পরবর্তী র্যাঙ্ক:',
+        'max_rank_reached' => 'সর্বোচ্চ র্যাঙ্ক অর্জিত!',
         'pts' => 'পয়েন্ট',
         'reward_points' => 'রিওয়ার্ড পয়েন্ট',
         'points_hint' => 'ব্যয় করার জন্য উপলব্ধ পয়েন্ট',
@@ -328,7 +329,8 @@ $translations = [
         'monthly_impact' => 'মাসিক পরিবেশগত প্রভাব',
         'monthly_impact_sub' => 'গত ১২ মাসে ক্যাটাগরি অনুযায়ী CO2 সাশ্রয়',
         'no_data_yet' => 'এখনও কোনো ডেটা নেই',
-        'monthly_impact_chart_title' => 'আপনার মাসিক পরিবেশগত প্রভাব (সাশ্রয়কৃত CO₂ কেজি)'
+        'monthly_impact_chart_title' => 'আপনার মাসিক পরিবেশগত প্রভাব (সাশ্রয়কৃত CO₂ কেজি)',
+        'back_to_dashboard' => 'ড্যাশবোর্ডে ফিরে যান'
     ]
 ];
 

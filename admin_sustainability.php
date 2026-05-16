@@ -27,7 +27,7 @@ $searchTerm = trim((string)($_GET['search'] ?? ''));
     <div class="container">
         <div class="page-header">
             <div>
-                <a href="admin.php" class="btn-back"><span class="btn-back__arrow">←</span> Back to Dashboard</a>
+                <a href="admin.php" class="btn-back"><span class="btn-back__arrow">←</span> <?= $lang['back_to_dashboard'] ?? 'Back to Dashboard' ?></a>
                 <h1 class="page-title" data-reveal><?= $lang['platform_sustainability'] ?? 'Platform Sustainability' ?></h1>
                 <p class="page-sub"><?= $lang['platform_sustainability_sub'] ?? 'Comprehensive overview of the environmental impact across Notun Alo.' ?></p>
             </div>

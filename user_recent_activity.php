@@ -291,15 +291,10 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             .footer-strip { flex-direction: column; text-align: center; gap: 12px; }
         }
     </style>
-<style>
-@media (max-width:767px) { .mobile-only { display:block; } .desktop-only { display:none; } }
-@media (min-width:768px) { .mobile-only { display:none; } .desktop-only { display:block; } }
-</style>
 </head>
 <body>
 
-<?php $pageEmoji = '📋'; include 'includes/mobile_nav.php'; ?>
-<?php include 'includes/navbar.php'; ?>
+    <?php include 'includes/navbar.php'; ?>
 
     <main class="wrapper">
         <header class="page-header-flex">

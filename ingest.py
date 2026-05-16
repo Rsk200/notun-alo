@@ -15,6 +15,10 @@ from chromadb.config import Settings
 from docx import Document
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
+import os
+os.environ["NO_PROXY"] = "*"
+os.environ["no_proxy"] = "*"
+os.environ["HF_HUB_OFFLINE"] = "1"
 
 try:
     import fitz
@@ -113,23 +117,21 @@ def load_txt(path: Path) -> List[LoadedDocument]:
 
 
 def load_table(path: Path) -> List[LoadedDocument]:
-    if path.suffix.lower() == ".csv":
-        try:
-            df = pd.read_csv(path, encoding_errors="ignore")
-        except Exception:
-            logger.warning("Retrying irregular CSV with tolerant parser: %s", path.name)
-            df = pd.read_csv(
-                path,
-                encoding_errors="ignore",
-                engine="python",
-                sep=None,
-                on_bad_lines="skip",
-            )
-    else:
-        df = pd.read_excel(path)
-    df = df.fillna("")
-    text = clean_text(df.to_csv(index=False))
-    return [LoadedDocument(text=text, source_path=path, page_number=1)] if text else []
+    try:
+        if path.suffix.lower() == ".csv":
+            try:
+                df = pd.read_csv(path, encoding_errors="ignore", engine="python", on_bad_lines="skip")
+            except Exception:
+                logger.warning("Retrying CSV with Python parser: %s", path.name)
+                df = pd.read_csv(path, encoding_errors="ignore", engine="python", sep=None, on_bad_lines="skip")
+        else:
+            df = pd.read_excel(path)
+        df = df.fillna("")
+        text = clean_text(df.to_csv(index=False))
+        return [LoadedDocument(text=text, source_path=path, page_number=1)] if text else []
+    except Exception as exc:
+        logger.error("Failed to load table %s: %s", path.name, exc)
+        return []
 
 
 def load_file(path: Path) -> List[LoadedDocument]:

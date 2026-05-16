@@ -212,7 +212,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
 
     <!-- Background rotating emoji behind headline -->
     <div style="position: absolute; top: 16%; left: 50%; transform: translateX(-50%); width: 100%; display: flex; justify-content: center; pointer-events: none; user-select: none; z-index: 0;">
-        <div style="font-size: 24rem; opacity: 0.06; animation: spin 25s linear infinite; line-height: 1;">♻️</div>
+        <div style="font-size: 28rem; opacity: 0.09; animation: spin 25s linear infinite; line-height: 1;">♻️</div>
     </div>
 
     <div class="container" style="position: relative; width: 100%; z-index: 1;">

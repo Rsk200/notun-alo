@@ -33,81 +33,13 @@ $products = $pdo->query("SELECT * FROM products ORDER BY created_at DESC")->fetc
         .shop-pagination .pg-num.active { background: var(--brand-primary); color: white; border-color: var(--brand-primary); }
         
         .shop-controls input:focus, .shop-controls select:focus { border-color: var(--brand-primary) !important; box-shadow: 0 0 0 3px rgba(29,158,117,0.1); }
-
-        @media (max-width: 767px) {
-            .mobile-only { display: block; }
-            .desktop-only { display: none; }
-        }
-        @media (min-width: 768px) {
-            .mobile-only { display: none; }
-            .desktop-only { display: block; }
-        }
     </style>
 </head>
 <body>
 
-<?php $pageEmoji = '🛍'; include 'includes/mobile_nav.php'; ?>
 <?php include 'includes/navbar.php'; ?>
 
-<!-- Mobile wrapper -->
-<div class="mobile-only" style="max-width:600px; margin:0 auto; padding:16px;">
-    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
-        <div style="width:44px; height:44px; background:#dbeafe; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.3rem;">🛍</div>
-        <div>
-            <div style="font-size:1.1rem; font-weight:700; color:var(--text-primary);"><?= $currentLang === 'bn' ? 'আপসাইকেল শপ' : 'Upcycle Shop' ?></div>
-            <div style="font-size:0.75rem; color:var(--text-muted);"><?= $currentLang === 'bn' ? 'পয়েন্ট দিয়ে ইকো পণ্য কিনুন' : 'Redeem points for eco-friendly goods' ?></div>
-        </div>
-        <div style="margin-left:auto; text-align:right;">
-            <div style="font-size:0.65rem; color:var(--text-muted);"><?= $currentLang === 'bn' ? 'ব্যালেন্স' : 'Balance' ?></div>
-            <div style="font-size:1rem; font-weight:800; color:var(--brand-primary);">🏆 <?= number_format($points) ?></div>
-        </div>
-    </div>
-
-    <div style="display:flex; gap:8px; margin-bottom:16px;">
-        <input type="text" id="mobShopSearch" placeholder="<?= $currentLang === 'bn' ? 'পণ্য খুঁজুন...' : 'Search products...' ?>" style="flex:1; padding:10px 14px; border-radius:10px; border:2px solid var(--border); font-size:0.9rem; background:var(--bg-card,white); color:var(--text-primary,#111); outline:none;">
-        <select id="mobCatFilter" style="padding:10px 12px; border-radius:10px; border:2px solid var(--border); font-size:0.85rem; background:var(--bg-card,white); color:var(--text-primary,#111); outline:none; cursor:pointer;">
-            <option value="ALL"><?= $currentLang === 'bn' ? 'সব' : 'All' ?></option>
-            <?php foreach ($categories ?? [] as $cat): ?>
-                <option value="<?= e($cat) ?>"><?= e($cat) ?></option>
-            <?php endforeach; ?>
-        </select>
-    </div>
-
-    <div class="product-grid" id="mobProductGrid" style="gap:10px;">
-        <?php foreach ($products as $prod): ?>
-        <div class="product-card-v2 <?= $prod['stock'] === 0 ? 'product-card--oos' : '' ?>" data-cat="<?= e($prod['category'] ?? 'General') ?>" data-name="<?= strtolower(e($prod['name'])) ?>">
-            <div class="product-img-wrap">
-                <?php if ($prod['image_url']): ?>
-                    <img src="<?= e($prod['image_url']) ?>" alt="<?= e($prod['name']) ?>" class="product-img" loading="lazy">
-                <?php else: ?>
-                    <div class="product-img-placeholder">🌿</div>
-                <?php endif; ?>
-                <?php if ($prod['stock'] === 0): ?>
-                    <div class="oos-overlay"><?= $currentLang === 'bn' ? 'স্টক শেষ' : 'Sold Out' ?></div>
-                <?php endif; ?>
-            </div>
-            <div class="product-body">
-                <div class="pts-badge-float">🏆 <?= number_format($prod['price_points']) ?></div>
-                <h3 class="product-name"><?= e($prod['name']) ?></h3>
-                <p class="product-desc"><?= e($prod['description']) ?></p>
-                <?php if ($prod['stock'] > 0): ?>
-                    <a href="purchase.php?id=<?= $prod['id'] ?>" class="btn btn-accent btn-full" style="font-size:0.8rem; padding:8px;"><?= $currentLang === 'bn' ? 'ক্রয় করুন' : 'Buy Now' ?></a>
-                <?php else: ?>
-                    <button class="btn btn-disabled btn-full" style="font-size:0.8rem; padding:8px;" disabled><?= $currentLang === 'bn' ? 'স্টক শেষ' : 'Sold Out' ?></button>
-                <?php endif; ?>
-            </div>
-        </div>
-        <?php endforeach; ?>
-    </div>
-    <div id="mobNoResults" style="display:none; text-align:center; padding:40px; color:var(--text-muted);">
-        <div style="font-size:2rem; margin-bottom:10px;">🔍</div>
-        <p><?= $currentLang === 'bn' ? 'কোনো পণ্য পাওয়া যায়নি।' : 'No products found.' ?></p>
-    </div>
-    <div id="mobShopPagination" class="shop-pagination" style="display:flex; justify-content:center; gap:6px; margin-top:20px;"></div>
-</div>
-
-<!-- Desktop wrapper -->
-<main class="main-content desktop-only">
+<main class="main-content">
     <div class="container">
 
         <?php if ($flash): ?>
@@ -266,49 +198,6 @@ $products = $pdo->query("SELECT * FROM products ORDER BY created_at DESC")->fetc
     
     // Initial Render
     renderShop();
-</script>
-
-<!-- Mobile Shop JS -->
-<script>
-(function(){
-    const grid = document.getElementById('mobProductGrid');
-    const search = document.getElementById('mobShopSearch');
-    const cat = document.getElementById('mobCatFilter');
-    const noRes = document.getElementById('mobNoResults');
-    const pag = document.getElementById('mobShopPagination');
-    if (!grid) return;
-    const cards = Array.from(grid.querySelectorAll('.product-card-v2'));
-    const perPage = 6;
-    let page = 1;
-    const pt = "<?= $currentLang === 'bn' ? '← পেছনে' : '← Prev' ?>";
-    const nt = "<?= $currentLang === 'bn' ? 'পরবর্তী →' : 'Next →' ?>";
-
-    function render() {
-        const q = (search?.value || '').toLowerCase();
-        const c = cat?.value || 'ALL';
-        let f = cards.filter(card => {
-            const n = (card.dataset.name || '').toLowerCase();
-            const catMatch = c === 'ALL' || (card.dataset.cat || 'General') === c;
-            return catMatch && (!q || n.includes(q));
-        });
-        if (noRes) noRes.style.display = f.length === 0 ? 'block' : 'none';
-        const tp = Math.ceil(f.length / perPage);
-        if (page > tp) page = tp || 1;
-        cards.forEach(c => c.style.display = 'none');
-        const s = (page - 1) * perPage;
-        f.slice(s, s + perPage).forEach(c => c.style.display = '');
-        if (!pag) return;
-        if (tp <= 1) { pag.innerHTML = ''; return; }
-        let h = `<button class="pg-btn" ${page===1?'disabled':''} onclick="window.mp(${page-1})">${pt}</button>`;
-        for (let i=1;i<=tp;i++) h += `<div class="pg-num ${i===page?'active':''}" onclick="window.mp(${i})">${i}</div>`;
-        h += `<button class="pg-btn" ${page===tp?'disabled':''} onclick="window.mp(${page+1})">${nt}</button>`;
-        pag.innerHTML = h;
-    }
-    window.mp = function(p) { page = p; render(); };
-    if (search) search.addEventListener('input', () => { page = 1; render(); });
-    if (cat) cat.addEventListener('change', () => { page = 1; render(); });
-    render();
-})();
 </script>
 
 </body>

@@ -1,0 +1,552 @@
+# Notun Alo - Recycling & Platform FAQs
+
+## 1. General Recycling Basics
+
+Q: What is recycling? / রিসাইক্লিং কী? / Recycling ki?
+Answer:
+(English): Recycling is the process of collecting and processing materials that would otherwise be thrown away as trash and turning them into new products. It reduces waste, conserves natural resources, saves energy, and minimizes pollution.
+(Bangla): রিসাইক্লিং হলো এমন একটি প্রক্রিয়া যেখানে ফেলে দেওয়া বস্তুগুলো সংগ্রহ করে নতুন পণ্য তৈরি করা হয়। এটি বর্জ্য কমায়, প্রাকৃতিক সম্পদ সংরক্ষণ করে, শক্তি সাশ্রয় করে এবং দূষণ হ্রাস করে।
+(Banglish): Recycling holo emon ekta process jekhane phele deya jinis gulo collect kore segulo diye notun product banano hoy. Eta aborjona komay, prokritik sompod bachaite ebong pollution komate shahajjo kore.
+
+Q: Why is recycling important? / রিসাইক্লিং কেন গুরুত্বপূর্ণ? / Recycling keno important?
+Answer:
+(English): Recycling is critically important because it reduces the volume of waste sent to landfills, conserves raw materials, decreases energy consumption, and helps protect ecosystems. Every tonne of recycled paper saves approximately 17 trees.
+(Bangla): রিসাইক্লিং অত্যন্ত গুরুত্বপূর্ণ কারণ এটি ল্যান্ডফিলে যাওয়া বর্জ্যের পরিমাণ কমায়, কাঁচামাল সংরক্ষণ করে এবং বাস্তুতন্ত্র রক্ষা করে। প্রতি টন পুনর্ব্যবহৃত কাগজ প্রায় ১৭টি গাছ বাঁচায়।
+(Banglish): Recycling khub dorkari karon eta landfill er aborjona komay, kacha-mal bachay ar environment bhalo rakhe. Ek ton paper recycle korle pray 17-ta gach bachaono jay.
+
+Q: What materials can be recycled? / কোন কোন উপকরণ পুনর্ব্যবহার করা যায়? / Kon kon jinish recycle kora jay?
+Answer:
+(English): Commonly recyclable materials include: Paper and cardboard, Glass bottles, Metal cans, Plastic containers (types 1–7), Electronics (e-waste), and Organic matter.
+(Bangla): সাধারণত পুনর্ব্যবহারযোগ্য উপকরণের মধ্যে রয়েছে: কাগজ ও কার্ডবোর্ড, কাচের বোতল ও জার, ধাতব ক্যান, প্লাস্টিকের বোতল ও পাত্র (টাইপ ১-৭), ইলেকট্রনিক্স (ই-বর্জ্য) এবং জৈব পদার্থ।
+(Banglish): Shadharonoto recycle kora jay emon jinis holo: Kagoj, cardboard, kacher botol, metal can, plastic (type 1-7), electronics jinis ar baki pochonshil jinish.
+
+Q: What is the recycling symbol and what do the numbers mean? / রিসাইক্লিং চিহ্ন এবং সংখ্যাগুলো কী বোঝায়? / Recycling symbol ar number gulo ki bujhay?
+Answer:
+(English): The symbol with a number (1-7) indicates the type of plastic used. #1 (PET) is for water bottles, #2 (HDPE) for milk jugs, and so on. Numbers 1 and 2 are most widely accepted.
+(Bangla): রিসাইক্লিং চিহ্নে ১ থেকে ৭ নম্বর প্লাস্টিকের ধরন নির্দেশ করে। #১ (PET) পানির বোতল; #২ (HDPE) দুধের পাত্র। ১ ও ২ নম্বর প্লাস্টিক সর্বাধিক গৃহীত হয়।
+(Banglish): Recycling symbol er bhetore 1 theke 7 porjonto number diye plastic er dhoron bujhay. 1 ar 2 number plastic shobcheye beshi recycle hoy.
+
+Q: What is the difference between recycling, reusing, and reducing? / রিসাইক্লিং, রিউজিং এবং রিডিউসিং-এর মধ্যে পার্থক্য কী? / Recycling, reusing ar reducing er moddhe parthokko ki?
+Answer:
+(English): Reducing means consuming less. Reusing means using items multiple times. Recycling means processing used materials into new products. The priority is: Reduce, then Reuse, then Recycle.
+(Bangla): রিডিউসিং মানে প্রথমে কম ব্যবহার করা। রিউজিং মানে বস্তু ফেলে না দিয়ে বারবার ব্যবহার করা। রিসাইক্লিং মানে ব্যবহৃত উপকরণ থেকে নতুন পণ্য তৈরি করা।
+(Banglish): Reduce mane kom use kora. Reuse mane ekta jinis bar bar use kora. Ar recycle mane used jinish diye notun product banano. Shobcheye agey reduce kora dorkar.
+
+Q: How does recycling help the environment? / রিসাইক্লিং পরিবেশে কীভাবে সহায়তা করে? / Recycling poribesh e kivabe help kore?
+Answer:
+(English): It reduces landfill overflow, decreases air and water pollution, lowers greenhouse gas emissions, and preserves forests and natural habitats for future generations.
+(Bangla): রিসাইক্লিং ল্যান্ডফিলের চাপ কমায়, বায়ু ও পানি দূষণ হ্রাস করে, গ্রিনহাউস গ্যাস নির্গমন কমায় এবং বন ও প্রাকৃতিক আবাসস্থল রক্ষা করে।
+(Banglish): Recycling landfill er aborjona komay, mati-pani-batash pollution theke bachay ar bon-jongol o natural resource bachay.
+
+## 2. Plastic Recycling
+
+Q: What types of plastic can be recycled? / কোন ধরনের প্লাস্টিক পুনর্ব্যবহার করা যায়? / Kon dhoroner plastic recycle kora jay?
+Answer:
+(English): Types 1 (PET) and 2 (HDPE) are most common. Type 5 (PP) is also accepted. Types 3, 4, 6, and 7 are generally harder to recycle. Always rinse containers before recycling.
+(Bangla): সবচেয়ে বেশি পুনর্ব্যবহৃত প্লাস্টিক হলো টাইপ ১ (PET) এবং টাইপ ২ (HDPE)। টাইপ ৫ (PP) ক্রমশ গৃহীত হচ্ছে। রিসাইকেল করার আগে সবসময় পাত্র ধুয়ে নিন।
+(Banglish): Type 1 ar Type 2 plastic shobcheye beshi recycle kora hoy. Type 5-o kora jay. Kintu recycle e deyar agey container gulo dhuye nite hobe.
+
+Q: How is plastic recycled? / প্লাস্টিক কীভাবে পুনর্ব্যবহার করা হয়? / Plastic kivabe recycle kora hoy?
+Answer:
+(English): It involves sorting, shredding into flakes, washing to remove contaminants, melting into pellets, and then manufacturing into new products.
+(Bangla): এটি বাছাই করা, ছোট টুকরায় কাটা, দূষণ সরাতে ধোয়া, গলিয়ে ছোট গুটিতে রূপান্তর এবং সবশেষে নতুন পণ্য তৈরির মাধ্যমে সম্পন্ন হয়।
+(Banglish): Agey plastic gulo bachai kora hoy, tarpor choto kore kata hoy ar dhoya hoy. Shesh e galiye pellets banano hoy ja diye notun jinish banano jay.
+
+Q: Why is single-use plastic harmful? / একক-ব্যবহারের প্লাস্টিক কেন ক্ষতিকর? / Single-use plastic keno khotikor?
+Answer:
+(English): They persist in the environment for 400–1,000 years, breaking into microplastics that contaminate soil and water, harming marine life and entering the human food chain.
+(Bangla): এগুলো পরিবেশে ৪০০–১,০০০ বছর টিকে থাকে এবং মাইক্রোপ্লাস্টিকে পরিণত হয়ে মাটি ও জলাশয় দূষিত করে, যা শেষ পর্যন্ত মানুষের খাদ্য শৃঙ্খলে প্রবেশ করে।
+(Banglish): Ei plastic gulo 400-1000 bochor porjonto environment e thake. EguLo mati ar pani noshto kore ar microplastic hoye amader khabare chole ashe.
+
+Q: Can plastic bags be recycled? / প্লাস্টিক ব্যাগ কি পুনর্ব্যবহার করা যায়? / Plastic bag ki recycle kora jay?
+Answer:
+(English): Standard bags (Type 4) usually jam sorting machinery and are not accepted in curbside bins. They should be taken to dedicated collection points in supermarkets.
+(Bangla): সাধারণ প্লাস্টিক ব্যাগ বাছাই যন্ত্রে আটকে যায়, তাই এগুলো সাধারণ বিনে দেওয়া ঠিক নয়। তবে অনেক সুপারশপে এগুলো সংগ্রহের বিশেষ পয়েন্ট থাকে।
+(Banglish): Normal plastic bag recycling machine e atkaye jay, tai eguLo normal bin e deya thik na. Onek boro shop e eguLo joma deyar jayga thake.
+
+Q: What is upcycling and how is it different from recycling? / আপসাইক্লিং কী এবং রিসাইক্লিং থেকে এটি কীভাবে আলাদা? / Upcycling ki ar eta recycling theke alada keno?
+Answer:
+(English): Upcycling creatively transforms waste into higher-value products without breaking them down (e.g., turning tires into planters). Recycling involves breaking materials down for reprocessing.
+(Bangla): আপসাইক্লিং হলো বর্জ্যকে না ভেঙে উচ্চমানের নতুন পণ্যে রূপান্তরের সৃজনশীল প্রক্রিয়া। রিসাইক্লিং-এ উপকরণ ভেঙে পুনরায় প্রক্রিয়া করা হয়।
+(Banglish): Upcycling holo phelna jinish ke na bhenge sheta diye sundor kisu banano. Ar recycling holo jinis gulo ke bhenge notun kacha-mal banano.
+
+Q: How long does it take for plastic to decompose? / প্লাস্টিক পচে যেতে কত সময় লাগে? / Plastic pochte koto shomoy lage?
+Answer:
+(English): Plastic photodegrades into microplastics. A plastic bag takes 10–20 years, a bottle takes 450 years, and fishing line can take up to 600 years.
+(Bangla): প্লাস্টিক পচতে অনেক সময় নেয়। একটি প্লাস্টিক ব্যাগ ভাঙতে ১০–২০ বছর, প্লাস্টিক বোতল ৪৫০ বছর এবং ফিশিং লাইন ৬০০ বছর পর্যন্ত লাগতে পারে।
+(Banglish): Plastic pochte prochur shomoy lage. Ekta plastic bag er 10-20 bochor, botol er 450 bochor ar fishing line er pray 600 bochor lage.
+
+## 3. Waste Management
+
+Q: What is waste management? / বর্জ্য ব্যবস্থাপনা কী? / Waste management ki?
+Answer:
+(English): It is the collection, transport, processing, and disposal of waste. It includes reduction, reuse, recycling, composting, and landfill management to protect public health.
+(Bangla): বর্জ্য ব্যবস্থাপনা বলতে বর্জ্য সংগ্রহ, পরিবহন, প্রক্রিয়াকরণ এবং নিষ্পত্তি বোঝায়। এটি জনস্বাস্থ্য রক্ষা করে এবং দূষণ প্রতিরোধে সহায়তা করে।
+(Banglish): Waste management holo aborjona collect kora, transport kora ar thikmoto phelari process. Eta amader shastho ar environment bhalo rakhe.
+
+Q: What are the different types of waste? / বর্জ্যের বিভিন্ন প্রকার কী কী? / Waste ko dhoroner hoy?
+Answer:
+(English): Waste is classified as: Municipal (household), Hazardous (chemicals), Industrial, Electronic (e-waste), Biomedical, Construction, and Agricultural waste.
+(Bangla): বর্জ্য বিভিন্ন প্রকারের হয়: গৃহস্থালি আবর্জনা, বিপজ্জনক বর্জ্য (রাসায়নিক), শিল্প বর্জ্য, ইলেকট্রনিক বর্জ্য (ই-বর্জ্য), চিকিৎসা বর্জ্য এবং কৃষি বর্জ্য।
+(Banglish): Aborjona onek dhoroner hoy: bashar aborjona, hazardous chemical, industrial waste, e-waste, hospital er waste ar krishi kajer waste.
+
+Q: What is a landfill and why is it a problem? / ল্যান্ডফিল কী এবং এটি কেন সমস্যাজনক? / Landfill ki ar eta keno shomossajonok?
+Answer:
+(English): A landfill is where waste is buried. Problems include toxic leachate seeping into groundwater, methane gas production, soil contamination, and odor pollution.
+(Bangla): ল্যান্ডফিল হলো এমন স্থান যেখানে বর্জ্য মাটিতে সমাহিত করা হয়। এর ফলে ভূগর্ভস্থ পানি দূষণ, মিথেন গ্যাস উৎপাদন এবং মাটি দূষণের মতো সমস্যা তৈরি হয়।
+(Banglish): Landfill holo jekhane aborjona matir niche joma rakha hoy. Er karone pani noshto hoy, khotikor gas ber hoy ar matir khoti hoy.
+
+Q: What is composting and how does it work? / কম্পোস্টিং কী এবং এটি কীভাবে কাজ করে? / Composting ki ar eta kivabe kaj kore?
+Answer:
+(English): Composting decomposes organic matter (food scraps) into nutrient-rich soil. Microorganisms break down the matter in the presence of oxygen, moisture, and warmth.
+(Bangla): কম্পোস্টিং হলো খাদ্য বা জৈব বর্জ্য পচিয়ে সার তৈরির প্রাকৃতিক প্রক্রিয়া। অণুজীব ও কেঁচো অক্সিজেনের উপস্থিতিতে এই বর্জ্যকে ভেঙে ফেলে।
+(Banglish): Composting holo khabaler aborjona diye shar bananor natural process. Oxygen ar panasher moddhe onujib gulo khabarer oboshishto ke poche shar banay.
+
+Q: What is e-waste and how should it be disposed of? / ই-বর্জ্য কী এবং এটি কীভাবে নিষ্পত্তি করতে হবে? / E-waste ki ar eta kivabe phelte hoy?
+Answer:
+(English): E-waste refers to discarded electronics like phones and batteries. It contains toxic lead and mercury. It should be taken to certified e-waste collection centers or recyclers.
+(Bangla): ই-বর্জ্য হলো পরিত্যক্ত ইলেকট্রনিক ডিভাইস যেমন ফোন বা ব্যাটারি। এতে বিষাক্ত সীসা ও পারদ থাকে। এটি অবশ্যই নির্দিষ্ট ই-বর্জ্য কেন্দ্রে দেওয়া উচিত।
+(Banglish): Nosto ba puran electronics jinis holo e-waste. Er bhetore bishakto jinish thake, tai eguLo normal dustbin e na phele e-waste center e deya uchit.
+
+Q: How can I reduce household waste? / আমি কীভাবে গৃহস্থালি বর্জ্য কমাতে পারি? / Ami kivabe bashar aborjona komate pari?
+Answer:
+(English): Practical steps include: buying products with minimal packaging, using reusable bags, composting food scraps, repairing broken items, and buying second-hand.
+(Bangla): গৃহস্থালি বর্জ্য কমানোর উপায়: কম প্যাকেজিংযুক্ত পণ্য কেনা, পুনর্ব্যবহারযোগ্য ব্যাগ ব্যবহার, খাবার পচিয়ে সার তৈরি এবং নষ্ট জিনিস মেরামত করা।
+(Banglish): Bashar aborjona komanor jonno: kom packet wala jinish kinun, bar bar use kora jay emon bag nin, khabar er oboshishto diye shar banan ar jinish nosto hole repair korun.
+
+## 4. Environmental Laws & Policies
+
+Q: What is the Basel Convention? / বাসেল কনভেনশন কী? / Basel Convention ki?
+Answer:
+(English): The Basel Convention on the Control of Transboundary Movements of Hazardous Wastes and Their Disposal is an international treaty adopted in 1989. It aims to reduce the movement of hazardous waste between nations, prevent transfer from developed to less developed countries, and minimize hazardous waste generation. It has been ratified by 188 countries.
+(Bangla): বাসেল কনভেনশন হলো ১৯৮৯ সালে গৃহীত একটি আন্তর্জাতিক চুক্তি যা বিপজ্জনক বর্জ্যের আন্তঃদেশীয় স্থানান্তর ও নিষ্পত্তি নিয়ন্ত্রণ করে। এর লক্ষ্য হলো দেশগুলোর মধ্যে বিপজ্জনক বর্জ্যের চলাচল কমানো, উন্নত থেকে কম উন্নত দেশে স্থানান্তর রোধ করা এবং বিপজ্জনক বর্জ্য উৎপাদন কমানো। ১৮৮টি দেশ এটি অনুমোদন করেছে।
+(Banglish): Basel Convention holo 1989 e neya ekta international treaty jeta bishakto ba hazardous waste ek desh theke onno deshe neya control kore. Er main uddeshyo holo developed desh theke gorib deshe hazardous waste transfer bondho kora. 188 ta desh eta approve koreche.
+
+Q: What environmental laws govern waste in Bangladesh? / বাংলাদেশে বর্জ্য নিয়ন্ত্রণকারী পরিবেশ আইনগুলো কী কী? / Bangladesh e waste control korar environment law gulo ki ki?
+Answer:
+(English): Bangladesh has several key laws: the Environment Conservation Act 1995 (amended 2010), the Environment Conservation Rules 1997, the Hazardous Waste and Ship Breaking Waste Management Rules 2011, and the Solid Waste Management Rules 2021. The Department of Environment (DoE) enforces these regulations.
+(Bangla): বাংলাদেশে বেশ কয়েকটি গুরুত্বপূর্ণ পরিবেশ আইন রয়েছে: পরিবেশ সংরক্ষণ আইন ১৯৯৫ (২০১০ সংশোধিত), পরিবেশ সংরক্ষণ বিধিমালা ১৯৯৭, বিপজ্জনক বর্জ্য ও জাহাজ ভাঙার বর্জ্য ব্যবস্থাপনা বিধিমালা ২০১১ এবং কঠিন বর্জ্য ব্যবস্থাপনা বিধিমালা ২০২১। পরিবেশ অধিদপ্তর (DoE) এই বিধিবিধান প্রয়োগ করে।
+(Banglish): Bangladesh e environment bhalo rakhar kichu main law ache: Environment Conservation Act 1995, Environment Conservation Rules 1997, Hazardous Waste and Ship Breaking Rules 2011, ar Solid Waste Management Rules 2021. Department of Environment (DoE) ei law gulo maintain kore.
+
+Q: Is plastic bag use banned in Bangladesh? / বাংলাদেশে পলিথিন ব্যাগ ব্যবহার কি নিষিদ্ধ? / Bangladesh e ki polythene bag use kora nishiddho?
+Answer:
+(English): Yes. Bangladesh became one of the first countries to ban polythene shopping bags in 2002 under the Environment Conservation Act. The ban covers production, import, marketing, sale, and use. Violations carry penalties including fines and imprisonment.
+(Bangla): হ্যাঁ। বাংলাদেশ ২০০২ সালে পরিবেশ সংরক্ষণ আইনের অধীনে পলিথিন শপিং ব্যাগ নিষিদ্ধকারী বিশ্বের প্রথম দেশগুলোর মধ্যে একটি। নিষেধাজ্ঞায় উৎপাদন, আমদানি, বিপণন, বিক্রয় ও ব্যবহার অন্তর্ভুক্ত। লঙ্ঘনে জরিমানা ও কারাদণ্ডের বিধান আছে।
+(Banglish): Heh. Bangladesh world er prothom desh gulo moddhe ekta jeta 2002 shale polythene bag ban koreche. Production theke shuru kore sell ba use kora—shobi nishiddho. Ei law break korle jorimana ba jail hote pare.
+
+Q: What is Extended Producer Responsibility (EPR)? / বর্ধিত উৎপাদনকারী দায়িত্ব (EPR) কী? / Extended Producer Responsibility (EPR) ki?
+Answer:
+(English): EPR is a policy approach making producers responsible for the entire lifecycle of their products, especially end-of-life disposal. Manufacturers must design products for easier recycling, fund recycling programs, and take back products at end of life, shifting the financial burden from taxpayers to producers.
+(Bangla): বর্ধিত উৎপাদনকারী দায়িত্ব (EPR) হলো একটি পরিবেশ নীতি পদ্ধতি যা উৎপাদনকারীদের তাদের পণ্যের সম্পূর্ণ জীবনচক্রের দায়িত্ব দেয়, বিশেষত মেয়াদ-শেষ নিষ্পত্তির ক্ষেত্রে। এটি বর্জ্য ব্যবস্থাপনার আর্থিক বোঝা করদাতা থেকে উৎপাদনকারীতে স্থানান্তর করে।
+(Banglish): EPR holo emon ekta policy jekhane company ba producer-der-kei tader product er porityakto ongsho ba waste er dayitto nite hoy. Company gulo-ke recycling e taka dite hoy ba puran product pherot nite hoy, jate shorkar ba jonogon er upor chap na pore.
+
+Q: What is the Paris Agreement and how does it relate to waste? / প্যারিস চুক্তি কী এবং এটি বর্জ্যের সাথে কীভাবে সম্পর্কিত? / Paris Agreement ki ar eta waste management er shathe kivabe related?
+Answer:
+(English): The Paris Agreement is a 2015 international climate treaty aiming to limit global warming to below 2°C. Waste management is linked because landfills are major methane sources (a potent greenhouse gas). Waste-to-energy programs help nations meet their emissions reduction targets (NDCs).
+(Bangla): প্যারিস চুক্তি হলো ২০১৫ সালে গৃহীত একটি ঐতিহাসিক জলবায়ু চুক্তি, যার লক্ষ্য বৈশ্বিক উষ্ণতা ২°C-এর নিচে সীমাবদ্ধ রাখা। বর্জ্য ব্যবস্থাপনার সাথে এর সম্পর্ক গুরুত্বপূর্ণ কারণ ল্যান্ডফিল হলো মিথেনের প্রধান উৎস এবং বর্জ্য-থেকে-শক্তি কার্যক্রম নির্গমন হ্রাসে অবদান রাখতে পারে।
+(Banglish): Paris Agreement holo 2015 shale neya ekta world climate treaty jeta global warming komate kaj kore. Landfill theke prochur methane gas ber hoy jeta environment er jonno khub kharap. Waste management bhalo hole climate change control kora shohoj hoy.
+
+## 5. NGO & Community Initiatives
+
+Q: What role do NGOs play in waste management? / বর্জ্য ব্যবস্থাপনায় NGO-গুলো কী ভূমিকা পালন করে? / Waste management e NGO gulo ki bhabe help kore?
+Answer:
+(English): NGOs raise awareness, conduct recycling drives, advocate for policies, provide training to schools/municipalities, and support informal waste pickers. In Bangladesh, organizations like Waste Concern have pioneered community-based composting models.
+(Bangla): NGO-গুলো বর্জ্য ব্যবস্থাপনায় গুরুত্বপূর্ণ ভূমিকা রাখে: জনসচেতনতা বৃদ্ধি, সামাজিক পুনর্ব্যবহার উদ্যোগ, প্রশিক্ষণ প্রদান এবং অনানুষ্ঠানিক বর্জ্য সংগ্রহকারীদের সহায়তা করে। বাংলাদেশে Waste Concern সম্প্রদায়-ভিত্তিক কম্পোস্টিং মডেল তৈরিতে পথিকৃৎ।
+(Banglish): NGO gulo jonosochetonota barhay, recycling niye kaj kore ar school ba municipality te training dey. Bangladesh e Waste Concern er moto NGO gulo composting niye onek bhalo kaj korche.
+
+Q: How can communities participate in recycling programs? / সম্প্রদায়গুলো রিসাইক্লিং প্রোগ্রামে কীভাবে অংশগ্রহণ করতে পারে? / Shadharon manush ba community kivabe recycling e ongshogrohon korte pare?
+Answer:
+(English): Communities can organize collection drives, set up composting sites, form management committees, partner with city corporations, and practice waste segregation at the source. This improves recycling rates and reduces overall waste costs.
+(Bangla): সম্প্রদায় রিসাইক্লিংয়ে অংশ নিতে পারে: প্রতিবেশী সংগ্রহ অভিযান আয়োজন, সামাজিক কম্পোস্টিং সাইট স্থাপন, বর্জ্য ব্যবস্থাপনা কমিটি গঠন এবং উৎসে বর্জ্য পৃথকীকরণের মাধ্যমে। এতে রিসাইক্লিংয়ের হার বাড়ে এবং খরচ কমে।
+(Banglish): Community recycle e participate korte pare nijeder elakay collection drive kore, composting site banaye ba city corporation er shathe kaj kore. Shobcheye bhalo hoy jodi shobai bari thekei phelna jinish alada kore rakhe.
+
+Q: What is Waste Concern and what do they do in Bangladesh? / Waste Concern কী এবং বাংলাদেশে তারা কী করে? / Waste Concern ki ar tara Bangladesh e ki kaj kore?
+Answer:
+(English): Waste Concern is a Bangladeshi NGO founded in 1995 that pioneered community-based composting. They developed the 3R (Reduce, Reuse, Recycle) model to convert organic waste into compost/fertilizer. Their model is now used in multiple cities across Asia and Africa.
+(Bangla): Waste Concern হলো ১৯৯৫ সালে প্রতিষ্ঠিত একটি বাংলাদেশি NGO যা ঢাকায় সম্প্রদায়-ভিত্তিক কম্পোস্টিং পথিকৃৎ। তারা ৩R মডেল তৈরি করেছে যা জৈব বর্জ্য সংগ্রহ করে কম্পোস্টে রূপান্তরিত করে এবং তা সার হিসেবে বিক্রি হয়।
+(Banglish): Waste Concern holo 1995 shale protishthito ekta NGO jara organic waste theke shar bananor kaj prothom shuru kore. Tara 3R model use kore aborjona ke composting er madhyome fertilizer banay.
+
+Q: How can I volunteer for environmental causes? / আমি কীভাবে পরিবেশ রক্ষার কাজে স্বেচ্ছাসেবী হতে পারি? / Ami kivabe environment bachaite volunteer hishebe kaj korte pari?
+Answer:
+(English): You can join NGOs like Waste Concern, Paribesh Bachao Andolan, or WWF Bangladesh. Activities include beach/river cleanups, tree planting, awareness sessions, and waste audit campaigns. Online platforms like UN Volunteers also list opportunities.
+(Bangla): আপনি Waste Concern, পরিবেশ বাঁচাও আন্দোলন বা WWF Bangladesh-এর মতো NGO-তে যোগ দিতে পারেন। কার্যক্রমে রয়েছে সমুদ্র সৈকত পরিষ্কার, বৃক্ষরোপণ এবং সচেতনতা সেশন। অনলাইন প্ল্যাটফর্মগুলোতেও অনেক সুযোগ থাকে।
+(Banglish): Apni Waste Concern ba WWF er moto organization e join korte paren. Nodi ba shomudro saikat porishkar kora, gach lagano ba manush ke socheton korar moto kaj e volunteer kora jay. Online o eishob kajer khobor pawa jay.
+
+## 6. Notun Alo (নতুন আলো) Platform Usage
+
+Q: What is Notun Alo? / নতুন আলো কী? / Notun Alo ki?
+Answer:
+(English): Notun Alo is an eco-conscious e-commerce and waste management platform in Bangladesh. It connects individuals and businesses with recycling services, sustainable products, and waste pickup scheduling to make responsible disposal easy and rewarding.
+(Bangla): নতুন আলো হলো বাংলাদেশভিত্তিক একটি পরিবেশ-সচেতন ই-কমার্স ও বর্জ্য ব্যবস্থাপনা প্ল্যাটফর্ম। এটি ব্যক্তি ও ব্যবসায়িক প্রতিষ্ঠানকে রিসাইক্লিং সেবা, টেকসই পণ্য এবং বর্জ্য পিকআপ শিডিউলিং-এর সাথে সংযুক্ত করে।
+(Banglish): Notun Alo holo Bangladesh er ekta eco-friendly platform jeta recycling service ar sustainable product sell kore. Amader main kaj holo waste disposal ke shohoj ar rewarding kora.
+
+Q: How do I schedule a waste pickup? / আমি কীভাবে বর্জ্য পিকআপ শিডিউল করব? / Ami kivabe waste pickup schedule korbo?
+Answer:
+(English): Log in to your account, navigate to 'Request Pickup', select waste type (general, recyclable, e-waste), choose a date and time slot, confirm your address, and submit. You will receive a confirmation notification.
+(Bangla): আপনার অ্যাকাউন্টে লগ ইন করুন, 'পিকআপ অনুরোধ' বিভাগে যান, বর্জ্যের ধরন নির্বাচন করুন, পছন্দের তারিখ ও সময় বেছে নিন, ঠিকানা নিশ্চিত করুন এবং অনুরোধ জমা দিন। আপনি একটি নিশ্চিতকরণ বিজ্ঞপ্তি পাবেন।
+(Banglish): Account e login kore 'Request Pickup' section e jan. Tarpor waste type select kore date ar time fix korun. Address confirm kore submit korle ekta notification paben.
+
+Q: What products does Notun Alo sell? / নতুন আলো কী পণ্য বিক্রি করে? / Notun Alo te ki ki product pawa jay?
+Answer:
+(English): We offer eco-friendly products like recycled stationery, upcycled home décor, organic compost, reusable bags, and bamboo/jute-based items. All products are from responsible manufacturers or recycled materials.
+(Bangla): নতুন আলো পরিবেশ-বান্ধব পণ্য অফার করে যেমন পুনর্ব্যবহৃত স্টেশনারি, আপসাইকেলড হোম ডেকোর, জৈব কম্পোস্ট, পুনর্ব্যবহারযোগ্য ব্যাগ এবং বাঁশ ও পাট-ভিত্তিক পণ্য।
+(Banglish): Amra recycled stationery, home decor, organic shar (compost), jute ba bamboo product sell kori. Shob product-i environment-friendly material diye banano.
+
+Q: How do I create an account on Notun Alo? / আমি কীভাবে নতুন আলোতে অ্যাকাউন্ট তৈরি করব? / Ami kivabe Notun Alo te account khulbo?
+Answer:
+(English): Visit our website or app, click 'Register', enter your name, email, phone number, and location, create a password, and verify your email. Once registered, you can track orders and earn eco-points.
+(Bangla): আমাদের ওয়েবসাইট বা অ্যাপে যান, 'নিবন্ধন করুন' ক্লিক করুন, আপনার নাম, ইমেইল, ফোন নম্বর ও অবস্থান দিন এবং ইমেইল যাচাই করুন। নিবন্ধনের পর আপনি অর্ডার ট্র্যাক করতে ও ইকো-পয়েন্ট অর্জন করতে পারবেন।
+(Banglish): App ba website e giye 'Register' e click korun. Name, email, phone number diye password set korun. Email verify korle account ready hoye jabe.
+
+Q: What are eco-points and how can I use them? / ইকো-পয়েন্ট কী এবং আমি কীভাবে এগুলো ব্যবহার করতে পারি? / Eco-points ki ar eguLo diye ki hoy?
+Answer:
+(English): Eco-points are loyalty rewards earned for buying eco-friendly products, scheduling pickups, or referrals. Points can be redeemed for discounts, free pickup services, or donated to environmental NGOs.
+(Bangla): ইকো-পয়েন্ট হলো নতুন আলোর লয়্যালটি পুরস্কার ব্যবস্থা। আপনি পণ্য কেনা বা পিকআপ শিডিউল করার জন্য পয়েন্ট অর্জন করেন। এগুলো ডিসকাউন্ট বা ফ্রি পিকআপের জন্য ব্যবহার করা যায়।
+(Banglish): Eco-points holo ekta reward system. Recycle ba product kinle apni point paben. Ei point diye pore discount neya jay ba free pickup service pawa jay.
+
+Q: How do I track my order on Notun Alo? / আমি কীভাবে নতুন আলোতে আমার অর্ডার ট্র্যাক করব? / Ami amar order track korbo kivabe?
+Answer:
+(English): Log in and go to 'My Orders'. You can see the status: Processing, Confirmed, Out for Delivery, or Delivered. You will also receive SMS and email updates. For pickups, you can see the agent's name.
+(Bangla): লগ ইন করে 'আমার অর্ডার'-এ যান। প্রতিটি অর্ডারের বর্তমান অবস্থা (যেমন- ডেলিভারিতে আছে) সেখানে দেখা যাবে। আপনি SMS ও ইমেইল বিজ্ঞপ্তিও পাবেন।
+(Banglish): Login kore 'My Orders' e jan. Shekhane order ki obosthay ache ta dekha jabe. Stage change hole apni mobile e SMS o paben.
+
+Q: What payment methods does Notun Alo accept? / নতুন আলো কোন কোন পেমেন্ট পদ্ধতি গ্রহণ করে? / Notun Alo te ki bhabe payment kora jay?
+Answer:
+(English): We accept bKash, Nagad, Rocket, Visa/Mastercard (credit/debit), net banking, and cash on delivery for eligible orders. All digital transactions are secured with SSL encryption.
+(Bangla): নতুন আলো বিকাশ, নগদ, রকেট, ভিসা ও মাস্টারকার্ড, নেট ব্যাংকিং এবং ক্যাশ অন ডেলিভারি গ্রহণ করে। সব ডিজিটাল লেনদেন SSL এনক্রিপশন দ্বারা সুরক্ষিত।
+(Banglish): Apni bKash, Nagad ba card e payment korte parben. Cash on delivery o available ache. Amader payment system pura secure.
+
+Q: What is Notun Alo's return and refund policy? / নতুন আলোর রিটার্ন ও রিফান্ড নীতি কী? / Returns ba refund er rules ki?
+Answer:
+(English): We offer a 7-day return policy if items are defective or incorrect. Contact support within 7 days with photos. Refunds are processed within 5–7 business days. Pickup services are non-refundable once completed.
+(Bangla): পণ্য ত্রুটিপূর্ণ বা ভুল হলে আমরা ৭ দিনের রিটার্ন নীতি অফার করি। ৭ দিনের মধ্যে ছবির সহ যোগাযোগ করুন। রিফান্ড ৫–৭ কার্যদিবসের মধ্যে সম্পন্ন হয়।
+(Banglish): Product nosto ba vul hole 7 diner moddhe return korte parben. Refund pete 5-7 din lage. Pickup service complete hoye gele sheta refund kora jay na.
+
+## 7. Climate Change & Sustainability
+
+Q: What is climate change and how does waste contribute to it? / জলবায়ু পরিবর্তন কী এবং বর্জ্য এতে কীভাবে অবদান রাখে? / Climate change ki ar waste eta te kivabe probhab phele?
+Answer:
+(English): Climate change refers to long-term shifts in temperatures and weather patterns. Waste contributes significantly: landfills emit methane (a potent greenhouse gas), incineration releases CO₂, and ocean plastics absorb heat. Reducing and recycling waste directly lowers these emissions.
+(Bangla): জলবায়ু পরিবর্তন বলতে তাপমাত্রা ও আবহাওয়ার দীর্ঘমেয়াদী পরিবর্তন বোঝায়। বর্জ্য এতে উল্লেখযোগ্যভাবে অবদান রাখে: ল্যান্ডফিল থেকে মিথেন গ্যাস নির্গত হয়, বর্জ্য পোড়ালে CO₂ নির্গত হয় এবং সমুদ্রের প্লাস্টিক তাপ শোষণ করে। বর্জ্য হ্রাস ও পুনর্ব্যবহার সরাসরি এই নির্গমন কমায়।
+(Banglish): Climate change holo global temperature ar weather er long-term change. Waste eta te boro bhumika rakhe: landfill theke methane gas ber hoy, aborjona purale CO₂ ber hoy, ar shomudrer plastic tap shoshon kore. Waste recycling korle greenhouse gas komano jay.
+
+Q: What is a circular economy? / বৃত্তাকার অর্থনীতি কী? / Circular economy ki?
+Answer:
+(English): A circular economy is an economic model designed to eliminate waste and keep resources in use for as long as possible through design for longevity, repair, reuse, and recycling. It decouples economic growth from resource consumption.
+(Bangla): বৃত্তাকার অর্থনীতি হলো এমন একটি অর্থনৈতিক মডেল যা বর্জ্য দূর করতে এবং সম্পদ যতদিন সম্ভব ব্যবহারে রাখতে ডিজাইন করা হয়েছে। এটি স্থায়িত্ব, মেরামত, পুনর্ব্যবহার এবং পুনর্চক্রায়নের মাধ্যমে কাজ করে।
+(Banglish): Circular economy holo emon ekta model jekhane waste eliminate kora hoy ar resource gulo jotodin shombhob use kora hoy. Eta longevity, repair, reuse ar recycling er upor base kore kaj kore.
+
+Q: How does Bangladesh face climate change impacts? / বাংলাদেশ কীভাবে জলবায়ু পরিবর্তনের প্রভাবের মুখোমুখি হচ্ছে? / Bangladesh kivabe climate change er impact face korche?
+Answer:
+(English): Bangladesh is highly vulnerable, facing rising sea levels (threatening 17% of land), intense cyclones, riverbank erosion, saltwater intrusion in agriculture, and urban heat stress. Climate refugees are an increasing reality in the country.
+(Bangla): বাংলাদেশ অত্যন্ত ঝুঁকিপূর্ণ দেশ হিসেবে সমুদ্রপৃষ্ঠের উচ্চতা বৃদ্ধি (১৭% ভূমি ঝুঁকিতে), তীব্র ঘূর্ণিঝড়, নদীভাঙন, কৃষিজমিতে লবণাক্ততা এবং তীব্র তাপপ্রবাহের সম্মুখীন হচ্ছে। দেশে জলবায়ু উদ্বাস্তু এখন একটি ক্রমবর্ধমান বাস্তবতা।
+(Banglish): Bangladesh world er moddhe shobcheye beshi climate-vulnerable desh gulo ekta. Sea level bere jawa (17% land riske ache), cyclon, nodi bhangon, ar krishi jomite lobon-akto pani dhuka amader main problem. Climate refugee ekhon deshe ekta reality.
+
+Q: What are sustainable development goals (SDGs) related to waste? / বর্জ্যের সাথে সম্পর্কিত টেকসই উন্নয়ন লক্ষ্যমাত্রা (SDG) কী কী? / Waste management er shathe related SDG gulo ki ki?
+Answer:
+(English): Key SDGs include SDG 11 (Sustainable Cities), SDG 12 (Responsible Consumption and Production/3Rs), SDG 14 (Life Below Water/Marine Plastic), and SDG 13 (Climate Action). Bangladesh is committed to these by 2030.
+(Bangla): প্রধান SDG-গুলোর মধ্যে রয়েছে SDG ১১ (টেকসই শহর), SDG ১২ (দায়িত্বশীল ভোগ ও উৎপাদন), SDG ১৪ (জলের নিচের জীবন) এবং SDG ১৩ (জলবায়ু পদক্ষেপ)। বাংলাদেশ ২০৩০ সালের মধ্যে এগুলো অর্জনে প্রতিশ্রুতিবদ্ধ।
+(Banglish): Main SDG gulo holo SDG 11 (Sustainable Cities), SDG 12 (Responsible Consumption), SDG 14 (Marine Plastic) ar SDG 13 (Climate Action). 2030 er moddhe Bangladesh ei goal gulo puron korte kaj korche.
+
+Q: What are microplastics and why are they dangerous? / মাইক্রোপ্লাস্টিক কী এবং এগুলো কেন বিপজ্জনক? / Microplastics ki ar eguLo keno dangerous?
+Answer:
+(English): Microplastics are plastic fragments smaller than 5mm. They contaminate water, soil, and air, entering the human food chain. They can carry toxic chemicals, disrupt hormones, and cause internal inflammation.
+(Bangla): মাইক্রোপ্লাস্টিক হলো ৫ মিমি-এর কম আকারের ক্ষুদ্র প্লাস্টিক টুকরো। এগুলো পানি, মাটি ও বায়ু দূষিত করে মানব খাদ্য শৃঙ্খলে প্রবেশ করে এবং শরীরে বিষাক্ত রাসায়নিক বহন ও প্রদাহ সৃষ্টি করতে পারে।
+(Banglish): Microplastics holo 5mm er cheye choto plastic tukra. EguLo pani, mati ar batash noshto kore amader khabare chole ashe. EguLo bishakto chemical carry kore ar sharirer khoti kore.
+
+## 8. Health & Safety in Waste Handling
+
+Q: What health risks are associated with improper waste disposal? / অনুপযুক্ত বর্জ্য নিষ্পত্তি থেকে কী স্বাস্থ্য ঝুঁকি রয়েছে? / Thikmoto waste dispose na korle ki dhoroner shasthyo-jhuki thake?
+Answer:
+(English): Risks include respiratory diseases from burning waste, waterborne diseases (cholera, typhoid) from contamination, skin irritation from chemicals, and vector-borne diseases (dengue, malaria) from stagnant water at dump sites.
+(Bangla): ঝুঁকির মধ্যে রয়েছে বর্জ্য পোড়ানো থেকে শ্বাসকষ্ট, দূষিত পানি থেকে জলবাহিত রোগ (কলেরা, টাইফয়েড), রাসায়নিক থেকে ত্বকের জ্বালা এবং বর্জ্য স্থানের স্থির পানি থেকে ডেঙ্গু বা ম্যালেরিয়া।
+(Banglish): Improper waste disposal e boro risk thake: aborjona purale shash-koshto hoy, dushito pani theke cholera-typhoid hoy, ar joma hoye thaka pani theke dengue-malaria hote pare.
+
+Q: How should I safely handle and dispose of hazardous household waste? / আমি কীভাবে নিরাপদে বিপজ্জনক গৃহস্থালি বর্জ্য পরিচালনা ও নিষ্পত্তি করব? / Ami kivabe bishakto bashar waste safely handle korbo?
+Answer:
+(English): Store hazardous items (batteries, paint, chemicals) in original labeled containers. Never pour them down drains. Use gloves, avoid skin contact, and take them to designated hazardous waste collection points.
+(Bangla): বিপজ্জনক বস্তু (ব্যাটারি, রং, রাসায়নিক) মূল লেবেলযুক্ত পাত্রে রাখুন। কখনো নালায় ঢালবেন না। গ্লাভস ব্যবহার করুন এবং নির্দিষ্ট বিপজ্জনক বর্জ্য সংগ্রহ পয়েন্টে নিয়ে যান।
+(Banglish): Hazardous jinis jemon battery ba chemical main label wala container e rakhen. EguLo kkhono nala-te dhalben na. Gloves use koren ar designated collection point e joma den.
+
+Q: Is burning waste a safe method of disposal? / বর্জ্য পোড়ানো কি নিষ্পত্তির একটি নিরাপদ পদ্ধতি? / Aborjona purano ki kono safe method?
+Answer:
+(English): No. Open burning releases toxic pollutants like dioxins and heavy metals, causing respiratory diseases and cancer. It is prohibited in many countries, including Bangladesh. Composting and recycling are safer alternatives.
+(Bangla): না। খোলা জায়গায় বর্জ্য পোড়ানো অত্যন্ত ক্ষতিকর; এটি ডাইঅক্সিন ও ভারী ধাতুর মতো বিষাক্ত পদার্থ বাতাসে ছাড়ে যা ক্যান্সার ও শ্বাসকষ্টের ঝুঁকি বাড়ায়। বাংলাদেশে এটি নিষিদ্ধ।
+(Banglish): Na, aborjona purano khub khotikor. Eta dioxin ar heavy metal batash e chere dey, jeta theke shash-koshto ba cancer hote pare. Bangladesh e eta nishiddho; er bodol-e recycling ba composting bhalo option.
+
+## 9. Chatbot & Technical Help
+
+Q: What can the Notun Alo chatbot help me with? / নতুন আলো চ্যাটবট আমাকে কীসে সাহায্য করতে পারে? / Notun Alo chatbot amake kivabe help korbe?
+Answer:
+(English): The chatbot provides recycling guidance, pickup scheduling, product recommendations, information on environmental laws, tips for waste reduction, and account support — all in English and Bangla.
+(Bangla): চ্যাটবট আপনাকে রিসাইক্লিং নির্দেশিকা, পিকআপ শিডিউলিং, পণ্যের সুপারিশ, পরিবেশ আইন সম্পর্কিত তথ্য, বর্জ্য কমানোর টিপস এবং অ্যাকাউন্ট সহায়তা প্রদান করতে পারে।
+(Banglish): Notun Alo chatbot apnake recycling rules, pickup schedule, product suggestion, environment law ar account support—sob bishoyei Bangla ar English e help korte pare.
+
+Q: How do I switch the chatbot language between English and Bangla? / আমি চ্যাটবটের ভাষা ইংরেজি ও বাংলার মধ্যে কীভাবে পরিবর্তন করব? / Chatbot er language English theke Bangla kivabe korbo?
+Answer:
+(English): The chatbot automatically detects your language. Type in English for English responses or Bangla for Bangla. You can also explicitly ask "Please respond in Bangla" to set your preference.
+(Bangla): চ্যাটবট স্বয়ংক্রিয়ভাবে আপনার ভাষা শনাক্ত করে। ইংরেজিতে লিখলে ইংরেজি এবং বাংলায় লিখলে বাংলায় উত্তর পাবেন। আপনি সরাসরি "অনুগ্রহ করে বাংলায় উত্তর দিন" বলেও ভাষা পরিবর্তন করতে পারেন।
+(Banglish): Notun Alo chatbot automatically apni kon bhashay likhchen ta bujhte pare. English e likhle English e reply dibe, Bangla-te likhle Bangla-te. Apni bolte paren "Please respond in Bangla" jate preference set hoye jay.
+
+
+Q: What should I do if the chatbot gives me incorrect information? / চ্যাটবট ভুল তথ্য দিলে আমার কী করা উচিত? / Chatbot bhul kisu bolle amar ki korar ache?
+Answer:
+(English): Please use the feedback option (thumbs down icon) to report the issue. You can also email our support team at support@notunalo.com.bd with the specific question and answer for review.
+(Bangla): অনুগ্রহ করে ফিডব্যাক বিকল্প (থাম্বস ডাউন আইকন) ব্যবহার করে রিপোর্ট করুন। অথবা নির্দিষ্ট প্রশ্নটি সহ support@notunalo.com.bd ইমেইলে আমাদের সহায়তা দলকে জানান।
+(Banglish): Jodi chatbot bhul kisu bole, tahole feedback option (thumbs down icon) use kore report koren. Apni support@notunalo.com.bd te mail o korte paren, amader team eta review korbe.
+
+## 10. Selling & Pricing (পণ্য বিক্রয় ও মূল্য নির্ধারণ)
+
+Q: How are the prices for my recyclable items determined? / আমার পুনর্ব্যবহারযোগ্য পণ্যের দাম কীভাবে নির্ধারণ করা হয়? / Amar recyclable jinish er dam kivabe thik kora hoy?
+Answer:
+(English): Market prices and material weight determine the price. Daily rates are available in the 'Market Rates' section of the app.
+(Bangla): বাজারমূল্য এবং উপকরণের ওজনের ওপর ভিত্তি করে দাম নির্ধারিত হয়। অ্যাপের 'Market Rates' সেকশনে প্রতিদিনের রেট দেখা যাবে।
+(Banglish): Bazarmullyo ar jinish er ojon er upor base kore dam thik kora hoy. App er 'Market Rates' e daily rate pawa jabe.
+
+Q: Is there a minimum weight requirement for a pickup? / পিকআপ অনুরোধের জন্য কি ন্যূনতম ওজনের কোনো বাধ্যবাধকতা আছে? / Pickup er jonno ki minimum kono weight thaka lagbe?
+Answer:
+(English): A minimum of 5kg is required for free home pickup. Below this, a small service charge may apply.
+(Bangla): ফ্রি হোম পিকআপের জন্য কমপক্ষে ৫ কেজি বর্জ্য প্রয়োজন। এর কম হলে সামান্য সার্ভিস চার্জ প্রযোজ্য হতে পারে।
+(Banglish): Free home pickup er jonno ontoto 5kg lagbe. Er kom hole service charge dite hote pare.
+
+Q: Why do the prices of items change daily? / কেন প্রতিদিন পণ্যের দাম পরিবর্তন হয়? / Din din jinish er dam change hoy keno?
+Answer:
+(English): Global market values for raw materials change daily in the recycling industry, so our rates are updated accordingly.
+(Bangla): রিসাইক্লিং ইন্ডাস্ট্রিতে কাঁচামালের বৈশ্বিক বাজারমূল্য প্রতিদিন পরিবর্তিত হয়, তাই আমাদের রেটও সেই অনুযায়ী আপডেট করা হয়।
+(Banglish): World market e raw material er dam daily change hoy, tai amader rate o update kora hoy.
+
+Q: Can I sell different types of plastic and paper together? / আমি কি একসাথে বিভিন্ন ধরণের প্লাস্টিক ও কাগজ বিক্রি করতে পারি? / Ami ki ekshathe plastic ar kagoj sell korte pari?
+Answer:
+(English): Yes, but different rates apply to each category. The agent will weigh them separately.
+(Bangla): অবশ্যই। তবে বিভিন্ন ক্যাটাগরির জন্য আলাদা রেট প্রযোজ্য হবে। এজেন্ট ওজন করার সময় ক্যাটাগরি অনুযায়ী আলাদা করে মেপে নেবেন।
+(Banglish): Heh parben. Kintu prottek tar rate alada hobe, agent alada bhabe weight korbe.
+
+Q: Is there a special price for bulk quantities of waste? / বড় পরিমাণের বর্জ্যের জন্য কি বিশেষ কোনো দাম পাওয়া যাবে? / Beshi poriman aborjona hole ki beshi dam pawa jabe?
+Answer:
+(English): We offer 'Bulk Rates' for quantities over 100kg. Please contact our corporate team for large volumes.
+(Bangla): ১০০ কেজির বেশি বর্জ্যের ক্ষেত্রে আমরা 'Bulk Rate' অফার করি। বড় পরিমাণের ক্ষেত্রে অনুগ্রহ করে আমাদের কর্পোরেট টিমের সাথে যোগাযোগ করুন।
+(Banglish): 100kg er beshi hole amra 'Bulk Rate' dei. Boro porimaner jonno corporate team ke janan.
+
+## 11. Special Items & Donation (বিশেষ বর্জ্য ও দান)
+
+Q: Do you accept old clothes or furniture for recycling? / আপনারা কি রিসাইক্লিংয়ের জন্য পুরনো কাপড় বা আসবাবপত্র গ্রহণ করেন? / Apnara ki recycle korar jonno puran kapor ba furniture nen?
+Answer:
+(English): We accept textiles and specific furniture for recycling or upcycling.
+(Bangla): আমরা টেক্সটাইল এবং কিছু নির্দিষ্ট আসবাবপত্র গ্রহণ করি। এগুলো হয় রিসাইকেল করা হয় অথবা আপসাইক্লিং করে নতুন রূপ দেওয়া হয়।
+(Banglish): Amra kapor ar kichu furniture recycle ba upcycle korar jonno nei.
+
+Q: Can I donate my recyclables for free instead of selling them? / আমি কি পণ্যগুলো বিক্রি করার পরিবর্তে বিনামূল্যে দান করতে পারি? / Ami ki jinish gulo sell na kore donate korte pari?
+Answer:
+(English): Yes, choose the 'Donate' option during pickup. Proceeds go to our social welfare fund.
+(Bangla): জি, পিকআপের সময় 'Donate' অপশনটি বেছে নিতে পারেন। দান করা পণ্যের অর্থ সামাজিক কল্যাণ তহবিলে প্রদান করা হয়।
+(Banglish): Heh, pickup er shomoy 'Donate' option select koren. Donated taka social welfare e deya hoy.
+
+Q: Do you accept old books or toys? / আপনারা কি পুরনো বই বা খেলনা গ্রহণ করেন? / Puran boi ba khelna ki apnara nen?
+Answer:
+(English): Yes, we accept books and plastic toys. Books in good condition go to our 'Library Project'.
+(Bangla): জি, আমরা বই এবং প্লাস্টিকের খেলনা গ্রহণ করি। ভালো অবস্থায় থাকলে বইগুলো আমাদের 'লাইব্রেরি প্রজেক্ট'-এ দেওয়া হয়।
+(Banglish): Amra boi ar plastic khelna nei. Boi bhalo thakle amader 'Library Project' e deya hoy.
+
+Q: Do you take large broken electronics like refrigerators? / নষ্ট হয়ে যাওয়া বড় ইলেকট্রনিক যন্ত্রপাতি (যেমন- ফ্রিজ) কি আপনারা নেন? / Nosto fridge ba boro electronics ki apnara nen?
+Answer:
+(English): Yes, we collect large electronics under our e-waste section.
+(Bangla): জি, আমাদের ই-বর্জ্য (e-waste) সেকশনের আওতায় আমরা বড় ইলেকট্রনিক্স যন্ত্রপাতি সংগ্রহ করি।
+(Banglish): Heh, e-waste section e amra boro electronics collect kori.
+
+Q: Will I get a certificate or receipt for donated items? / দানের জিনিসের জন্য কি আমি কোনো সার্টিফিকেট বা রিসিট পাব? / Donate korle ki kono certificate pawa jabe?
+Answer:
+(English): Yes, a digital 'Appreciation Certificate' will be emailed to you after donation.
+(Bangla): জি, দান করার পর আপনার ইমেইলে একটি ডিজিটাল 'Appreciation Certificate' পাঠিয়ে দেওয়া হবে।
+(Banglish): Heh, donate korle apni email e ekta digital certificate paben.
+
+## 12. Safety & Trust (নিরাপত্তা ও বিশ্বাসযোগ্যতা)
+
+Q: How can I verify the identity of the pickup agent? / আমি কীভাবে পিকআপ এজেন্টের পরিচয় যাচাই করতে পারি? / Ami kivabe pickup agent er porichoy verify korbo?
+Answer:
+(English): Agent details (name, photo, security code) are in the app. Always check their ID card.
+(Bangla): অ্যাপে এজেন্টের নাম, ছবি এবং একটি সিকিউরিটি কোড দেওয়া থাকে। এজেন্ট আসার পর তার আইডি কার্ড মিলিয়ে নিন।
+(Banglish): App e agent er name ar chobi thake. Agent ashar por tar ID card check kore niben.
+
+Q: Is my personal information safe on this platform? / এই প্ল্যাটফর্মে কি আমার ব্যক্তিগত তথ্য নিরাপদ? / Ei platform e ki amar personal info safe thakbe?
+Answer:
+(English): Yes, we use industry-standard encryption and do not share data without permission.
+(Bangla): জি, আমরা ইন্ডাস্ট্রি-স্ট্যান্ডার্ড এনক্রিপশন ব্যবহার করি এবং আপনার অনুমতি ছাড়া তথ্য তৃতীয় পক্ষের সাথে শেয়ার করি না।
+(Banglish): Heh, amader platform e apnar info pura secure thakbe.
+
+Q: Are your agents background verified? / আপনাদের এজেন্টরা কি ব্যাকগ্রাউন্ড ভেরিফাইড? / Apnader agent gulo ki trusted?
+Answer:
+(English): Every agent undergoes police verification and strict background checks before hiring.
+(Bangla): প্রতিটি এজেন্টকে নিয়োগ দেওয়ার আগে তাদের পুলিশ ভেরিফিকেশন এবং কঠোর ব্যাকগ্রাউন্ড চেক সম্পন্ন করা হয়।
+(Banglish): Sob agent er police verification ar background check kora thake.
+
+Q: Can anyone else see my home address? / আমার বাসার ঠিকানা কি অন্য কেউ দেখতে পারবে? / Amar bashar thikana ki onno keu dekhte parbe?
+Answer:
+(English): Your address is only visible to the assigned agent during pickup. Other users cannot see it.
+(Bangla): আপনার ঠিকানা শুধুমাত্র নির্ধারিত এজেন্টের কাছে পিকআপের সময়ের জন্য দৃশ্যমান থাকে। এটি অন্য সাধারণ ইউজাররা দেখতে পারে না।
+(Banglish): Apnar address shudhu assigned agent dekhte pare, onno keu na.
+
+Q: How do I report any unprofessional behavior by an agent? / এজেন্টের কোনো অপেশাদার আচরণের রিপোর্ট কীভাবে করব? / Agent kharap babohar korle report korbo kivabe?
+Answer:
+(English): Report via 'Help & Support' in the app or call our helpline.
+(Bangla): অ্যাপের 'Help & Support' সেকশনে গিয়ে সরাসরি কমপ্লেন করতে পারেন অথবা আমাদের হেল্পলাইনে কল করতে পারেন।
+(Banglish): App e 'Help & Support' e complain koren ba helpline e call den.
+
+## 13. Corporate & Bulk Services (কর্পোরেট ও বাল্ক সার্ভিস)
+
+Q: Does Notun Alo provide services for offices or restaurants? / নতুন আলো কি অফিস বা রেস্টুরেন্টের জন্য সেবা প্রদান করে? / Notun Alo ki office ba restaurant er jonno service dey?
+Answer:
+(English): Yes, our corporate plan includes regular bulk pickups and segregation training.
+(Bangla): জি, আমাদের কর্পোরেট প্ল্যানে রেগুলার বাল্ক পিকআপ এবং বর্জ্য পৃথকীকরণ প্রশিক্ষণের সুবিধা রয়েছে।
+(Banglish): Heh, office ba restaurant er jonno amader corporate plan ache.
+
+Q: Do you provide recycling certificates for corporate waste? / কর্পোরেট বর্জ্য রিসাইক্লিংয়ের জন্য কি কোনো সার্টিফিকেট দেওয়া হয়? / Corporate waste recycle korle ki certificate pawa jabe?
+Answer:
+(English): Yes, we provide monthly 'Sustainability Reports' and 'Green Certificates' to offices.
+(Bangla): জি, আমরা অফিসগুলোকে মাসিক 'Sustainability Report' এবং 'Green Certificate' প্রদান করি।
+(Banglish): Heh, amra monthly report ar certificate dei corporate client der.
+
+Q: Do you handle factory or warehouse cleanouts? / আপনারা কি ফ্যাক্টরি বা ওয়্যারহাউস পরিষ্কারের কাজ করেন? / Factory ba warehouse porishkar er kaj ki apnara koren?
+Answer:
+(English): Yes, we have a specialized team for large clearance projects and bulk scrap.
+(Bangla): জি, বড় ধরণের ক্লিয়ারেন্স প্রজেক্টের জন্য আমাদের আলাদা টিম রয়েছে। আমরা বাল্ক স্ক্র্যাপ সংগ্রহ করি।
+(Banglish): Heh, boro clearance project er jonno amader alada team ache.
+
+Q: Can I schedule weekly pickups for my office? / অফিসের জন্য কি সাপ্তাহিক পিকআপ সেট করা সম্ভব? / Office er jonno ki weekly pickup set kora jay?
+Answer:
+(English): Yes, automated weekly pickups are available under corporate subscriptions.
+(Bangla): অবশ্যই। কর্পোরেট সাবস্ক্রিপশন মডেলে আপনি নির্দিষ্ট দিনে অটোমেটিক পিকআপ সেট করে রাখতে পারেন।
+(Banglish): Heh parben, corporate subscription e weekly pickup set kora jay.
+
+Q: What are the payment methods for corporate services? / কর্পোরেট সেবার জন্য পেমেন্ট মেথড কী কী? / Corporate service er payment kivabe kora jay?
+Answer:
+(English): Corporate clients can pay via bank transfer, check, or monthly invoice.
+(Bangla): কর্পোরেট গ্রাহকরা ব্যাংক ট্রান্সফার, চেক অথবা মাসিক ইনভয়েসের মাধ্যমে পেমেন্ট করতে পারেন।
+(Banglish): Bank transfer, check ba invoice er madhyome payment kora jay.
+
+## 14. Troubleshooting Pickup (পিকআপ সংক্রান্ত সমস্যা)
+
+Q: My pickup was scheduled for 10 AM, but no one has arrived yet. / আমার পিকআপ সকাল ১০টায় হওয়ার কথা ছিল, কিন্তু এখনো কেউ আসেনি। / Amar pickup shokal 10 tay hoyar kotha chilo, kintu ekhon-o keu asheni.
+Answer:
+(English): We apologize for the delay. Check the app for live agent location or contact them directly.
+(Bangla): বিলম্বের জন্য আমরা দুঃখিত। অ্যাপে এজেন্টের লাইভ লোকেশন দেখুন অথবা সরাসরি তাকে কল করুন।
+(Banglish): Deri hoyar jonno amra lojjito. App e agent kothay ache dekhen ba agent ke call den.
+
+Q: The agent is refusing to take some of my items. Why? / পিকআপ এজেন্ট আমার কিছু মালামাল নিতে চাচ্ছেন না। কেন? / Pickup agent amar kichu jinish nite chaiche na. Keno?
+Answer:
+(English): Agents may refuse contaminated (oily), non-recyclable, or unsafe items. Check our 'Accepted Items' list.
+(Bangla): অতিরিক্ত নোংরা বা অ-রিসাইকেলযোগ্য পণ্য এজেন্ট নিতে পারেন না। দয়া করে 'Accepted Items' লিস্টটি চেক করুন।
+(Banglish): Jinish nongra hole ba list e na thakle agent nite chay na. Accepted list check korun.
+
+Q: Can I reschedule my pickup after requesting? / আমি কি একবার রিকোয়েস্ট দেওয়ার পর সময় পরিবর্তন করতে পারি? / Request deyar por ki time change kora jay?
+Answer:
+(English): Yes, you can reschedule up to 1 hour before the start time.
+(Bangla): জি, পিকআপ শুরু হওয়ার ১ ঘণ্টা আগে পর্যন্ত আপনি অ্যাপ থেকে সময় পরিবর্তন বা রিশিডিউল করতে পারবেন।
+(Banglish): Heh, pickup start er 1 hr age porjonto change kora jay.
+
+Q: The agent couldn't reach me as my phone was off. What now? / আমার ফোন বন্ধ থাকায় এজেন্ট যোগাযোগ করতে পারেনি, এখন কী হবে? / Phone bondho thakay agent payni, ekhon ki korbo?
+Answer:
+(English): Your request will show as 'Missed'. You can re-request via the app.
+(Bangla): আপনার রিকোয়েস্টটি 'Missed' দেখাবে। আপনি অ্যাপ থেকে পুনরায় পিকআপ রিকোয়েস্ট দিতে পারবেন।
+(Banglish): Request 'Missed' dekhabe, apni abar request dite parben.
+
+Q: Is there a fee for canceling a pickup? / পিকআপ ক্যানসেল করলে কি কোনো চার্জ দিতে হয়? / Pickup cancel korle ki taka kora hoy?
+Answer:
+(English): No, but frequent last-minute cancellations may lower your user rating.
+(Bangla): না, তবে বার বার শেষ মুহূর্তে ক্যানসেল করলে আপনার ইউজার রেটিং কমে যেতে পারে।
+(Banglish): Na, kintu bar bar cancel korle rating kome jabe.
+
+## 15. Payment & Transaction Issues (পেমেন্ট ও ট্রানজেকশন সমস্যা)
+
+Q: I sold my waste but haven't received the payment yet. / আমি পণ্য বিক্রি করেছি কিন্তু এখনো পেমেন্ট পাইনি। / Ami waste sell koresi kintu ekhon-o taka paini.
+Answer:
+(English): Digital payments can take up to 24 hours. Contact support if it takes longer.
+(Bangla): ডিজিটাল পেমেন্ট সম্পন্ন হতে কখনো কখনো ২৪ ঘণ্টা সময় নিতে পারে। এর বেশি হলে আমাদের সাপোর্ট টিমে যোগাযোগ করুন।
+(Banglish): Payment jete 24 hr lagte pare, er beshi hole support ke janan.
+
+Q: I think the agent's weight measurement is wrong. / এজেন্ট ওজনে ভুল করেছেন বলে মনে হচ্ছে, কী করব? / Agent mone hoy weight e bhul korse, ki korbo?
+Answer:
+(English): Verify weight before confirming. Do not share OTP if there's a mismatch; report via 'Support'.
+(Bangla): কনফার্ম করার আগেই ওজন চেক করুন। অমিল থাকলে ওটিপি (OTP) দেবেন না এবং সাপোর্ট সেকশনে রিপোর্ট করুন।
+(Banglish): Confirm korar age weight check koren. Vul thakle OTP diben na, support e report koren.
+
+Q: Can I receive payment in cash? / আমি কি ক্যাশ পেমেন্ট পেতে পারি? / Ami ki cash taka nite pari?
+Answer:
+(English): We encourage digital payments for transparency, but cash is possible in special cases.
+(Bangla): আমরা স্বচ্ছতার জন্য ডিজিটাল পেমেন্ট (বিকাশ/নগদ) উৎসাহিত করি। তবে বিশেষ ক্ষেত্রে এজেন্টের কাছে ক্যাশ পাওয়া সম্ভব।
+(Banglish): Amra digital payment prefer kori kintu special case e cash nite parben.
+
+Q: What if the payment goes to the wrong number? / ভুল নম্বরে পেমেন্ট চলে গেলে কী হবে? / Bhul number e taka gele ki hobe?
+Answer:
+(English): Payment is automatic to your profile number. If wrong, contact support immediately.
+(Bangla): আপনার প্রোফাইলে দেওয়া নম্বরেই অটোমেটিক পেমেন্ট যায়। নম্বর ভুল থাকলে দ্রুত সাপোর্ট টিমে কল করুন।
+(Banglish): Profile e deya number e taka jay, number vul thakle support e call den.
+
+Q: How long does it take to receive a refund? / রিফান্ডের টাকা কত দিনে ফেরত পাওয়া যায়? / Refund er taka pete koydin lage?
+Answer:
+(English): Refunds take 5-7 business days after approval.
+(Bangla): রিফান্ড রিকোয়েস্ট অ্যাপ্রুভ হওয়ার ৫-৭ কার্যদিবসের মধ্যে আপনার মূল পেমেন্ট মেথডে টাকা চলে যাবে।
+(Banglish): Refund approval er 5-7 din por taka paben.
+
+## 16. Shopping & Delivery Issues (শপিং ও ডেলিভারি সমস্যা)
+
+Q: I received a damaged product. What should I do? / আমি একটি ক্ষতিগ্রস্ত পণ্য পেয়েছি। কী করব? / Ami ekta nosto product kinesi. Ami ki exchange korte pari?
+Answer:
+(English): Take a photo and submit a 'Return Request' via 'My Orders' within 7 days.
+(Bangla): দয়া করে ছবি তুলুন এবং ৭ দিনের মধ্যে 'Return Request' পাঠান। আমরা প্রোডাক্ট বদলে দেব বা রিফান্ড দেব।
+(Banglish): Chobi tule 7 diner moddhe 'Return Request' den. Amra replace ba refund korbo.
+
+Q: Order shows 'Delivered' but I haven't received it. / অর্ডার 'Delivered' দেখাচ্ছে কিন্তু আমি পার্সেল পাইনি। / Order status 'Delivered' dekhay kintu ami parcel paini.
+Answer:
+(English): Check with security or neighbors first. If missing, contact support immediately.
+(Bangla): প্রথমে আপনার বাসার সিকিউরিটি বা প্রতিবেশীদের কাছে খোঁজ নিন। না পেলে দ্রুত আমাদের সাপোর্টে জানান।
+(Banglish): Security ba neighbor der kache khoj nen, na pele support ke janan.
+
+Q: How many days does delivery usually take? / ডেলিভারি পেতে সাধারণত কত দিন সময় লাগে? / Delivery pete koydin lage?
+Answer:
+(English): 2-3 days inside Dhaka, 5-7 days outside.
+(Bangla): ঢাকা সিটির ভেতরে ২-৩ দিন এবং ঢাকার বাইরে ৫-৭ কার্যদিবসের মধ্যে ডেলিভারি দেওয়া হয়।
+(Banglish): Dhaka e 2-3 din, bahire 5-7 din lage.
+
+Q: Can I change the delivery address after ordering? / আমি কি অর্ডার করার পর ডেলিভারি অ্যাড্রেস পরিবর্তন করতে পারি? / Order korar por ki thikana change kora jay?
+Answer:
+(English): You can update the address via support while the order is 'Processing'.
+(Bangla): অর্ডারটি 'Processing' থাকা অবস্থায় আপনি সাপোর্টে কথা বলে অ্যাড্রেস আপডেট করতে পারেন।
+(Banglish): 'Processing' thakle support e bole address change kora jay.
+
+Q: What are your delivery charges? / আপনাদের ডেলিভারি চার্জ কত? / Delivery charge koto?
+Answer:
+(English): 60 BDT inside Dhaka, 150 BDT outside. Free delivery on specific amounts.
+(Bangla): ঢাকার ভেতরে ৬০ টাকা এবং ঢাকার বাইরে ১৫০ টাকা। তবে নির্দিষ্ট পরিমাণের বেশি কেনাকাটা করলে ডেলিভারি ফ্রি।
+(Banglish): Dhaka e 60 taka, bahire 150 taka. Beshi amount er kinle delivery free.
+
+## 17. Account & Technical Issues (অ্যাকাউন্ট ও টেকনিক্যাল সমস্যা)
+
+Q: I am not receiving the OTP code. / আমি ওটিপি (OTP) কোড পাচ্ছি না। / Login korar jonno OTP code ashche na. Ki korbo?
+Answer:
+(English): Wait 2 mins and try 'Resend'. Check your network and inbox.
+(Bangla): ২ মিনিট অপেক্ষা করে 'Resend' দিন। আপনার ফোনের নেটওয়ার্ক এবং ইনবক্স চেক করুন।
+(Banglish): 2 min wait kore 'Resend' den. Network check koren.
+
+Q: The app crashes when uploading a photo. / ছবি আপলোড করার সময় অ্যাপ ক্রাশ করছে। / Chobi upload korar shomoy app crash kore keno?
+Answer:
+(English): Clear app cache or update the app. Ensure storage is available.
+(Bangla): অ্যাপের ক্যাশ ক্লিয়ার করুন অথবা অ্যাপটি আপডেট করুন। ফোনের স্টোরেজ খালি আছে কি না নিশ্চিত করুন।
+(Banglish): App cache clear koren ba update den. Storage check koren.
+
+Q: I forgot my password, how can I reset it? / আমি পাসওয়ার্ড ভুলে গেছি, কীভাবে রিসেট করব? / Password bhule gesi, reset korbo kivabe?
+Answer:
+(English): Click 'Forgot Password' on login screen and use OTP to reset.
+(Bangla): লগইন স্ক্রিনে 'Forgot Password' এ ক্লিক করুন এবং আপনার নিবন্ধিত মোবাইল নম্বরে ওটিপি দিয়ে নতুন পাসওয়ার্ড সেট করুন।
+(Banglish): Login screen e 'Forgot Password' e click kore OTP diye reset koren.
+
+Q: How can I delete my account? / আমি কীভাবে আমার অ্যাকাউন্ট ডিলিট করব? / Account delete korbo kivabe?
+Answer:
+(English): Request account deletion via 'Settings' > 'Privacy'.
+(Bangla): অ্যাপের 'Settings' > 'Privacy' সেকশনে গিয়ে অ্যাকাউন্ট ডিলিট করার রিকোয়েস্ট সাবমিট করতে পারেন।
+(Banglish): 'Settings' > 'Privacy' te giye deletion request den.
+
+Q: The app is working very slowly. / অ্যাপটি খুব স্লো কাজ করছে, সমাধান কী? / App khub slow kaj korche, solution ki?
+Answer:
+(English): Check internet connection and update to the latest version.
+(Bangla): আপনার ইন্টারনেট কানেকশন চেক করুন এবং অ্যাপটির লেটেস্ট ভার্সন প্লে-স্টোর থেকে আপডেট করে নিন।
+(Banglish): Net check koren ar app update den.

@@ -122,13 +122,18 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         .chip { background: white; border: 1px solid var(--border); color: var(--text-secondary); padding: 8px 16px; border-radius: 99px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; }
         .chip:hover { border-color: var(--brand-primary); color: var(--brand-primary); background: var(--brand-light); }
 
-        .input-bar { height: 88px; background: white; border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; }
-        .input-container { flex: 1; max-width: 1000px; margin: 0 auto; display: flex; align-items: center; gap: 16px; }
-        .text-input-wrap { flex: 1; height: 52px; background: var(--bg-chat); border: 1px solid var(--border); border-radius: 16px; display: flex; align-items: center; padding: 0 20px; }
-        #chatInput { flex: 1; border: none; background: transparent; outline: none; font-size: 15px; color: var(--text-primary); }
-        .btn-send { width: 44px; height: 44px; background: var(--brand-primary); border: none; border-radius: 12px; color: white; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .btn-send:hover { background: #065F46; transform: scale(1.05); }
-        .btn-send:disabled { background: #E5E7EB; cursor: not-allowed; transform: none; }
+        .input-bar { background: var(--bg-sidebar); border-top: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 32px; gap: 12px; }
+        .disclaimer-text { font-size: 11px; color: var(--text-muted); text-align: center; font-weight: 500; opacity: 0.8; }
+        .input-container { width: 100%; max-width: 800px; display: flex; align-items: flex-end; gap: 12px; position: relative; }
+        .text-input-wrap { flex: 1; min-height: 54px; max-height: 200px; background: var(--bg-chat); border: 1.5px solid var(--border); border-radius: 20px; display: flex; align-items: center; padding: 12px 20px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .text-input-wrap:focus-within { border-color: var(--brand-primary); background: white; box-shadow: 0 8px 24px rgba(29,158,117,0.12); transform: translateY(-1px); }
+        #chatInput { flex: 1; border: none; background: transparent; outline: none; font-size: 16px; color: var(--text-primary); resize: none; line-height: 1.5; font-family: inherit; max-height: 180px; overflow-y: auto; }
+        #chatInput::-webkit-scrollbar { width: 4px; }
+        #chatInput::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        .btn-send { width: 48px; height: 48px; background: var(--brand-primary); border: none; border-radius: 16px; color: white; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(29,158,117,0.2); }
+        .btn-send:hover { background: #065F46; transform: scale(1.05) rotate(-5deg); box-shadow: 0 6px 16px rgba(29,158,117,0.3); }
+        .btn-send:active { transform: scale(0.95); }
+        .btn-send:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; transform: none; box-shadow: none; }
 
         .empty-state { text-align: center; margin: auto; max-width: 600px; padding: 40px; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -142,17 +147,44 @@ $currentLang = $_SESSION['lang'] ?? 'en';
 
         @media (max-width: 800px) { .sidebar { display: none; } .message-viewport { padding: 20px; } .chat-header { padding: 0 20px; } .input-bar { padding: 0 20px; } .suggest-grid { grid-template-columns: 1fr; } }
     </style>
-<style>
-@media (max-width:767px) { .mobile-only { display:block; } .desktop-only { display:none; } }
-@media (min-width:768px) { .mobile-only { display:none; } .desktop-only { display:block; } }
-</style>
 </head>
 <body>
 
-<?php $pageEmoji = '🤖'; include 'includes/mobile_nav.php'; ?>
-<div class="desktop-only"><?php include 'includes/navbar.php'; ?></div>
+    <?php include 'includes/navbar.php'; ?>
 
-<main class="main-chat">
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <button class="btn-new-chat" id="btnNewChat">
+                    <i class="ti ti-plus"></i> <?= $currentLang === 'bn' ? 'নতুন কথোপকথন' : 'New Conversation' ?>
+                </button>
+            </div>
+            <div class="chat-list" id="chatList">
+                <div class="chat-item active" data-id="main">
+                    <div class="chat-icon"><i class="ti ti-message-code"></i></div>
+                    <div class="chat-info">
+                        <div class="chat-title"><?= $currentLang === 'bn' ? 'সাধারণ সহকারী' : 'General Assistant' ?></div>
+                        <div class="chat-meta"><?= $currentLang === 'bn' ? 'অনলাইন · এখন সক্রিয়' : 'Online · Active now' ?></div>
+                    </div>
+                </div>
+                <div class="chat-item" data-id="points">
+                    <div class="chat-icon"><i class="ti ti-history"></i></div>
+                    <div class="chat-info">
+                        <div class="chat-title">Point Calculation Help</div>
+                        <div class="chat-meta">2 days ago</div>
+                    </div>
+                </div>
+                <div class="chat-item" data-id="pickup">
+                    <div class="chat-icon"><i class="ti ti-truck"></i></div>
+                    <div class="chat-info">
+                        <div class="chat-title">Pickup Schedule Update</div>
+                        <div class="chat-meta">1 week ago</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-chat">
             <header class="chat-header">
                 <div class="ai-info">
                     <div class="ai-avatar"><i class="ti ti-robot"></i></div>
@@ -174,9 +206,12 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             <footer class="input-bar">
                 <div class="input-container">
                     <div class="text-input-wrap">
-                        <input type="text" id="chatInput" placeholder="<?= $currentLang === 'bn' ? 'নতুন আলো এআই-কে মেসেজ দিন...' : 'Message Notun Alo AI...' ?>" autocomplete="off">
+                        <textarea id="chatInput" rows="1" placeholder="<?= $currentLang === 'bn' ? 'নতুন আলো এআই-কে মেসেজ দিন...' : 'Message Notun Alo AI...' ?>" autocomplete="off"></textarea>
                     </div>
                     <button class="btn-send" id="sendBtn" disabled><i class="ti ti-send"></i></button>
+                </div>
+                <div class="disclaimer-text">
+                    NotunAlo chat bot can make mistakes. Verify important information.
                 </div>
             </footer>
         </main>
@@ -298,14 +333,30 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         }
 
         function appendAiMessage(msg, save = true) {
-            let content = `<div class="msg-text">${msg.text}</div>`;
+            let text = msg.text || '';
+            // Simple markdown-like bold handling
+            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            text = text.replace(/\n/g, '<br>');
+
+            let content = `<div class="msg-text">${text}</div>`;
             if (msg.bullets) content += `<ul style="margin-top:12px; padding-left:18px;">${msg.bullets.map(b => `<li style="margin-bottom:6px;">${b}</li>`).join('')}</ul>`;
             
+            if (msg.isPickup) {
+                content += `
+                    <a href="dashboard.php" class="chip" style="display:inline-flex; align-items:center; gap:8px; margin-top:12px; text-decoration:none; background:var(--brand-light); color:var(--brand-primary); border-color:var(--brand-border);">
+                        <i class="ti ti-layout-dashboard"></i> View in Dashboard
+                    </a>
+                `;
+            }
+
             const html = `
                 <div style="display:flex; flex-direction:column; gap:12px;">
                     <div class="ai-message">
                         <div class="msg-avatar"><i class="ti ti-robot"></i></div>
-                        <div class="ai-bubble">${content} <div class="msg-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div></div>
+                        <div class="ai-bubble">
+                            ${content}
+                            <div class="msg-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                        </div>
                     </div>
                     ${msg.quickReplies ? `
                         <div class="quick-replies">
@@ -315,15 +366,36 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                 </div>
             `;
             messageArea.insertAdjacentHTML('beforeend', html);
-            if (save && conversations[currentConvId]) {
+            if (save && conversations[currentConvId] && !msg.isTyping) {
                 conversations[currentConvId].messages.push({ type: 'ai', text: msg.text, bullets: msg.bullets, quickReplies: msg.quickReplies });
             }
             scrollToBottom();
         }
 
-        function sendMessage() {
+        let conversationHistory = [];
+        let isLoading = false;
+
+        // Auto-expand textarea
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            sendBtn.disabled = !this.value.trim();
+        });
+
+        // Handle Enter key
+        chatInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        async function sendMessage() {
             const text = chatInput.value.trim();
-            if (!text) return;
+            if (!text || isLoading) return;
+
+            isLoading = true;
+            sendBtn.disabled = true;
 
             if (currentConvId === 'new') {
                 const id = 'conv_' + Date.now();
@@ -331,7 +403,13 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                 const item = document.createElement('div');
                 item.className = 'chat-item';
                 item.dataset.id = id;
-                item.innerHTML = `<div class="chat-icon"><i class="ti ti-message"></i></div><div class="chat-info"><div class="chat-title">${text}</div><div class="chat-meta">Just now</div></div>`;
+                item.innerHTML = `
+                    <div class="chat-icon"><i class="ti ti-message"></i></div>
+                    <div class="chat-info">
+                        <div class="chat-title">${escapeHtml(text)}</div>
+                        <div class="chat-meta">Just now</div>
+                    </div>
+                `;
                 item.onclick = () => loadConversation(id);
                 chatList.prepend(item);
                 loadConversation(id);
@@ -339,40 +417,59 @@ $currentLang = $_SESSION['lang'] ?? 'en';
 
             appendUserMessage(text);
             chatInput.value = '';
-            sendBtn.disabled = true;
+            chatInput.style.height = 'auto'; // Reset height
 
-            // Build history array for API
-            const history = (conversations[currentConvId]?.messages || []).slice(-10).map(m => ({
-                role: m.role === 'user' ? 'user' : 'assistant',
-                content: typeof m.content === 'string' ? m.content : m.content?.text || ''
-            }));
+            // Show typing indicator or "Thinking..."
+            const typingMsg = { type: 'ai', text: 'Thinking...', isTyping: true };
+            appendAiMessage(typingMsg);
+            const typingBubble = messageArea.lastElementChild;
 
-            // Call chatbot_api.php
-            fetch('chatbot_api.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: text, history: history })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.reply) {
-                    appendAiMessage({ text: data.reply });
-                } else {
-                    fallbackReply(text);
+            try {
+                const res = await fetch('chatbot_api.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: text,
+                        history: conversationHistory
+                    })
+                });
+
+                if (!res.ok) throw new Error('Network response was not ok');
+                const data = await res.json();
+
+                // Remove "Thinking..."
+                if (typingBubble) typingBubble.remove();
+
+                const reply = data.reply || "Sorry, I didn't get that.";
+                const isPickup = data.action && data.action.type === 'pickup_scheduled';
+
+                appendAiMessage({ text: reply, isPickup: isPickup });
+
+                // Update history for the session
+                conversationHistory.push({ role: 'user', content: text });
+                conversationHistory.push({ role: 'assistant', content: reply });
+
+                if (conversations[currentConvId]) {
+                    conversations[currentConvId].messages.push({ type: 'user', text });
+                    conversations[currentConvId].messages.push({ type: 'ai', text: reply });
                 }
-            })
-            .catch(() => {
-                fallbackReply(text);
-            });
+
+            } catch (err) {
+                console.error(err);
+                if (typingBubble) typingBubble.remove();
+                appendAiMessage({ text: "Error: Could not connect to the assistant." });
+            } finally {
+                isLoading = false;
+                sendBtn.disabled = false;
+                chatInput.focus();
+                scrollToBottom();
+            }
         }
 
-        function fallbackReply(text) {
-            let reply = "I'm here to help with recycling! Ask me about scheduling pickups, checking points, or recycling tips.";
-            if (text.toLowerCase().includes('pickup')) reply = "I've initiated a pickup request for you. Please confirm details in the dashboard.";
-            else if (text.toLowerCase().includes('point')) reply = `You have **${userPts}** reward points available.`;
-            else if (text.toLowerCase().includes('recycle') || text.toLowerCase().includes('plastic') || text.toLowerCase().includes('paper') || text.toLowerCase().includes('metal')) reply = "We accept Paper (5 pts/kg), Plastic (8 pts/kg), and Metal (12 pts/kg). Schedule a pickup and our partner agencies will collect it from your doorstep!";
-            else if (text.toLowerCase().includes('impact') || text.toLowerCase().includes('co2')) reply = "Every pickup reduces waste and saves CO₂. Your impact is tracked in the Environmental Impact section of your dashboard.";
-            appendAiMessage({ text: reply });
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         function handleQuickReply(text) { chatInput.value = text; sendMessage(); }

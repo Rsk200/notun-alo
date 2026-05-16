@@ -10,7 +10,12 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
 from ingest import SUPPORTED_EXTENSIONS, UPLOADS_DIR, ingest_documents
-from rag_pipeline import UNKNOWN_ANSWER, answer_query, latest_chunks
+from rag_pipeline import UNKNOWN_ANSWER_EN, answer_query, latest_chunks
+import os
+os.environ["NO_PROXY"] = "*"
+os.environ["no_proxy"] = "*"
+os.environ["HF_HUB_OFFLINE"] = "1"
+os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
 BASE_DIR = Path(__file__).resolve().parent
 LOG_DIR = BASE_DIR / "logs"
@@ -42,7 +47,7 @@ def json_error(message: str, status: int = 400):
 
 @app.get("/health")
 def health():
-    return jsonify({"status": "ok", "service": "notun-alo-rag", "collection": "recycling", "unknown_answer": UNKNOWN_ANSWER})
+    return jsonify({"status": "ok", "service": "notun-alo-rag", "collection": "recycling", "unknown_answer": UNKNOWN_ANSWER_EN})
 
 
 @app.post("/upload")
@@ -84,9 +89,11 @@ def chat():
         payload = request.get_json(silent=True) or {}
         query = str(payload.get("query", "")).strip()
         language = payload.get("language")
+        user_name = str(payload.get("user_name", "")).strip()
+        user_points = int(payload.get("user_points", 0))
         if not query:
             return json_error("Query is required.")
-        result = answer_query(query=query, language=language)
+        result = answer_query(query=query, language=language, user_name=user_name, user_points=user_points)
         return jsonify({"answer": result["answer"], "sources": result["sources"], "verification": result.get("verification", {"score": 1.0})})
     except Exception as exc:
         logger.exception("Chat endpoint failed: %s", exc)

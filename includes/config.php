@@ -34,20 +34,31 @@ define('POINTS_PAPER',   5);   // 5 points per KG
 define('POINTS_PLASTIC', 8);   // 8 points per KG
 define('POINTS_METAL',  12);   // 12 points per KG
 
+// SSL for Aiven / remote MySQL
+$pdoOptions = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false,
+];
+if (strtolower((string)getenv('DB_SSL') ?: '') === 'true') {
+    $pdoOptions[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+    $caPath = getenv('DB_SSL_CA');
+    if ($caPath) {
+        $pdoOptions[PDO::MYSQL_ATTR_SSL_CA] = $caPath;
+    }
+}
+
 // Create PDO connection
 try {
-    $pdo = new PDO(
-        "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4",
-        DB_USER,
-        DB_PASS,
-        [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES   => false,
-        ]
-    );
+    $dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+    $pdo = new PDO($dsn, DB_USER, DB_PASS, $pdoOptions);
 } catch (PDOException $e) {
-    die(json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]));
+    $msg = $e->getMessage();
+    // Give a helpful hint about env vars
+    if (str_contains($msg, 'getaddrinfo') || str_contains($msg, 'Name or service not known')) {
+        $msg .= ' — Check that DB_HOST is set correctly in your Render dashboard env vars.';
+    }
+    die(json_encode(['error' => 'Database connection failed: ' . $msg]));
 }
 
 /**

@@ -2,6 +2,10 @@
 require_once 'includes/config.php';
 requireLogin();
 
+$t = function($en, $bn) use ($currentLang) {
+    return $currentLang === 'bn' ? $bn : $en;
+};
+
 global $pdo;
 $currentUser = getCurrentUser($pdo);
 if (!$currentUser || ($currentUser['role'] ?? '') !== 'admin') {
@@ -121,16 +125,16 @@ function churnBadgeClass(float $score): string {
 
 <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
     <div>
-        <h2 style="margin: 0; color: var(--green-dark);">AI Churn Risk Monitor</h2>
-        <p style="margin: 0.35rem 0 0; color: var(--text-muted);">Users most likely to become inactive, based on pickup and reward behavior.</p>
+        <h2 style="margin: 0; color: var(--green-dark);"><?= $t('AI Churn Risk Monitor', 'AI চার্ন রিস্ক মনিটর') ?></h2>
+        <p style="margin: 0.35rem 0 0; color: var(--text-muted);"><?= $t('Users most likely to become inactive, based on pickup and reward behavior.', 'যে ব্যবহারকারীরা নিষ্ক্রিয় হওয়ার সম্ভাবনা বেশি, পিকআপ এবং রিওয়ার্ড আচরণের ভিত্তিতে।') ?></p>
     </div>
     <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
         <!-- Risk filter -->
-        <select id="riskFilter" class="filter-select" onchange="applyChurnFilters()" title="Filter by risk level">
-            <option value="">⚠️ All Risk Levels</option>
-            <option value="high">🔴 High (&gt;70%)</option>
-            <option value="medium">🟡 Medium (40-70%)</option>
-            <option value="low">🟢 Low (&lt;40%)</option>
+        <select id="riskFilter" class="filter-select" onchange="applyChurnFilters()" title="<?= $t('Filter by risk level', 'ঝুঁকির মাত্রা অনুযায়ী ফিল্টার') ?>">
+            <option value="">⚠️ <?= $t('All Risk Levels', 'সব ঝুঁকির মাত্রা') ?></option>
+            <option value="high">🔴 <?= $t('High', 'উচ্চ') ?> (&gt;70%)</option>
+            <option value="medium">🟡 <?= $t('Medium', 'মাঝারি') ?> (40-70%)</option>
+            <option value="low">🟢 <?= $t('Low', 'নিম্ন') ?> (&lt;40%)</option>
         </select>
         <div class="table-search-wrap">
             <span class="table-search-icon">🔍</span>
@@ -138,35 +142,35 @@ function churnBadgeClass(float $score): string {
                 type="text"
                 id="churnSearch"
                 class="table-search-input"
-                placeholder="Search name or email..."
+                placeholder="<?= $t('Search name or email...', 'নাম বা ইমেইল অনুসন্ধান...') ?>"
                 oninput="applyChurnFilters()"
                 autocomplete="off"
             >
         </div>
-        <div style="font-weight: 700; color: var(--text-muted); white-space:nowrap;"><?= (int) $scoreCount ?> scored users</div>
+        <div style="font-weight: 700; color: var(--text-muted); white-space:nowrap;"><?= (int) $scoreCount ?> <?= $t('scored users', 'স্কোরকৃত ব্যবহারকারী') ?></div>
     </div>
 </div>
 
 <?php if ($scoreCount === 0): ?>
     <div style="padding: 1rem; border: 1px solid #f59e0b; background: #fffbeb; border-radius: 8px; color: #92400e; margin-bottom: 1rem;">
-        No ML scores found yet. Run <strong>python score_users.py</strong> from the project folder once, then refresh this dashboard.
+        <?= $t('No ML scores found yet. Run', 'এখনো কোনো ML স্কোর পাওয়া যায়নি। রান করুন') ?> <strong>python score_users.py</strong> <?= $t('from the project folder once, then refresh this dashboard.', 'প্রজেক্ট ফোল্ডার থেকে একবার, তারপর এই ড্যাশবোর্ড রিফ্রেশ করুন।') ?>
     </div>
 <?php endif; ?>
 
 <table class="churn-table" id="churnTable">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Days Since Pickup</th>
-            <th>Churn Score</th>
-            <th>Action</th>
+            <th><?= $t('Name', 'নাম') ?></th>
+            <th><?= $t('Email', 'ইমেইল') ?></th>
+            <th><?= $t('Days Since Pickup', 'পিকআপের পর দিন') ?></th>
+            <th><?= $t('Churn Score', 'চার্ন স্কোর') ?></th>
+            <th><?= $t('Action', 'পদক্ষেপ') ?></th>
         </tr>
     </thead>
     <tbody>
         <?php if (!$highRiskUsers): ?>
             <tr>
-                <td colspan="5">No high-risk users found.</td>
+                <td colspan="5"><?= $t('No high-risk users found.', 'কোনো উচ্চ-ঝুঁকির ব্যবহারকারী পাওয়া যায়নি।') ?></td>
             </tr>
         <?php endif; ?>
 
@@ -187,7 +191,7 @@ function churnBadgeClass(float $score): string {
                 <td>
                     <form method="post">
                         <input type="hidden" name="bonus_user_id" value="<?= (int) $user['id'] ?>">
-                        <button class="bonus-button" type="submit">Send 50 Bonus Points</button>
+                        <button class="bonus-button" type="submit"><?= $t('Send 50 Bonus Points', '৫০ বোনাস পয়েন্ট পাঠান') ?></button>
                     </form>
                 </td>
             </tr>
@@ -224,4 +228,23 @@ function applyChurnFilters() {
 .filter-select:focus { border-color: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.14); }
 body.dark-mode .filter-select { background: #132314; border-color: #2d4a2e; color: #4ade80; }
 body.dark-mode .filter-select:focus { border-color: #22c55e; background: #1a2e1b; }
+body.dark-mode .churn-table th,
+body.dark-mode .churn-table td {
+    border-color: #2a3a2a;
+}
+body.dark-mode .bonus-button {
+    background: #166534;
+}
+body.dark-mode .badge-red {
+    background: #3b1a1a;
+    color: #fca5a5;
+}
+body.dark-mode .badge-yellow {
+    background: #3b2e1a;
+    color: #fde68a;
+}
+body.dark-mode .badge-green {
+    background: #1a3b1a;
+    color: #86efac;
+}
 </style>
