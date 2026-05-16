@@ -1299,7 +1299,7 @@ button {
     padding: 4rem;
     background: 
         linear-gradient(135deg, rgba(6, 78, 59, 0.7), rgba(29, 158, 117, 0.5)),
-        url('../img/auth-bg-wa.jpg');
+        url('../images/auth-bg-wa.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -1517,7 +1517,7 @@ button {
     position: relative;
     background: 
         linear-gradient(135deg, rgba(6, 78, 59, 0.8), rgba(29, 158, 117, 0.65)),
-        url('../img/auth-bg-wa.jpg');
+        url('../images/auth-bg-wa.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
