@@ -234,9 +234,9 @@ function getLocalFallbackResponse(string $message, bool $isBengali, array $user)
 
         case 'points':
             if ($lang === 'bn') {
-                return "🏆 আপনার বর্তমান পয়েন্ট: **$pts pts**।\nকাগজ (৫ pts/kg), প্লাস্টিক (৮ pts/kg), এবং ধাতু (১২ pts/kg) রিসাইকেল করে আপনি আরও পয়েন্ট পেতে পারেন।";
+                return "🏆 আপনার বর্তমান পয়েন্ট: **$pts pts**।\nকাগজ (১৫ pts/kg), প্লাস্টিক (২০ pts/kg), এবং ধাতু (৩০ pts/kg) রিসাইকেল করে আপনি আরও পয়েন্ট পেতে পারেন।";
             }
-            return "🏆 Your current points: **$pts pts**.\nYou can earn more by recycling Paper (5 pts/kg), Plastic (8 pts/kg), or Metal (12 pts/kg). 😊";
+            return "🏆 Your current points: **$pts pts**.\nYou can earn more by recycling Paper (15 pts/kg), Plastic (20 pts/kg), or Metal (30 pts/kg). 😊";
 
         case 'impact':
             if ($lang === 'bn') {
@@ -258,15 +258,15 @@ function getLocalFallbackResponse(string $message, bool $isBengali, array $user)
 
         case 'guide':
             if ($lang === 'bn') {
-                return "♻️ **রিসাইক্লিং গাইড:**\n\nআমরা ৩টি প্রধান ক্যাটাগরি গ্রহণ করি:\n• 📄 **কাগজ** (৫ pts/kg)\n• 🧴 **প্লাস্টিক** (৮ pts/kg)\n• 🔩 **ধাতু** (১২ pts/kg)\n\n**টিপস:**\n• কাগজ পরিষ্কার ও শুকনো রাখুন\n• প্লাস্টিকের বোতল ধুয়ে নিন\n• ধাতব ক্যান চ্যাপ্টা করে রাখুন\n\nপিকআপ শিডিউল করতে আমার জানান!";
+                return "♻️ **রিসাইক্লিং গাইড:**\n\nআমরা ৩টি প্রধান ক্যাটাগরি গ্রহণ করি:\n• 📄 **কাগজ** (১৫ pts/kg)\n• 🧴 **প্লাস্টিক** (২০ pts/kg)\n• 🔩 **ধাতু** (৩০ pts/kg)\n\n**টিপস:**\n• কাগজ পরিষ্কার ও শুকনো রাখুন\n• প্লাস্টিকের বোতল ধুয়ে নিন\n• ধাতব ক্যান চ্যাপ্টা করে রাখুন\n\nপিকআপ শিডিউল করতে আমার জানান!";
             }
-            return "♻️ **Recycling Guide:**\n\nWe accept 3 main categories:\n• 📄 **Paper** (5 pts/kg)\n• 🧴 **Plastic** (8 pts/kg)\n• 🔩 **Metal** (12 pts/kg)\n\n**Tips:**\n• Keep paper clean and dry\n• Rinse plastic bottles\n• Flatten metal cans\n\nLet me know to schedule a pickup!";
+            return "♻️ **Recycling Guide:**\n\nWe accept 3 main categories:\n• 📄 **Paper** (15 pts/kg)\n• 🧴 **Plastic** (20 pts/kg)\n• 🔩 **Metal** (30 pts/kg)\n\n**Tips:**\n• Keep paper clean and dry\n• Rinse plastic bottles\n• Flatten metal cans\n\nLet me know to schedule a pickup!";
 
         case 'materials':
             if ($lang === 'bn') {
-                return "আমরা বর্তমানে **৩টি ক্যাটাগরি** গ্রহণ করি:\n\n✅ **গ্রহণযোগ্য:**\n• 📄 কাগজ (৫ pts/kg)\n• 🧴 প্লাস্টিক (৮ pts/kg)\n• 🔩 ধাতু (১২ pts/kg)\n\n❌ **গ্রহণযোগ্য নয়:** কাঁচ, ইলেকট্রনিক বর্জ্য, জৈব বর্জ্য, ব্যাটারি, কাপড়\n\nভবিষ্যতে আরও ক্যাটাগরি যোগ হওয়ার সম্ভাবনা আছে! ♻️";
+                return "আমরা বর্তমানে **৩টি ক্যাটাগরি** গ্রহণ করি:\n\n✅ **গ্রহণযোগ্য:**\n• 📄 কাগজ (১৫ pts/kg)\n• 🧴 প্লাস্টিক (২০ pts/kg)\n• 🔩 ধাতু (৩০ pts/kg)\n\n❌ **গ্রহণযোগ্য নয়:** কাঁচ, ইলেকট্রনিক বর্জ্য, জৈব বর্জ্য, ব্যাটারি, কাপড়\n\nভবিষ্যতে আরও ক্যাটাগরি যোগ হওয়ার সম্ভাবনা আছে! ♻️";
             }
-            return "We currently accept **3 categories**:\n\n✅ **Accepted:**\n• 📄 Paper (5 pts/kg)\n• 🧴 Plastic (8 pts/kg)\n• 🔩 Metal (12 pts/kg)\n\n❌ **Not accepted:** Glass, E-waste, Organic waste, Batteries, Textiles\n\nMore categories may be added in the future! ♻️";
+            return "We currently accept **3 categories**:\n\n✅ **Accepted:**\n• 📄 Paper (15 pts/kg)\n• 🧴 Plastic (20 pts/kg)\n• 🔩 Metal (30 pts/kg)\n\n❌ **Not accepted:** Glass, E-waste, Organic waste, Batteries, Textiles\n\nMore categories may be added in the future! ♻️";
 
         case 'farewell':
             if ($lang === 'bn') {

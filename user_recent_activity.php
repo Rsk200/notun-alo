@@ -15,7 +15,7 @@ $user   = getCurrentUser($pdo);
 
 
 // Real points rates
-$RATES = ['Paper' => 5, 'Plastic' => 8, 'Metal' => 12];
+$RATES = ['Paper' => 15, 'Plastic' => 20, 'Metal' => 30];
 
 
 // Fetch real pickups

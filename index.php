@@ -499,21 +499,21 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
                 <div class="pts-circle" style="background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534;">📄</div>
                 <div>
                     <div class="pts-value" style="color: #166534;"><?= $t('Paper', 'কাগজ') ?></div>
-                    <div class="pts-label"><?= $t('5 pts / kg', '৫ পয়েন্ট/কেজি') ?></div>
+                    <div class="pts-label"><?= $t('15 pts / kg', '১৫ পয়েন্ট/কেজি') ?></div>
                 </div>
             </div>
             <div class="hero-float-card float-card-2">
                 <div class="pts-circle" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af;">🧴</div>
                 <div>
                     <div class="pts-value" style="color: #1e40af;"><?= $t('Plastic', 'প্লাস্টিক') ?></div>
-                    <div class="pts-label"><?= $t('8 pts / kg', '৮ পয়েন্ট/কেজি') ?></div>
+                    <div class="pts-label"><?= $t('20 pts / kg', '২০ পয়েন্ট/কেজি') ?></div>
                 </div>
             </div>
             <div class="hero-float-card float-card-3">
                 <div class="pts-circle" style="background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e;">🔩</div>
                 <div>
                     <div class="pts-value" style="color: #92400e;"><?= $t('Metal', 'ধাতু') ?></div>
-                    <div class="pts-label"><?= $t('12 pts / kg', '১২ পয়েন্ট/কেজি') ?></div>
+                    <div class="pts-label"><?= $t('30 pts / kg', '৩০ পয়েন্ট/কেজি') ?></div>
                 </div>
             </div>
         </div>

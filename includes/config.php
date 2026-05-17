@@ -30,9 +30,9 @@ define('SITE_NAME', 'Notun Alo');
 define('BASE_URL', getenv('BASE_URL') ?: 'http://localhost/notun_alo/');
 
 // Points per KG by category
-define('POINTS_PAPER',   5);   // 5 points per KG
-define('POINTS_PLASTIC', 8);   // 8 points per KG
-define('POINTS_METAL',  12);   // 12 points per KG
+define('POINTS_PAPER',   15);  // 15 points per KG (market rate ~15 Tk/kg)
+define('POINTS_PLASTIC', 20);  // 20 points per KG (market rate ~20 Tk/kg)
+define('POINTS_METAL',   30);  // 30 points per KG (market rate ~30 Tk/kg)
 
 // SSL for Aiven / remote MySQL
 $pdoOptions = [

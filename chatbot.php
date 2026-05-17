@@ -357,7 +357,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                 title: "Point Calculation Help",
                 messages: [
                     { type: 'user', text: "How are my points calculated?" },
-                    { type: 'ai', text: "Points are calculated based on material weight: Paper is 5 pts/kg, Plastic is 8 pts/kg, and Metal is 12 pts/kg." }
+                    { type: 'ai', text: "Points are calculated based on material weight: Paper is 15 pts/kg, Plastic is 20 pts/kg, and Metal is 30 pts/kg." }
                 ]
             },
             pickup: {

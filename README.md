@@ -6,7 +6,7 @@
 
 - **🤖 AI Chatbot** — Bilingual (EN/BN/Banglish) assistant with intent-based fallback, circuit breaker for reliability, multi-turn scheduling state machine
 - **📚 RAG Knowledge Base** — 27 documents indexed in ChromaDB, multilingual embeddings, Gemini AI integration
-- **💰 Reward Points** — Earn points per kg recycled (Paper 5, Plastic 8, Metal 12), redeem in Upcycle Shop
+- **💰 Reward Points** — Earn points per kg recycled (Paper 15, Plastic 20, Metal 30), redeem in Upcycle Shop
 - **🌍 Environmental Impact** — Track CO₂ saved, water saved, energy saved with gamification (10 ranks)
 - **📊 ML Predictions** — Churn risk scoring, impact forecasting, smart agency assignment
 - **🏪 Upcycle Shop** — Redeem points for eco-friendly products

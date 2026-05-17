@@ -474,16 +474,16 @@ try {
     if (preg_match('/^(check points|my points|points balance|পয়েন্ট চেক|আমার পয়েন্ট|ব্যালেন্স)$/i', trim($lowerMsg)) || $lowerMsg === 'points') {
         $pts = (int)$user['points'];
         $reply = $isBengali
-            ? "🏆 আপনার বর্তমান পয়েন্ট: **$pts pts**।\nআপনি কাগজ (৫), প্লাস্টিক (৮), অথবা ধাতু (১২) রিসাইকেল করে আরও পয়েন্ট অর্জন করতে পারেন। 😊"
-            : "🏆 Your current points: **$pts pts**.\nYou can earn more by recycling Paper (5 pts/kg), Plastic (8 pts/kg), or Metal (12 pts/kg). 😊";
+            ? "🏆 আপনার বর্তমান পয়েন্ট: **$pts pts**।\nআপনি কাগজ (১৫), প্লাস্টিক (২০), অথবা ধাতু (৩০) রিসাইকেল করে আরও পয়েন্ট অর্জন করতে পারেন। 😊"
+            : "🏆 Your current points: **$pts pts**.\nYou can earn more by recycling Paper (15 pts/kg), Plastic (20 pts/kg), or Metal (30 pts/kg). 😊";
         respondJson($pdo, $userId, $sessionId, $lang, $reply, $userMessage, null, 'direct_points');
     }
 
     // Recycling Guide
     if (preg_match('/^(recycling guide|how to recycle|guide|রিসাইক্লিং গাইড|গাইড)$/i', trim($lowerMsg))) {
         $reply = $isBengali
-            ? "♻️ **রিসাইক্লিং গাইড:**\n\nআমরা ৩টি প্রধান ক্যাটাগরি গ্রহণ করি:\n• 📄 কাগজ (৫ pts/kg)\n• 🧴 প্লাস্টিক (৮ pts/kg)\n• 🔩 ধাতু (১২ pts/kg)\n\nপিকআপ শিডিউল করতে ওজন এবং তারিখসহ আমাকে জানান।"
-            : "♻️ **Recycling Guide:**\n\nWe accept 3 main categories:\n• 📄 Paper (5 pts/kg)\n• 🧴 Plastic (8 pts/kg)\n• 🔩 Metal (12 pts/kg)\n\nTo schedule a pickup, just let me know the weight and date.";
+            ? "♻️ **রিসাইক্লিং গাইড:**\n\nআমরা ৩টি প্রধান ক্যাটাগরি গ্রহণ করি:\n• 📄 কাগজ (১৫ pts/kg)\n• 🧴 প্লাস্টিক (২০ pts/kg)\n• 🔩 ধাতু (৩০ pts/kg)\n\nপিকআপ শিডিউল করতে ওজন এবং তারিখসহ আমাকে জানান।"
+            : "♻️ **Recycling Guide:**\n\nWe accept 3 main categories:\n• 📄 Paper (15 pts/kg)\n• 🧴 Plastic (20 pts/kg)\n• 🔩 Metal (30 pts/kg)\n\nTo schedule a pickup, just let me know the weight and date.";
         respondJson($pdo, $userId, $sessionId, $lang, $reply, $userMessage, null, 'direct_guide');
     }
 

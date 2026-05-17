@@ -10,9 +10,9 @@ function getChatbotSystemPrompt(array $user, string $lang = 'auto'): string {
 
     // Category & rate definitions in PHP so they're single source of truth
     $categories = [
-        'Paper'   => 5,
-        'Plastic' => 8,
-        'Metal'   => 12,
+        'Paper'   => 15,
+        'Plastic' => 20,
+        'Metal'   => 30,
     ];
 
     $catList = '';

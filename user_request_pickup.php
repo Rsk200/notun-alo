@@ -223,7 +223,7 @@ $flash = $flashMsg ?? getFlash();
 
 
     <script>
-        const catPoints = { Paper: 5, Plastic: 8, Metal: 12 };
+        const catPoints = { Paper: 15, Plastic: 20, Metal: 30 };
         const subcategories = <?= json_encode($impactCategories) ?>;
         const catEl = document.getElementById('category');
         const subcatEl = document.getElementById('subcategory');
