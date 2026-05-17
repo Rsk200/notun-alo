@@ -11,6 +11,40 @@ $points = $userId ? getUserPoints($pdo, $userId) : 0;
 $flash  = null;
 $currentLang = $_SESSION['lang'] ?? 'en';
 
+// ---- Ensure products table has category column + seed data ----
+try {
+    // Add category column if missing (deployed DB may be behind)
+    $pdo->exec("ALTER TABLE products ADD COLUMN IF NOT EXISTS category VARCHAR(100) DEFAULT NULL AFTER description");
+} catch (PDOException $e) {
+    // IF NOT EXISTS may not be supported on all MySQL versions
+    try {
+        $stmt = $pdo->query("SHOW COLUMNS FROM products LIKE 'category'");
+        if (!$stmt->fetch()) {
+            $pdo->exec("ALTER TABLE products ADD COLUMN category VARCHAR(100) DEFAULT NULL AFTER description");
+        }
+    } catch (Throwable $e2) {
+        error_log('[shop.php] Could not add category column: ' . $e2->getMessage());
+    }
+}
+
+// Seed products if table is empty
+$count = (int)$pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
+if ($count === 0) {
+    $seeds = [
+        ['Recycled Notebook', 'Handcrafted notebook from upcycled paper. 100 pages, eco-friendly cover.', 'Stationery', 150, 120.00, 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400', 22],
+        ['Upcycled Tote Bag', 'Durable tote bag made from recycled plastic bottles. Stylish and green!', 'Accessories', 200, 180.00, 'https://images.unsplash.com/photo-1597484661643-2f5fef640dd1?w=400', 15],
+        ['Metal Pen Set', 'Set of 3 pens crafted from recycled metal scraps. Smooth writing experience.', 'Stationery', 120, 95.00, 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=400', 40],
+        ['Eco Planter Pot', 'Small planter pot made from upcycled plastic. Perfect for desk plants.', 'Home', 180, 150.00, 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400', 20],
+        ['Recycled Coaster Set', 'Set of 4 coasters made from compressed recycled materials. Heat resistant.', 'Home', 100, 80.00, 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400', 49],
+    ];
+    $stmt = $pdo->prepare(
+        "INSERT INTO products (name, description, category, price_points, price_cash, image_url, stock) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    );
+    foreach ($seeds as $s) {
+        $stmt->execute($s);
+    }
+}
+
 // ---- Fetch Products ----
 $products = $pdo->query("SELECT * FROM products ORDER BY created_at DESC")->fetchAll();
 
@@ -68,10 +102,12 @@ $products = $pdo->query("SELECT * FROM products ORDER BY created_at DESC")->fetc
             <select id="categoryFilter" style="padding: 0.8rem 1.2rem; border-radius: 30px; border: 2px solid var(--border); font-size: 1rem; background: var(--card-bg); color: var(--text-primary); outline: none; cursor: pointer; min-width: 180px;">
                 <option value="ALL"><?= $currentLang === 'bn' ? 'সব বিভাগ' : 'All Categories' ?></option>
                 <?php 
-                $categories = $pdo->query("SELECT DISTINCT category FROM products WHERE category IS NOT NULL")->fetchAll(PDO::FETCH_COLUMN);
-                foreach($categories as $cat) {
-                    echo "<option value=\"" . e($cat) . "\">" . e($cat) . "</option>";
-                }
+                try {
+                    $categories = $pdo->query("SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND category != ''")->fetchAll(PDO::FETCH_COLUMN);
+                    foreach($categories as $cat) {
+                        echo "<option value=\"" . e($cat) . "\">" . e($cat) . "</option>";
+                    }
+                } catch (Throwable $_) {}
                 ?>
             </select>
         </div>
