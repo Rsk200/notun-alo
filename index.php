@@ -176,6 +176,17 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
         body.dark-mode .shop-pagination .pg-num:hover:not(.active) { background: #1a2e24; }
 
 
+        .nav-link-btn {
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+        }
+        .nav-link-btn:hover {
+            transform: translateY(-2px);
+            color: #a3e635 !important;
+            text-shadow: 0 0 8px rgba(163,230,53,0.4);
+            opacity: 1 !important;
+        }
+
         /* On desktop, unwrap mobile-top-row so items flow in the nav bar normally */
         .mobile-top-row {
             display: contents; /* children participate in parent flex as if the div doesn't exist */
@@ -274,8 +285,9 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
             .landing-nav-right .mobile-top-row > span#themeToggleLanding:hover { background: rgba(255,255,255,0.15) !important; }
 
 
-            /* Row 2: Login link */
-            .landing-nav-right > a.mobile-login {
+            /* Row 2: Links */
+            .landing-nav-right > a.mobile-login,
+            .landing-nav-right > a.nav-link-btn {
                 display: flex !important;
                 align-items: center;
                 justify-content: center;
@@ -286,8 +298,10 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
                 background: rgba(255,255,255,0.05);
                 color: rgba(255,255,255,0.85) !important;
                 text-align: center;
+                transition: transform 0.2s, background 0.2s, color 0.2s !important;
             }
-            .landing-nav-right > a.mobile-login:hover { background: rgba(255,255,255,0.1) !important; }
+            .landing-nav-right > a.mobile-login:hover,
+            .landing-nav-right > a.nav-link-btn:hover { background: rgba(255,255,255,0.1) !important; transform: scale(1.02); color: #a3e635 !important; }
 
 
             /* Row 3: Get Started CTA */
@@ -442,7 +456,8 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
                 <a href="?lang=en" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.85rem; opacity: 0.85; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; <?= $currentLang === 'en' ? 'background:rgba(255,255,255,0.15);' : '' ?>" <?= $currentLang === 'en' ? 'class="lang-active"' : '' ?>>EN</a>
                 <span id="themeToggleLanding" style="cursor:pointer; color:white; font-size:1.1rem; opacity:0.8;">🌙</span>
             </div>
-            <a href="#shop-preview" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.95rem; opacity: 0.85;"><?= $t('Shop', 'দোকান') ?></a>
+            <a href="#shop-preview" class="nav-link-btn" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.95rem; opacity: 0.85;"><?= $t('Shop', 'দোকান') ?></a>
+            <a href="#about" class="nav-link-btn" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.95rem; opacity: 0.85;"><?= $t('About Us', 'আমাদের সম্পর্কে') ?></a>
             <a href="login.php" class="mobile-login" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.95rem; opacity: 0.85;"><?= $t('Login', 'লগইন') ?></a>
             <a href="register.php" class="btn btn-primary btn-sm"><?= $t('Get Started', 'নিবন্ধন') ?></a>
         </div>
