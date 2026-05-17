@@ -310,25 +310,28 @@ $text = [
             .btn-cta:hover { transform: scale(1.05); }
 
 
-            .content-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 32px; }
-            .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-            .section-title { font-size: 20px; font-weight: 800; color: var(--text-primary); }
+            .content-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr); gap: 24px; align-items: start; }
+            .content-grid > .white-card { border-radius: 20px; padding: 24px; }
+            .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; min-height: 28px; }
+            .section-title { font-size: 18px; font-weight: 800; color: var(--text-primary); }
            
-            .activity-row { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid #f3f4f6; }
+            .activity-row { display: flex; align-items: center; gap: 14px; min-height: 56px; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
+            .activity-row:last-child { border-bottom: 0; padding-bottom: 0; }
             body.dark-mode .activity-row { border-color: var(--border); }
-            .activity-icon { width: 40px; height: 40px; background: var(--bg-page); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--brand-primary); }
-            .activity-info { flex: 1; }
-            .activity-type { font-size: 15px; font-weight: 700; color: var(--text-primary); }
-            .activity-date { font-size: 12px; color: var(--text-muted); }
-            .badge { font-size: 10px; font-weight: 800; padding: 6px 12px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.05em; }
+            .activity-icon { width: 34px; height: 34px; background: var(--bg-page); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--brand-primary); flex: 0 0 auto; }
+            .activity-info { flex: 1; min-width: 0; }
+            .activity-type { font-size: 14px; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .activity-date { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+            .badge { font-size: 9px; font-weight: 800; padding: 5px 10px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
 
 
-            .leaderboard-item { display: flex; align-items: center; gap: 16px; padding: 12px; border-radius: 16px; margin-bottom: 8px; transition: 0.2s; }
+            .leaderboard-item { display: grid; grid-template-columns: 22px 30px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 42px; padding: 5px 8px; border-radius: 12px; margin-bottom: 4px; transition: 0.2s; }
+            .leaderboard-item:last-child { margin-bottom: 0; }
             .leaderboard-item:hover { background: var(--bg-page); }
-            .rank { font-size: 14px; font-weight: 800; color: var(--text-muted); width: 24px; }
-            .avatar { width: 40px; height: 40px; border-radius: 12px; background: var(--brand-light); color: var(--brand-primary); display: flex; align-items: center; justify-content: center; font-weight: 700; }
-            .lb-name { flex: 1; font-size: 14px; font-weight: 600; color: var(--text-primary); }
-            .lb-points { font-weight: 800; color: var(--brand-primary); font-size: 15px; }
+            .rank { font-size: 12px; font-weight: 800; color: var(--text-muted); text-align: center; }
+            .avatar { width: 30px; height: 30px; border-radius: 9px; background: var(--brand-light); color: var(--brand-primary); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+            .lb-name { min-width: 0; font-size: 13px; font-weight: 650; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .lb-points { font-weight: 800; color: var(--brand-primary); font-size: 13px; }
 
 
             .about-strip { background: var(--brand-light); border: 1px solid var(--border); border-radius: 16px; padding: 18px 28px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-top: 32px; }
@@ -614,6 +617,4 @@ window.onload = () => {
 
 </body>
 </html>
-
-
 

@@ -20,7 +20,7 @@ os.environ["no_proxy"] = "*"
 os.environ["HF_HUB_OFFLINE"] = "1"
 
 BASE_DIR = Path(__file__).resolve().parent
-CHROMA_DIR = BASE_DIR / "chroma_db"
+CHROMA_DIR = Path(os.getenv("RAG_CHROMA_DIR", str(BASE_DIR / "chroma_db")))
 COLLECTION_NAME = "recycling"
 EMBEDDING_MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 UNKNOWN_ANSWER_EN = "I couldn't find specific details on that in my current records, but I can help with recycling info, points, or pickups! 🌿"

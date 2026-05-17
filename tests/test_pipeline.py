@@ -1,8 +1,14 @@
 from __future__ import annotations
 
 import io
+import os
+from pathlib import Path
 
 import pytest
+
+test_chroma_dir = Path(__file__).resolve().parents[1] / "scratch" / "test_chroma"
+test_chroma_dir.mkdir(parents=True, exist_ok=True)
+os.environ.setdefault("RAG_CHROMA_DIR", str(test_chroma_dir))
 
 from app import app
 

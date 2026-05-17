@@ -33,7 +33,7 @@ except ImportError:
 BASE_DIR = Path(__file__).resolve().parent
 KNOWLEDGE_BASE_DIR = BASE_DIR / "Phase 1 (RAG)"
 UPLOADS_DIR = BASE_DIR / "uploads"
-CHROMA_DIR = BASE_DIR / "chroma_db"
+CHROMA_DIR = Path(os.getenv("RAG_CHROMA_DIR", str(BASE_DIR / "chroma_db")))
 LOG_DIR = BASE_DIR / "logs"
 COLLECTION_NAME = "recycling"
 SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".txt", ".csv", ".xlsx"}

@@ -441,7 +441,7 @@ try {
     }
 
     // ─── State machine: multi-turn scheduling flow ───────────────────────────
-    $stateReply = null;
+    $stateReply = '';
     $stateAction = null;
     if (chatStateHandleFlow($pdo, $userId, $sessionId, $userMessage, $isBengali, $stateReply, $stateAction)) {
         respondJson($pdo, $userId, $sessionId, $lang, $stateReply, $userMessage, $stateAction, 'state_machine');
