@@ -8,6 +8,7 @@
 require_once 'includes/config.php';
 require_once 'includes/chatbot_context.php';
 require_once 'includes/chatbot_fallback.php';
+require_once 'includes/chatbot_state.php';
 
 // ─── Auth guard ────────────────────────────────────────────────────────────────
 requireLoginJson();
@@ -39,6 +40,7 @@ function ensureChatbotTables(PDO $pdo): void {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 }
 ensureChatbotTables($pdo);
+ensureChatbotStateTables($pdo);
 
 // ─── Cache helpers ─────────────────────────────────────────────────────────────
 function chatbotCacheKey(string $query, string $lang): string {
@@ -432,6 +434,19 @@ try {
     $userId = (int)$user['id'];
     $user['points'] = getUserPoints($pdo, $userId);
 
+    // ─── Circuit breaker ───────────────────────────────────────────────────────
+    $circuitOpen = circuitBreakerIsOpen($pdo);
+    if ($circuitOpen) {
+        error_log('[Notun Alo Chatbot] Circuit open (3+ consecutive failures), skipping Pollinations');
+    }
+
+    // ─── State machine: multi-turn scheduling flow ───────────────────────────
+    $stateReply = null;
+    $stateAction = null;
+    if (chatStateHandleFlow($pdo, $userId, $sessionId, $userMessage, $isBengali, $stateReply, $stateAction)) {
+        respondJson($pdo, $userId, $sessionId, $lang, $stateReply, $userMessage, $stateAction, 'state_machine');
+    }
+
     // ─── Check cache first (skipped for user-specific queries) ─────────────────
     $lowerMsg = strtolower($userMessage);
     $isUserQuery = preg_match('/\b(point|points|my\s|আমার|ব্যালেন্স|impact|স্ট্যাটাস)\b/i', $lowerMsg);
@@ -519,51 +534,65 @@ try {
 
     $messages[] = ['role' => 'user', 'content' => $userMessage];
 
-    // ─── Try Pollinations.ai ────────────────────────────────────────────────────
-    $payload = json_encode([
-        'model'       => 'llama-3.1-70b',
-        'messages'    => $messages,
-        'temperature' => 0.7,
-        'private'     => true,
-    ]);
-
-    $ch = curl_init('https://text.pollinations.ai/openai');
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST           => true,
-        CURLOPT_POSTFIELDS     => $payload,
-        CURLOPT_HTTPHEADER     => [
-            'Content-Type: application/json',
-            'Accept: application/json',
-        ],
-        CURLOPT_TIMEOUT        => 30,
-        CURLOPT_CONNECTTIMEOUT => 10,
-        CURLOPT_SSL_VERIFYPEER => true,
-    ]);
-
-    $response  = curl_exec($ch);
-    $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curlError = curl_error($ch);
-    curl_close($ch);
-
+    // ─── Try Pollinations.ai (skipped when circuit is open) ────────────────────
     $aiText = '';
-    if (!$curlError && $httpCode === 200 && $response) {
-        $decoded = json_decode($response, true);
-        $aiText  = trim($decoded['choices'][0]['message']['content'] ?? '');
+    if (!$circuitOpen) {
+        $payload = json_encode([
+            'model'       => 'llama-3.1-70b',
+            'messages'    => $messages,
+            'temperature' => 0.7,
+            'private'     => true,
+        ]);
+
+        $ch = curl_init('https://text.pollinations.ai/openai');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $payload,
+            CURLOPT_HTTPHEADER     => [
+                'Content-Type: application/json',
+                'Accept: application/json',
+            ],
+            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_SSL_VERIFYPEER => true,
+        ]);
+
+        $response  = curl_exec($ch);
+        $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if (!$curlError && $httpCode === 200 && $response) {
+            $decoded = json_decode($response, true);
+            $aiText  = trim($decoded['choices'][0]['message']['content'] ?? '');
+        }
+
+        // Record circuit state
+        if ($aiText !== '') {
+            circuitBreakerRecordSuccess($pdo);
+        } else {
+            circuitBreakerRecordFailure($pdo);
+            if (!$curlError && $httpCode !== 200) {
+                error_log("Pollinations.ai returned HTTP {$httpCode}, using local fallback");
+            } elseif ($curlError) {
+                error_log("Pollinations.ai cURL error: {$curlError}, using local fallback");
+            }
+        }
     }
 
     // ─── Fallback: local rule-based responses ─────────────────────────────────
     if ($aiText === '') {
-        if (!$curlError && $httpCode !== 200) {
-            error_log("Pollinations.ai returned HTTP {$httpCode}, using local fallback");
-        } elseif ($curlError) {
-            error_log("Pollinations.ai cURL error: {$curlError}, using local fallback");
-        }
         $aiText = getLocalFallbackResponse($userMessage, $isBengali, $user);
     }
 
-    // ─── Detect pickup JSON in AI response ────────────────────────────────────
+    // ─── State machine activation (scheduling intent, no active flow) ────────
     $action = null;
+    if (detectSchedulingIntent($userMessage)) {
+        chatStateStartSchedule($pdo, $userId, $sessionId, $userMessage, $isBengali, $aiText, $action);
+    }
+
+    // ─── Detect pickup JSON in AI response ────────────────────────────────────
     $reply  = $aiText;
 
     if (preg_match('/\{[^{}]*"action"\s*:\s*"schedule_pickup"[^{}]*\}/s', $aiText, $matches)) {

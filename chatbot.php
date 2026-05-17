@@ -7,6 +7,7 @@ require_once 'includes/config.php';
 ob_start();
 requireLogin();
 
+
 $user     = getCurrentUser($pdo);
 $userName = e($user['name'] ?? 'User');
 $userPts  = getUserPoints($pdo, (int)($user['id'] ?? 0));
@@ -18,10 +19,11 @@ $currentLang = $_SESSION['lang'] ?? 'en';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title><?= $lang['ai_assistant'] ?? 'AI Assistant' ?> — Notun Alo</title>
-    
+   
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
+
 
     <style>
         :root {
@@ -38,6 +40,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             --bg-chat: #F9FAFB;
             --bg-subtle: #F3F4F6;
         }
+
 
         /* ===== PREMIUM DARK MODE ===== */
         body.dark-mode {
@@ -71,17 +74,19 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         body.dark-mode .suggest-card:hover { border-color: var(--brand-primary) !important; box-shadow: 0 8px 20px rgba(0,0,0,0.4) !important; }
         body.dark-mode .btn-send:disabled { background: #1e3222 !important; }
 
+
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-page); height: 100vh; overflow: hidden; display: flex; flex-direction: column; transition: background-color 0.4s ease; }
 
+
         .app-shell { flex: 1; display: flex; overflow: hidden; background: white; border-top: 1px solid var(--border); }
-        
+       
         /* SIDEBAR */
         .sidebar { width: 320px; border-right: 1px solid var(--border); display: flex; flex-direction: column; background: var(--bg-sidebar); }
         .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border); }
         .btn-new-chat { width: 100%; height: 44px; background: var(--brand-primary); color: white; border: none; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
         .btn-new-chat:hover { background: #065F46; transform: translateY(-1px); }
-        
+       
         .chat-list { flex: 1; overflow-y: auto; padding: 12px; }
         .chat-item { padding: 12px 16px; border-radius: 12px; cursor: pointer; transition: 0.2s; margin-bottom: 4px; display: flex; align-items: center; gap: 12px; border: 1px solid transparent; }
         .chat-item:hover { background: var(--bg-subtle); }
@@ -92,6 +97,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         .chat-title { font-size: 14px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .chat-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
+
         /* MAIN CHAT AREA */
         .main-chat { flex: 1; display: flex; flex-direction: column; background: var(--bg-chat); position: relative; }
         .chat-header { height: 72px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; }
@@ -100,27 +106,33 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         .status-pill { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--brand-primary); font-weight: 600; background: var(--brand-light); padding: 4px 12px; border-radius: 99px; }
         .status-dot { width: 6px; height: 6px; background: var(--brand-primary); border-radius: 50%; }
 
+
         .message-viewport { flex: 1; overflow-y: auto; padding: 40px; display: flex; flex-direction: column; gap: 24px; max-width: 1000px; margin: 0 auto; width: 100%; }
         .message-viewport::-webkit-scrollbar { width: 6px; }
         .message-viewport::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 10px; }
+
 
         /* BUBBLES */
         .ai-message { display: flex; gap: 16px; max-width: 80%; animation: slideUp 0.3s ease; }
         .msg-avatar { width: 32px; height: 32px; background: var(--brand-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--brand-primary); flex-shrink: 0; font-size: 14px; }
         .ai-bubble { background: white; border: 1px solid var(--border); border-radius: 4px 16px 16px 16px; padding: 16px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); position: relative; }
-        
+       
         .user-message { align-self: flex-end; max-width: 80%; animation: slideUp 0.3s ease; }
         .user-bubble { background: var(--brand-primary); color: white; border-radius: 16px 4px 16px 16px; padding: 16px 20px; box-shadow: 0 4px 12px rgba(29,158,117,0.15); }
 
+
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
 
         .msg-text { font-size: 15px; line-height: 1.6; }
         .msg-time { font-size: 10px; color: var(--text-muted); margin-top: 8px; }
         .user-bubble .msg-time { color: rgba(255,255,255,0.7); text-align: right; }
 
+
         .quick-replies { margin-left: 48px; display: flex; flex-wrap: wrap; gap: 8px; margin-top: -12px; }
         .chip { background: white; border: 1px solid var(--border); color: var(--text-secondary); padding: 8px 16px; border-radius: 99px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; }
         .chip:hover { border-color: var(--brand-primary); color: var(--brand-primary); background: var(--brand-light); }
+
 
         .input-bar { background: var(--bg-sidebar); border-top: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 32px; gap: 12px; }
         .disclaimer-text { font-size: 11px; color: var(--text-muted); text-align: center; font-weight: 500; opacity: 0.8; }
@@ -135,8 +147,10 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         .btn-send:active { transform: scale(0.95); }
         .btn-send:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; transform: none; box-shadow: none; }
 
+
         .empty-state { text-align: center; margin: auto; max-width: 600px; padding: 40px; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
 
         .suggest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 32px; }
         .suggest-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 20px; text-align: left; cursor: pointer; transition: 0.2s; }
@@ -145,12 +159,100 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         .suggest-txt { font-size: 15px; font-weight: 700; color: var(--text-primary); }
         .suggest-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
-        @media (max-width: 800px) { .sidebar { display: none; } .message-viewport { padding: 20px; } .chat-header { padding: 0 20px; } .input-bar { padding: 0 20px; } .suggest-grid { grid-template-columns: 1fr; } }
+
+        /* Mobile sidebar toggle button */
+        .mob-chat-toggle {
+            display: none;
+            width: 36px; height: 36px;
+            border: none;
+            background: rgba(29,158,117,0.12);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--brand-primary);
+            font-size: 1rem;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .mob-chat-toggle:hover { background: var(--brand-light); }
+
+
+        /* Mobile sidebar overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 8000;
+            backdrop-filter: blur(4px);
+        }
+        .sidebar-overlay.open { display: block; }
+
+
+        @media (max-width: 800px) {
+            body { height: auto; overflow: auto; }
+            .app-shell { height: calc(100svh - 62px); overflow: hidden; }
+
+
+            /* Sidebar becomes slide-over drawer */
+            .sidebar {
+                position: fixed !important;
+                top: 0; left: -100%;
+                width: min(280px, 85vw);
+                height: 100%;
+                z-index: 9000;
+                transition: left 0.3s cubic-bezier(0.4,0,0.2,1);
+                box-shadow: 4px 0 24px rgba(0,0,0,0.4);
+                display: flex !important;
+            }
+            .sidebar.mob-open { left: 0; }
+            .mob-chat-toggle { display: flex; }
+
+
+            /* Layout tightening */
+            .message-viewport { padding: 14px 12px; gap: 14px; }
+            .chat-header { height: 56px; padding: 0 14px; }
+            .input-bar { padding: 10px 12px 14px; gap: 8px; }
+            .text-input-wrap { min-height: 46px; padding: 10px 14px; border-radius: 14px; }
+            #chatInput { font-size: 15px; }
+            .btn-send { width: 42px; height: 42px; border-radius: 12px; font-size: 18px; }
+
+
+            /* Bubbles: wider, smaller padding */
+            .ai-message, .user-message { max-width: 92%; }
+            .ai-bubble { padding: 12px 14px; }
+            .user-bubble { padding: 12px 14px; }
+            .msg-text { font-size: 14px; line-height: 1.55; }
+
+
+            /* Chips */
+            .quick-replies { margin-left: 0; gap: 6px; margin-top: 8px; }
+            .chip { font-size: 12px; padding: 6px 12px; }
+
+
+            /* Suggest grid */
+            .suggest-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+            .suggest-card { padding: 14px 12px; border-radius: 12px; }
+            .suggest-txt { font-size: 13px; }
+            .suggest-icon { font-size: 20px; margin-bottom: 8px; }
+            .empty-state { padding: 20px 14px; }
+            .disclaimer-text { font-size: 10px; }
+        }
+        @media (max-width: 400px) {
+            .suggest-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
+
     <?php include 'includes/navbar.php'; ?>
+
+
+    <!-- Mobile sidebar overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 
     <div class="app-shell">
         <aside class="sidebar">
@@ -184,9 +286,14 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             </div>
         </aside>
 
+
         <main class="main-chat">
             <header class="chat-header">
                 <div class="ai-info">
+                    <!-- Mobile: toggle sidebar button -->
+                    <button class="mob-chat-toggle" id="mobSidebarToggle" title="Chat history" aria-label="Open chat history">
+                        <i class="ti ti-messages"></i>
+                    </button>
                     <div class="ai-avatar"><i class="ti ti-robot"></i></div>
                     <div>
                         <div style="font-weight:700; color:var(--text-primary);" id="chatTitle">Notun Alo AI</div>
@@ -199,9 +306,11 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                 </div>
             </header>
 
+
             <div class="message-viewport" id="messageArea">
                 <!-- Content Injected -->
             </div>
+
 
             <footer class="input-bar">
                 <div class="input-container">
@@ -217,6 +326,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         </main>
     </div>
 
+
     <script>
         const messageArea = document.getElementById('messageArea');
         const chatInput = document.getElementById('chatInput');
@@ -225,13 +335,16 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         const btnNewChat = document.getElementById('btnNewChat');
         const chatTitle = document.getElementById('chatTitle');
 
+
         const userName = "<?= $userName ?>";
         const userPts = "<?= number_format($userPts) ?>";
+
 
         // MOCK CONVERSATION DATA
         const msgAiGreeting = "<?= $currentLang === 'bn' ? 'হ্যালো' : 'Hello' ?> " + userName + "! <?= $currentLang === 'bn' ? 'আমি আপনাকে কীভাবে সাহায্য করতে পারি?' : 'How can I help you today?' ?>";
         const lblSchedule = "<?= $lang['schedule_pickup'] ?? 'Schedule a Pickup' ?>";
         const lblPoints = "<?= $currentLang === 'bn' ? 'পয়েন্ট চেক করুন' : 'Check Points' ?>";
+
 
         const conversations = {
             main: {
@@ -256,12 +369,14 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             }
         };
 
+
         let currentConvId = 'main';
+
 
         function loadConversation(id) {
             currentConvId = id;
             messageArea.innerHTML = '';
-            
+           
             // UI Update
             document.querySelectorAll('.chat-item').forEach(i => i.classList.remove('active'));
             const activeItem = document.querySelector(`.chat-item[data-id="${id}"]`);
@@ -270,10 +385,12 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                 chatTitle.innerText = activeItem.querySelector('.chat-title').innerText;
             }
 
+
             if (id === 'new') {
                 renderEmptyState();
                 return;
             }
+
 
             const conv = conversations[id];
             if (conv) {
@@ -285,6 +402,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             scrollToBottom();
         }
 
+
         function renderEmptyState() {
             messageArea.innerHTML = `
                 <div class="empty-state">
@@ -293,7 +411,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                     </div>
                     <h2 style="font-size:24px; font-weight:800; color:var(--text-primary);"><?= $currentLang === 'bn' ? 'নতুন কথোপকথন' : 'New Conversation' ?></h2>
                     <p style="font-size:15px; color:var(--text-secondary); margin-top:8px;"><?= $currentLang === 'bn' ? 'রিসাইক্লিং সম্পর্কে যেকোনো কিছু জিজ্ঞাসা করুন।' : 'Ask me anything about your recycling journey.' ?></p>
-                    
+                   
                     <div class="suggest-grid">
                         <div class="suggest-card" onclick="handleSuggestion('Schedule a Pickup')">
                             <i class="ti ti-truck suggest-icon"></i>
@@ -316,6 +434,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             `;
         }
 
+
         function appendUserMessage(text, save = true) {
             const html = `
                 <div class="user-message">
@@ -332,15 +451,17 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             scrollToBottom();
         }
 
+
         function appendAiMessage(msg, save = true) {
             let text = msg.text || '';
             // Simple markdown-like bold handling
             text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             text = text.replace(/\n/g, '<br>');
 
+
             let content = `<div class="msg-text">${text}</div>`;
             if (msg.bullets) content += `<ul style="margin-top:12px; padding-left:18px;">${msg.bullets.map(b => `<li style="margin-bottom:6px;">${b}</li>`).join('')}</ul>`;
-            
+           
             if (msg.isPickup) {
                 content += `
                     <a href="dashboard.php" class="chip" style="display:inline-flex; align-items:center; gap:8px; margin-top:12px; text-decoration:none; background:var(--brand-light); color:var(--brand-primary); border-color:var(--brand-border);">
@@ -348,6 +469,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                     </a>
                 `;
             }
+
 
             const html = `
                 <div style="display:flex; flex-direction:column; gap:12px;">
@@ -372,8 +494,10 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             scrollToBottom();
         }
 
+
         let conversationHistory = [];
         let isLoading = false;
+
 
         // Auto-expand textarea
         chatInput.addEventListener('input', function() {
@@ -381,6 +505,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             this.style.height = (this.scrollHeight) + 'px';
             sendBtn.disabled = !this.value.trim();
         });
+
 
         // Handle Enter key
         chatInput.addEventListener('keydown', function(e) {
@@ -390,12 +515,15 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             }
         });
 
+
         async function sendMessage(suggestionText) {
             const text = suggestionText || chatInput.value.trim();
             if (!text || isLoading) return;
 
+
             isLoading = true;
             sendBtn.disabled = true;
+
 
             if (currentConvId === 'new') {
                 const id = 'conv_' + Date.now();
@@ -416,16 +544,19 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                 loadConversation(id);
             }
 
+
             appendUserMessage(text);
             if (!suggestionText) {
                 chatInput.value = '';
                 chatInput.style.height = 'auto';
             }
 
+
             // Show typing indicator
             const typingMsg = { type: 'ai', text: 'Thinking...', isTyping: true };
             appendAiMessage(typingMsg);
             const typingBubble = messageArea.lastElementChild;
+
 
             try {
                 const res = await fetch('chatbot_api.php', {
@@ -438,26 +569,33 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                     })
                 });
 
+
                 if (!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json();
 
+
                 // Remove "Thinking..."
                 if (typingBubble) typingBubble.remove();
+
 
                 const reply = data.reply || "Sorry, I didn't get that.";
                 const isPickup = data.action && data.action.type === 'pickup_scheduled';
                 const suggestions = data.suggestions || [];
 
+
                 appendAiMessage({ text: reply, isPickup: isPickup, quickReplies: suggestions });
+
 
                 // Update history for the session
                 conversationHistory.push({ role: 'user', content: text });
                 conversationHistory.push({ role: 'assistant', content: reply });
 
+
                 if (conversations[currentConvId]) {
                     conversations[currentConvId].messages.push({ type: 'user', text });
                     conversations[currentConvId].messages.push({ type: 'ai', text: reply, quickReplies: suggestions });
                 }
+
 
             } catch (err) {
                 console.error(err);
@@ -471,29 +609,51 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             }
         }
 
+
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
+
         function handleQuickReply(text) { sendMessage(text); }
         function handleSuggestion(text) { messageArea.innerHTML = ''; sendMessage(text); }
         function scrollToBottom() { messageArea.scrollTop = messageArea.scrollHeight; }
+
 
         // Sidebar Actions
         document.querySelectorAll('.chat-item').forEach(item => {
             item.onclick = () => loadConversation(item.dataset.id);
         });
 
+
         btnNewChat.onclick = () => loadConversation('new');
+
 
         chatInput.oninput = () => { sendBtn.disabled = !chatInput.value.trim(); };
         chatInput.onkeydown = (e) => { if (e.key === 'Enter' && !sendBtn.disabled) sendMessage(); };
         sendBtn.onclick = sendMessage;
 
+
         // Initialize
         loadConversation('main');
+
+
+        // Mobile sidebar drawer
+        const mobToggle  = document.getElementById('mobSidebarToggle');
+        const sidebarEl  = document.querySelector('.sidebar');
+        const overlayEl  = document.getElementById('sidebarOverlay');
+        function openSidebar()  { sidebarEl.classList.add('mob-open'); overlayEl.classList.add('open'); document.body.style.overflow='hidden'; }
+        function closeSidebar() { sidebarEl.classList.remove('mob-open'); overlayEl.classList.remove('open'); document.body.style.overflow=''; }
+        if (mobToggle) mobToggle.addEventListener('click', openSidebar);
+        if (overlayEl) overlayEl.addEventListener('click', closeSidebar);
+        // Also close when a chat item is clicked on mobile
+        document.querySelectorAll('.chat-item').forEach(item => { item.addEventListener('click', () => { if(window.innerWidth<=800) closeSidebar(); }); });
+        if (btnNewChat) btnNewChat.addEventListener('click', () => { if(window.innerWidth<=800) closeSidebar(); });
     </script>
 </body>
 </html>
+
+
+

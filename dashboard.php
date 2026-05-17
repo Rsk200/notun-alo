@@ -2,14 +2,16 @@
 require_once 'includes/config.php';
 requireLogin();
 
+
 $user = getCurrentUser($pdo);
 $userId = (int)$user['id'];
 $userName = e($user['name']);
 $userInitial = strtoupper(mb_substr($userName, 0, 1));
 $currentLang = $_SESSION['lang'] ?? 'en';
 
+
 $userPoints = getUserPoints($pdo, $userId);
-$pickupStats = $pdo->prepare("SELECT 
+$pickupStats = $pdo->prepare("SELECT
     COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed,
     COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending,
     COUNT(CASE WHEN status = 'scheduled' THEN 1 END) as scheduled
@@ -17,20 +19,24 @@ $pickupStats = $pdo->prepare("SELECT
 $pickupStats->execute([$userId]);
 $pData = $pickupStats->fetch();
 
+
 $impactQuery = $pdo->prepare("SELECT COALESCE(SUM(estimated_weight),0) as total_kg FROM pickups WHERE user_id = ? AND status = 'completed'");
 $impactQuery->execute([$userId]);
 $totalImpactKg = (float)$impactQuery->fetchColumn();
 $co2Saved = round($totalImpactKg * 1.2, 1); // ~1.2 kg CO₂ saved per kg recycled
 
-$leaderboardQuery = $pdo->query("SELECT u.name, r.lifetime_points 
-    FROM users u JOIN rewards r ON u.id = r.user_id 
+
+$leaderboardQuery = $pdo->query("SELECT u.name, r.lifetime_points
+    FROM users u JOIN rewards r ON u.id = r.user_id
     ORDER BY r.lifetime_points DESC LIMIT 10");
 $leaderboardData = $leaderboardQuery->fetchAll();
 
-$activityQuery = $pdo->prepare("SELECT category, status, created_at 
+
+$activityQuery = $pdo->prepare("SELECT category, status, created_at
     FROM pickups WHERE user_id = ? ORDER BY created_at DESC LIMIT 5");
 $activityQuery->execute([$userId]);
 $activityData = $activityQuery->fetchAll();
+
 
 $tier = 'Bronze'; $nextTier = 'Silver'; $maxPoints = 500;
 if ($userPoints >= 500) { $tier = 'Silver'; $nextTier = 'Gold'; $maxPoints = 1500; }
@@ -38,6 +44,7 @@ if ($userPoints >= 1500) { $tier = 'Gold'; $nextTier = 'Platinum'; $maxPoints = 
 $progressPercent = min(100, ($userPoints / $maxPoints) * 100);
 $profilePic = $user['picture_url'] ?? '';
 $initial = strtoupper(mb_substr($userName, 0, 1));
+
 
 $text = [
     'greet' => $currentLang === 'bn' ? 'শুভেচ্ছা, ' . $userName . ' 🌿' : 'Greetings, ' . $userName . ' 🌿',
@@ -62,6 +69,7 @@ $text = [
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
+
 
     <style>
         :root {
@@ -88,11 +96,13 @@ $text = [
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-page); color: var(--text-secondary); transition: background 0.4s ease, color 0.4s ease; }
 
+
         /* ============================================================
            MOBILE LAYOUT (< 768px)
            ============================================================ */
         .desktop-only { display: none; }
         .mobile-only { display: block; }
+
 
         /* Mobile Nav */
         .mob-nav {
@@ -125,7 +135,9 @@ $text = [
         }
         .mob-profile img { width: 100%; height: 100%; border-radius: 8px; object-fit: cover; }
 
+
         .mob-wrap { max-width: 600px; margin: 0 auto; padding: 16px 16px 40px; }
+
 
         .mob-hero {
             background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
@@ -143,6 +155,7 @@ $text = [
         }
         body.dark-mode .mob-tier { background: #1a2e1c; color: #a8b0a5; }
 
+
         .q-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
         .q-btn {
             display: flex; flex-direction: column; align-items: center; gap: 6px;
@@ -153,6 +166,7 @@ $text = [
         .q-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
         .q-label { font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); text-align: center; line-height: 1.2; }
 
+
         .mob-s-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
         .mob-s-card {
             background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
@@ -160,6 +174,7 @@ $text = [
         }
         .mob-s-val { font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin-bottom: 2px; }
         .mob-s-label { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
 
         .mob-banner {
             background: linear-gradient(135deg, #065F46, #1D9E75); border-radius: 20px;
@@ -172,11 +187,13 @@ $text = [
             padding: 10px 24px; border-radius: 999px; font-size: 0.85rem; text-decoration: none;
         }
 
+
         .mob-card {
             background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
             padding: 20px; margin-bottom: 16px;
         }
         .mob-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 14px; }
+
 
         .mob-act-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
         .mob-act-row:last-child { border: none; padding-bottom: 0; }
@@ -185,12 +202,14 @@ $text = [
         .mob-act-date { font-size: 0.7rem; color: var(--text-muted); }
         .badge-sm { font-size: 0.6rem; font-weight: 700; padding: 3px 8px; border-radius: 99px; text-transform: uppercase; }
 
+
         .mob-lb-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
         .mob-lb-item:last-child { border: none; padding-bottom: 0; }
         .mob-lb-rank { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); width: 20px; text-align: center; }
         .mob-lb-avatar { width: 32px; height: 32px; border-radius: 8px; background: var(--brand-light); color: var(--brand-primary); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; flex-shrink: 0; }
         .mob-lb-name { flex: 1; font-size: 0.82rem; font-weight: 600; color: var(--text-primary); }
         .mob-lb-pts { font-size: 0.82rem; font-weight: 700; color: var(--brand-primary); }
+
 
         .mob-about {
             background: var(--brand-light); border: 1px solid var(--border); border-radius: 16px;
@@ -202,6 +221,52 @@ $text = [
             padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; white-space: nowrap;
         }
 
+
+        /* === Extra-compact for small phones (≤480px) === */
+        @media (max-width: 480px) {
+            .mob-wrap { padding: 12px 12px 32px; }
+            .mob-hero { padding: 14px; margin-bottom: 12px; border-radius: 16px; }
+            .mob-greet { font-size: 0.88rem; }
+            .mob-meta { font-size: 0.68rem; }
+
+
+            .q-grid { gap: 8px; margin-bottom: 12px; }
+            .q-btn { padding: 11px 4px; border-radius: 12px; }
+            .q-icon { width: 34px; height: 34px; font-size: 1rem; border-radius: 10px; }
+            .q-label { font-size: 0.68rem; }
+
+
+            .mob-s-grid { gap: 8px; margin-bottom: 12px; }
+            .mob-s-card { padding: 12px 8px; border-radius: 12px; }
+            .mob-s-val { font-size: 1.1rem; }
+            .mob-s-label { font-size: 0.6rem; }
+
+
+            .mob-banner { padding: 18px 14px; margin-bottom: 12px; border-radius: 16px; }
+            .mob-banner h2 { font-size: 1rem; }
+            .mob-banner p { font-size: 0.75rem; }
+            .mob-banner a { padding: 8px 18px; font-size: 0.8rem; }
+
+
+            .mob-card { padding: 14px; margin-bottom: 12px; border-radius: 16px; }
+            .mob-card h3 { font-size: 0.88rem; margin-bottom: 10px; }
+            .mob-act-row { padding: 9px 0; gap: 10px; }
+            .mob-act-icon { width: 30px; height: 30px; font-size: 0.9rem; border-radius: 8px; }
+            .mob-act-type { font-size: 0.8rem; }
+            .mob-act-date { font-size: 0.65rem; }
+
+
+            .mob-lb-item { padding: 8px 0; gap: 10px; }
+            .mob-lb-avatar { width: 28px; height: 28px; font-size: 0.65rem; }
+            .mob-lb-name { font-size: 0.78rem; }
+            .mob-lb-pts { font-size: 0.78rem; }
+
+
+            .mob-about { padding: 12px 14px; border-radius: 12px; font-size: 0.75rem; }
+            .mob-about a { font-size: 0.7rem; padding: 5px 10px; }
+        }
+
+
         /* ============================================================
            DESKTOP LAYOUT (>= 768px)
            ============================================================ */
@@ -209,14 +274,17 @@ $text = [
             .mobile-only { display: none; }
             .desktop-only { display: block; }
 
+
             .wrapper { max-width: 1280px; margin: 0 auto; padding: 40px 32px; }
             .white-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: background 0.4s ease, border-color 0.4s ease; }
+
 
             .hero-row { display: grid; grid-template-columns: 1fr 340px; gap: 32px; margin-bottom: 32px; align-items: stretch; }
             .greeting-card { display: flex; flex-direction: column; justify-content: center; }
             .page-greeting { font-size: 36px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; }
             .page-date { font-size: 14px; color: var(--text-muted); margin-top: 8px; }
             #rotating-quote { font-size: 15px; color: var(--brand-primary); font-weight: 600; margin-top: 16px; min-height: 24px; }
+
 
             .tier-card { display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; background: linear-gradient(135deg, #FFFBEB, #FEF3C7); border: 1px solid #FDE68A; }
             body.dark-mode .tier-card { background: linear-gradient(135deg, #1a1200, #261a00) !important; border-color: #3d2c00 !important; }
@@ -227,6 +295,7 @@ $text = [
             .progress-bar-bg { height: 10px; background: rgba(0,0,0,0.05); border-radius: 99px; overflow: hidden; margin-top: 16px; }
             .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #D97706, #F59E0B); width: 0%; transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
+
             .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px; }
             .stat-card { transition: 0.3s; }
             .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.04); }
@@ -234,15 +303,17 @@ $text = [
             .stat-val { font-size: 32px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
             .stat-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
 
+
             .cta-banner { background: linear-gradient(135deg, #065F46, #1D9E75); border-radius: 24px; padding: 40px; margin-bottom: 32px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 20px 40px rgba(29,158,117,0.15); }
             .cta-title { font-size: 28px; font-weight: 800; }
             .btn-cta { background: white; color: #065F46; padding: 16px 32px; border-radius: 14px; font-weight: 700; text-decoration: none; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
             .btn-cta:hover { transform: scale(1.05); }
 
+
             .content-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 32px; }
             .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
             .section-title { font-size: 20px; font-weight: 800; color: var(--text-primary); }
-            
+           
             .activity-row { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid #f3f4f6; }
             body.dark-mode .activity-row { border-color: var(--border); }
             .activity-icon { width: 40px; height: 40px; background: var(--bg-page); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--brand-primary); }
@@ -251,12 +322,14 @@ $text = [
             .activity-date { font-size: 12px; color: var(--text-muted); }
             .badge { font-size: 10px; font-weight: 800; padding: 6px 12px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.05em; }
 
+
             .leaderboard-item { display: flex; align-items: center; gap: 16px; padding: 12px; border-radius: 16px; margin-bottom: 8px; transition: 0.2s; }
             .leaderboard-item:hover { background: var(--bg-page); }
             .rank { font-size: 14px; font-weight: 800; color: var(--text-muted); width: 24px; }
             .avatar { width: 40px; height: 40px; border-radius: 12px; background: var(--brand-light); color: var(--brand-primary); display: flex; align-items: center; justify-content: center; font-weight: 700; }
             .lb-name { flex: 1; font-size: 14px; font-weight: 600; color: var(--text-primary); }
             .lb-points { font-weight: 800; color: var(--brand-primary); font-size: 15px; }
+
 
             .about-strip { background: var(--brand-light); border: 1px solid var(--border); border-radius: 16px; padding: 18px 28px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-top: 32px; }
             .about-strip .al { display:flex; align-items:center; gap:12px; }
@@ -270,36 +343,17 @@ $text = [
 </head>
 <body>
 
-<!-- ============================================================
-     MOBILE NAV
-     ============================================================ -->
-<nav class="mob-nav mobile-only" id="mobNav">
-    <div class="mob-top">
-        <a href="dashboard.php" class="mob-brand">
-            <span class="icon">♻️</span>
-            <span class="name">Notun Alo</span>
-        </a>
-    </div>
-    <div class="mob-utils">
-        <a href="?lang=bn" title="বাংলা">বাং</a>
-        <a href="?lang=en" title="English">EN</a>
-        <button id="mobThemeToggle" title="Theme">🌙</button>
-        <a href="edit_profile.php" title="Profile">
-            <?php if ($profilePic): ?>
-                <img src="<?= e($profilePic) ?>" alt="Avatar" class="mob-profile">
-            <?php else: ?>
-                <span class="mob-profile"><?= $initial ?></span>
-            <?php endif; ?>
-        </a>
-        <a href="logout.php" title="Logout"><i class="ti ti-logout"></i></a>
-    </div>
-</nav>
+
+<!-- Shared navbar (has hamburger drawer for mobile) -->
+<?php include 'includes/navbar.php'; ?>
+
 
 <!-- ============================================================
      MOBILE CONTENT
      ============================================================ -->
 <main class="mobile-only">
     <div class="mob-wrap">
+
 
         <div class="mob-hero">
             <div class="mob-hero-left">
@@ -312,6 +366,7 @@ $text = [
             </div>
             <div class="mob-tier">🏆 <?= $tier ?> Tier</div>
         </div>
+
 
         <div class="q-grid">
             <a href="user_request_pickup.php" class="q-btn">
@@ -328,6 +383,7 @@ $text = [
             </a>
         </div>
 
+
         <div class="mob-s-grid">
             <div class="mob-s-card">
                 <div class="mob-s-val"><?= number_format($userPoints) ?></div>
@@ -343,11 +399,13 @@ $text = [
             </div>
         </div>
 
+
         <div class="mob-banner">
             <h2><?= $currentLang === 'bn' ? 'পরবর্তী পিকআপের জন্য প্রস্তুত?' : 'Ready for your next pickup?' ?></h2>
             <p><?= $currentLang === 'bn' ? 'এখনই শিডিউল করুন এবং বোনাস পয়েন্ট অর্জন করুন।' : 'Schedule now and earn bonus points.' ?></p>
             <a href="user_request_pickup.php"><?= $currentLang === 'bn' ? 'পিকআপ শিডিউল করুন →' : 'Schedule a Pickup →' ?></a>
         </div>
+
 
         <div class="mob-card">
             <h3><?= $currentLang === 'bn' ? 'সাম্প্রতিক কার্যকলাপ' : 'Recent Activity' ?></h3>
@@ -361,7 +419,7 @@ $text = [
                         <div class="mob-act-type"><?= e($act['category']) ?></div>
                         <div class="mob-act-date"><?= date('M j, Y', strtotime($act['created_at'])) ?></div>
                     </div>
-                    <?php 
+                    <?php
                         $st = strtolower($act['status']);
                         $bg = $st==='completed' ? '#dcfce7' : ($st==='pending' ? '#fef3c7' : '#dbeafe');
                         $cl = $st==='completed' ? '#166534' : ($st==='pending' ? '#92400e' : '#1e40af');
@@ -371,6 +429,7 @@ $text = [
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
+
 
         <div class="mob-card">
             <h3>🏆 <?= $currentLang === 'bn' ? 'লিডারবোর্ড' : 'Leaderboard' ?></h3>
@@ -384,6 +443,7 @@ $text = [
             <?php endforeach; ?>
         </div>
 
+
         <div class="mob-about">
             <div>
                 <span style="font-weight:600; color:var(--text-primary);">♻️ Notun Alo</span>
@@ -392,16 +452,15 @@ $text = [
             <a href="about.php"><?= $currentLang === 'bn' ? 'গল্প পড়ুন ↗' : 'Our Story ↗' ?></a>
         </div>
 
+
     </div>
 </main>
 
-<!-- ============================================================
-     DESKTOP CONTENT
-     ============================================================ -->
-<?php include 'includes/navbar.php'; ?>
 
+<!-- Desktop content uses shared navbar above -->
 <main class="desktop-only">
     <div class="wrapper">
+
 
         <div class="hero-row">
             <div class="white-card greeting-card">
@@ -423,6 +482,7 @@ $text = [
             </div>
         </div>
 
+
         <div class="stats-grid">
             <div class="white-card stat-card">
                 <div class="stat-icon" style="background:#FEF3C7; color:#D97706;"><i class="ti ti-gift"></i></div>
@@ -441,6 +501,7 @@ $text = [
             </div>
         </div>
 
+
         <div class="cta-banner">
             <div>
                 <h2 class="cta-title"><?= $currentLang === 'bn' ? 'পরবর্তী পিকআপের জন্য প্রস্তুত?' : 'Ready for your next pickup?' ?></h2>
@@ -448,6 +509,7 @@ $text = [
             </div>
             <a href="user_request_pickup.php" class="btn-cta"><?= $text['req_pickup'] ?></a>
         </div>
+
 
         <div class="content-grid">
             <div class="white-card">
@@ -465,7 +527,7 @@ $text = [
                                 <div class="activity-type"><?= e($act['category']) ?></div>
                                 <div class="activity-date"><?= date('M j, Y', strtotime($act['created_at'])) ?></div>
                             </div>
-                            <?php 
+                            <?php
                                 $st = strtolower($act['status']);
                                 $bg = $st==='completed' ? '#DCFCE7' : ($st==='pending' ? '#FEF3C7' : '#DBEAFE');
                                 $cl = $st==='completed' ? '#166534' : ($st==='pending' ? '#92400E' : '#1E40AF');
@@ -491,6 +553,7 @@ $text = [
             </div>
         </div>
 
+
         <div class="about-strip">
             <div class="al">
                 <div class="icon">&#9851;</div>
@@ -504,8 +567,9 @@ $text = [
     </div>
 </main>
 
+
 <script>
-// ── Theme Toggle ──
+// ── Theme and points counter logic ──
 const tToggle = document.getElementById('mobThemeToggle');
 if (tToggle) {
     const saved = localStorage.getItem('theme');
@@ -518,17 +582,6 @@ if (tToggle) {
     };
 }
 
-// ── Mobile scroll hide/show nav ──
-let lastScroll = 0;
-const nav = document.getElementById('mobNav');
-if (nav) {
-    window.addEventListener('scroll', () => {
-        const cur = window.pageYOffset;
-        if (cur > 60 && cur > lastScroll) nav.classList.add('nav-hide');
-        else if (cur < lastScroll || cur <= 60) nav.classList.remove('nav-hide');
-        lastScroll = cur;
-    });
-}
 
 // ── Desktop: rotating quote ──
 const quotes = ["Every pickup makes Dhaka cleaner. 🌿", "Small actions create massive change. ♻️", "You're building a greener future. ⭐"];
@@ -537,6 +590,7 @@ if (qEl) {
     function rotate() { qEl.style.opacity = 0; setTimeout(() => { qEl.innerText = quotes[qIdx]; qEl.style.opacity = 1; qIdx = (qIdx + 1) % quotes.length; }, 500); }
     setInterval(rotate, 8000); rotate();
 }
+
 
 // ── Desktop: animate points ──
 function animateValue(obj, start, end, duration) {
@@ -557,5 +611,9 @@ window.onload = () => {
 };
 </script>
 
+
 </body>
 </html>
+
+
+

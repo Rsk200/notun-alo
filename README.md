@@ -1,227 +1,119 @@
-# Notun Alo Environmental Impact Intelligence System
+# ♻️ Notun Alo (নতুন আলো) — Bangladesh's Community Recycling Platform
 
-This project turns recycling pickups into clear environmental impact stories for the Notun Alo platform.
+**Notun Alo** ("New Light") is a full-stack community recycling platform connecting households in Bangladesh with collection agencies. It features an AI-powered bilingual chatbot (Bengali/English/Banglish), RAG knowledge base, reward points economy, environmental impact tracking, ML-based churn prediction, and smart agency assignment.
 
-Example: instead of only showing `5 kg plastic recycled`, the dashboard can show CO2 avoided, water saved, energy saved, car-trip equivalents, phone-charge equivalents, and e-waste high-impact badges.
+## 🚀 Features
 
-## Local Windows Setup
+- **🤖 AI Chatbot** — Bilingual (EN/BN/Banglish) assistant with intent-based fallback, circuit breaker for reliability, multi-turn scheduling state machine
+- **📚 RAG Knowledge Base** — 27 documents indexed in ChromaDB, multilingual embeddings, Gemini AI integration
+- **💰 Reward Points** — Earn points per kg recycled (Paper 5, Plastic 8, Metal 12), redeem in Upcycle Shop
+- **🌍 Environmental Impact** — Track CO₂ saved, water saved, energy saved with gamification (10 ranks)
+- **📊 ML Predictions** — Churn risk scoring, impact forecasting, smart agency assignment
+- **🏪 Upcycle Shop** — Redeem points for eco-friendly products
+- **👥 Agency Portal** — Task management, collection tracking, performance scoring
+- **📱 Responsive Design** — Mobile-first, dark mode, bilingual toggle
 
-1. Start XAMPP.
-2. Start Apache and MySQL.
-3. Confirm the project is here:
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Backend | PHP 8.2, Apache, MySQL 8.0 |
+| AI / ML | Python 3.11, Flask, ChromaDB, sentence-transformers |
+| LLM | Google Gemini AI, Pollinations.ai (fallback) |
+| Frontend | HTML5, CSS3, JavaScript, Tabler Icons |
+| ML Models | scikit-learn (churn prediction, impact forecasting) |
+| Deployment | Docker, Render, Aiven MySQL, Google Cloud Run |
+
+## 📋 Prerequisites
+
+- PHP 8.2+ (extensions: gd, zip, pdo_mysql, curl)
+- MySQL 8.0+
+- Python 3.11+
+- Apache with mod_rewrite (or nginx)
+- Git
+
+## 🔧 Quick Start
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-org/notun-alo.git
+cd notun-alo
+
+# 2. Import the database
+mysql -u root -p notun_alo < database/notun_alo.sql
+
+# 3. Configure environment
+cp .env.example .env
+# Edit .env with your database credentials
+
+# 4. Start Apache and MySQL (e.g., via XAMPP)
+
+# 5. Initialize database (optional — visit in browser)
+# Open http://localhost/notun_alo/init_db.php
+
+# 6. (Optional) Start the RAG service
+pip install -r requirements.txt
+python ingest.py
+python app.py
+
+# 7. Visit the platform
+# http://localhost/notun_alo/
+```
+
+## 📚 Documentation
+
+Full documentation is in the `docs/` directory:
+
+| Document | Description |
+|----------|-------------|
+| Project Overview | System overview, features, innovations |
+| System Architecture | Architecture diagrams, data flow |
+| Tech Stack | Every technology explained |
+| Database Schema | ER diagrams, tables, relationships |
+| AI & RAG System | End-to-end pipeline documentation |
+| Chatbot System | Circuit breaker, state machine, caching |
+| API Reference | All endpoints with request / response |
+| Deployment Guide | Docker, Render, Aiven, Cloud Run |
+| Troubleshooting | Common issues and solutions |
+
+## 🧪 Testing
+
+```bash
+# PHP lint
+php -l *.php includes/*.php admin/*.php
+
+# Python tests
+pytest tests/
+pytest ai-service/tests/
+```
+
+## 🌐 Deployment
+
+### Render (Production)
+
+```bash
+# Push to GitHub — Render auto-deploys from main
+git add .
+git commit -m "Deploy latest changes"
+git push origin main
+```
+
+### Docker
+
+```bash
+docker compose up -d
+```
+
+### RAG on Cloud Run
 
 ```powershell
-C:\xampp\htdocs\notun_alo
+.\deploy_to_cloudrun.ps1
 ```
 
-4. Open the AI service folder:
+## 👥 Team
 
-```powershell
-cd C:\xampp\htdocs\notun_alo\ai-service
-```
+Built by **GhostRiders** for the **ULAB Buildfest 2026** hackathon.
 
-5. Install Python requirements:
+## 📄 License
 
-```powershell
-python -m pip install -r requirements.txt
-```
-
-6. Copy the environment template:
-
-```powershell
-copy .env.example .env
-```
-
-Default `.env` values work for a normal XAMPP MySQL setup:
-
-```env
-NOTUN_ALO_DB_HOST=localhost
-NOTUN_ALO_DB_USER=root
-NOTUN_ALO_DB_PASS=
-NOTUN_ALO_DB_NAME=notun_alo
-IMPACT_API_HOST=127.0.0.1
-IMPACT_API_PORT=5003
-```
-
-## Database Import
-
-Import this SQL file into the `notun_alo` database using phpMyAdmin or MySQL CLI:
-
-```powershell
-C:\xampp\htdocs\notun_alo\ai-service\emission_factors.sql
-```
-
-The SQL creates:
-
-- `emission_factors`
-- indexes on `category` and `subcategory`
-- `category_averages` view
-- `pickups.subcategory` if missing
-
-The Flask API also calls schema repair on startup, so the demo is more forgiving.
-
-## Data Validation
-
-Run:
-
-```powershell
-cd C:\xampp\htdocs\notun_alo\ai-service
-python validate_environmental_data.py
-```
-
-This validates schema, duplicates, missing values, category averages, South Asia adjustment summary, top-impact materials, and e-waste comparison.
-
-## Forecast Model
-
-Run:
-
-```powershell
-python train_forecast_model.py
-```
-
-This creates `impact_model.pkl` using 5000+ synthetic rows with realistic category weighting, seasonality, Gaussian noise, and upward growth.
-
-The model is used only for forecasting future trends. It is not used for deterministic CO2, water, or energy calculations.
-
-## Start Flask API
-
-Run:
-
-```powershell
-python impact_api.py
-```
-
-API runs at:
-
-```text
-http://localhost:5003
-```
-
-## API Testing
-
-Open these URLs in a browser:
-
-```text
-http://localhost:5003/health
-http://localhost:5003/impact?user_id=1
-http://localhost:5003/forecast?user_id=1
-http://localhost:5003/platform-stats
-http://localhost:5003/leaderboard
-```
-
-## Dashboard Integration
-
-User dashboard:
-
-```text
-http://localhost/notun_alo/dashboard.php
-```
-
-Admin dashboard:
-
-```text
-http://localhost/notun_alo/admin.php
-```
-
-Files added for UI:
-
-- `includes/impact_card.php`
-- `includes/admin_impact.php`
-- `ai-service/dashboard_chart.js`
-
-## Scientific Formulas
-
-All Bangladesh calculations use `co2_sa_adjusted`.
-
-```text
-CO2 saved = weight_kg * co2_sa_adjusted
-Water saved = weight_kg * water_liters_per_kg
-Energy saved = weight_kg * energy_kwh_per_kg
-```
-
-Emotional equivalents:
-
-```text
-1 km average car trip = 0.21 kg CO2
-1 phone charge = 0.012 kWh
-1 drinking water bottle = 0.5 liters
-```
-
-## E-waste Logic
-
-The system always displays:
-
-```text
-Mobile phone recycling has ~29x higher environmental impact than mixed plastic recycling.
-```
-
-If top category is `E-waste`, leaderboard score uses:
-
-```text
-Final Score = Base Score * 1.5
-```
-
-E-waste dashboard rows show a high-impact badge.
-
-## Leaderboard Formula
-
-Consistency score:
-
-```text
-0-1 pickups = 0.1
-2-4 pickups = 0.5
-5-7 pickups = 0.8
-8+ pickups = 1.0
-```
-
-Eco score:
-
-```text
-Base Score = (CO2 * 0.5) + (Water * 0.2) + (Energy * 0.2) + (Consistency * 0.1)
-```
-
-Badges:
-
-- Active Recycler: 5+ pickups in last month
-- Eco Warrior: 100+ kg recycled
-- Forest Guardian: top 10% final score
-- E-waste Hero: highest final score among e-waste users, ties included
-
-## Tests
-
-Run:
-
-```powershell
-python -m pytest tests
-```
-
-## Troubleshooting
-
-If `ModuleNotFoundError` appears, run:
-
-```powershell
-python -m pip install -r requirements.txt
-```
-
-If API endpoints fail with a database error:
-
-1. Start XAMPP MySQL.
-2. Confirm database name is `notun_alo`.
-3. Import `ai-service/emission_factors.sql`.
-4. Check `.env` database credentials.
-
-If dashboard impact cards keep loading:
-
-1. Start Flask API with `python impact_api.py`.
-2. Open `http://localhost:5003/health`.
-3. Reload `dashboard.php`.
-
-## Future AI Placeholders
-
-These are placeholders only:
-
-- `ai-service/placeholders/waste_classifier.py`
-- `ai-service/placeholders/nasa_validator.py`
-- `ai-service/models/mobilenetv3_placeholder.h5`
-
-They are not used in current deterministic impact calculations.
+This project was created for educational purposes as part of ULAB Buildfest 2026.

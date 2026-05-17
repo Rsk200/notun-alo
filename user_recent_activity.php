@@ -6,19 +6,24 @@
 require_once 'includes/config.php';
 requireLogin();
 
+
 if ($_SESSION['role'] !== 'user') redirect('dashboard.php');
+
 
 $userId = (int)$_SESSION['user_id'];
 $user   = getCurrentUser($pdo);
 
+
 // Real points rates
 $RATES = ['Paper' => 5, 'Plastic' => 8, 'Metal' => 12];
 
+
 // Fetch real pickups
-$stmt = $pdo->prepare("SELECT id, category, created_at, estimated_weight, status 
+$stmt = $pdo->prepare("SELECT id, category, created_at, estimated_weight, status
     FROM pickups WHERE user_id = ? ORDER BY created_at DESC");
 $stmt->execute([$userId]);
 $realPickups = $stmt->fetchAll();
+
 
 // Map to JS structure with real points calculation
 $jsActivities = [];
@@ -45,6 +50,8 @@ foreach($realPickups as $p) {
 }
 
 
+
+
 $currentLang = $_SESSION['lang'] ?? 'en';
 ?>
 <!DOCTYPE html>
@@ -53,10 +60,11 @@ $currentLang = $_SESSION['lang'] ?? 'en';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Recent Activity — Notun Alo</title>
-    
+   
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
+
 
     <style>
         :root {
@@ -86,6 +94,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             --bg-card: #FFFFFF;
             --bg-subtle: #F9FAFB;
         }
+
 
         /* ===== PREMIUM DARK MODE ===== */
         body.dark-mode {
@@ -159,26 +168,31 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         body.dark-mode .pickup-name { color: var(--text-primary) !important; }
         body.dark-mode .stat-num { color: var(--text-primary) !important; }
 
+
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-page); color: var(--text-secondary); transition: background-color 0.4s ease, color 0.4s ease; }
 
+
         .wrapper { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
         .white-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.03); padding: 24px; transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; }
+
 
         /* HEADER */
         .page-header-flex { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; padding-top: 20px; }
         .header-left { display: flex; align-items: flex-start; gap: 20px; }
         .back-link { display: inline-flex; align-items: center; gap: 8px; color: #065f46; background: #ecfdf5; border: 1px solid #d1fae5; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.2s; margin-top: 6px; }
         .back-link:hover { background: #d1fae5; transform: translateX(-2px); }
-        
+       
         .header-text { display: flex; flex-direction: column; }
         .page-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #064e3b; font-weight: 700; margin-bottom: 4px; line-height: 1.1; }
         .page-subtitle { font-size: 1.05rem; color: #64748b; margin: 0; }
-        
+       
         .btn-pickup { background: var(--brand-primary); color: white; font-size: 14px; font-weight: 600; padding: 10px 20px; border-radius: 10px; text-decoration: none; transition: 0.2s; margin-top: 6px; }
         .btn-pickup:hover { background: #065F46; }
 
+
         .header-divider { height: 1px; background: var(--border); margin-top: 20px; border: none; }
+
 
         /* STATS GRID */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 24px 0; }
@@ -187,6 +201,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         .stat-num { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 6px; display: block; width: 100%; color: var(--text-primary); }
         .stat-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; display: block; width: 100%; }
         .stat-sub { font-size: 13px; font-weight: 500; color: var(--text-secondary); display: block; width: 100%; }
+
 
         /* MODAL */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 9999; opacity: 0; transition: opacity 0.3s; }
@@ -203,6 +218,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         .detail-label { color: var(--text-muted); font-weight: 500; }
         .detail-val { font-weight: 600; color: var(--text-primary); text-align: right; }
 
+
         /* FILTER BAR */
         .filter-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; padding: 16px 20px; }
         .search-wrap { flex: 1; min-width: 200px; position: relative; }
@@ -210,12 +226,15 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         .search-input { width: 100%; height: 40px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 10px; padding: 0 14px 0 38px; font-size: 14px; outline: none; transition: 0.2s; }
         .search-input:focus { border-color: var(--brand-primary); box-shadow: 0 0 0 3px rgba(29,158,117,0.1); }
 
+
         .filter-pills { display: flex; gap: 8px; flex-wrap: wrap; }
         .pill { border: 1px solid var(--border); background: white; color: var(--text-secondary); font-size: 12px; font-weight: 500; padding: 7px 14px; border-radius: 99px; cursor: pointer; transition: 0.2s; }
         .pill:hover { background: var(--bg-subtle); }
         .pill.active { background: var(--brand-primary); color: white; border-color: var(--brand-primary); }
 
+
         .date-picker { border: 1px solid var(--border); background: white; color: var(--text-secondary); font-size: 12px; padding: 7px 14px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+
 
         /* TIMELINE LIST */
         .activity-list-card { padding: 0; margin-bottom: 24px; overflow: hidden; }
@@ -224,9 +243,11 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         .btn-export { color: var(--brand-primary); font-size: 13px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 4px; }
         .btn-export:hover { text-decoration: underline; }
 
+
         .activity-row { display: flex; align-items: center; gap: 16px; padding: 16px 24px; border-bottom: 1px solid var(--bg-subtle); transition: 0.2s; }
         .activity-row:last-child { border-bottom: none; }
         .activity-row:hover { background: var(--bg-subtle); }
+
 
         .status-icon-circle { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
         .sic-completed { background: var(--brand-light); color: var(--brand-primary); }
@@ -234,6 +255,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         .sic-scheduled { background: var(--blue-bg); color: var(--blue); }
         .sic-cancelled { background: var(--red-bg); color: var(--red); }
         .sic-assigned { background: var(--blue-bg); color: var(--blue); }
+
 
         .row-content { flex: 1; }
         .row-top { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
@@ -247,9 +269,11 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         .cat-ewaste { background: #EDE9FE; color: #5B21B6; }
         .cat-organic { background: #FEF3C7; color: #92400E; }
 
+
         .row-meta { display: flex; gap: 16px; font-size: 12px; color: var(--text-muted); align-items: center; }
         .row-meta i { font-size: 14px; }
         .row-stats { margin-top: 6px; display: flex; gap: 16px; font-size: 12px; }
+
 
         .row-right { text-align: right; min-width: 100px; }
         .status-badge { padding: 5px 12px; border-radius: 99px; font-size: 12px; font-weight: 600; display: inline-block; }
@@ -261,12 +285,14 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         .btn-details { display: block; font-size: 11px; color: var(--brand-primary); font-weight: 600; margin-top: 6px; cursor: pointer; }
         .btn-details:hover { text-decoration: underline; }
 
+
         /* IMPACT CARD */
         .impact-card { margin-bottom: 24px; }
         .impact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-light); }
         .impact-stat { text-align: center; }
         .impact-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 12px; }
         .impact-val { font-size: 24px; font-weight: 700; display: block; }
+
 
         /* PAGINATION */
         .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 24px; }
@@ -275,10 +301,12 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         .pg-num { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--bg-card); color: var(--text-secondary); transition: background 0.3s, color 0.3s; }
         .pg-num.active { background: var(--brand-primary); color: white; border-color: var(--brand-primary); }
 
+
         /* FOOTER STRIP */
         .footer-strip { background: var(--brand-light); border: 1px solid #D1FAE5; border-radius: 16px; padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; color: #065F46; transition: background 0.3s, border-color 0.3s; }
         .btn-schedule { border: 1.5px solid var(--brand-primary); color: var(--brand-primary); background: transparent; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; transition: 0.2s; }
         .btn-schedule:hover { background: var(--brand-primary); color: white; }
+
 
         @media (max-width: 900px) {
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -286,19 +314,56 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             .impact-stat:last-child { grid-column: span 2; }
         }
         @media (max-width: 640px) {
+            .wrapper { padding: 16px 12px 40px; }
             .stats-grid, .impact-grid, .content-grid { grid-template-columns: 1fr; }
             .impact-stat:last-child { grid-column: span 1; }
-            .title-row { flex-direction: column; align-items: flex-start; gap: 16px; }
-            .activity-row { flex-direction: column; align-items: flex-start; }
-            .row-right { text-align: left; }
-            .row-meta { flex-wrap: wrap; }
+            /* Header: stack vertically */
+            .page-header-flex { flex-direction: column; align-items: flex-start; gap: 10px; padding-top: 12px; margin-bottom: 16px; }
+            .header-left { flex-direction: column; gap: 8px; }
+            .page-title { font-size: 1.5rem !important; }
+            .page-subtitle { font-size: 0.85rem !important; }
+            .btn-pickup { width: 100%; text-align: center; padding: 10px 16px; font-size: 0.88rem; }
+            .back-link { font-size: 13px; padding: 7px 12px; }
+            /* Filter bar: stack search and pills */
+            .filter-bar { flex-direction: column; gap: 10px; padding: 12px 14px; }
+            .search-wrap { min-width: 0; width: 100%; }
+            .filter-pills { gap: 6px; }
+            .pill { font-size: 11px; padding: 5px 10px; }
+            .date-picker { align-self: flex-start; font-size: 11px; }
+            /* Activity rows: stack */
+            .activity-row { flex-direction: column; align-items: flex-start; padding: 14px 16px; gap: 10px; }
+            .row-right { text-align: left; min-width: 0; width: 100%; display: flex; align-items: center; gap: 10px; }
+            .row-meta { flex-wrap: wrap; gap: 8px; }
+            .row-stats { gap: 10px; }
+            /* Stats */
+            .stat-card { padding: 16px !important; }
+            .stat-num { font-size: 24px !important; }
+            /* Impact grid */
+            .impact-grid { gap: 12px; }
+            /* Pagination */
+            .pagination { gap: 4px; flex-wrap: wrap; }
+            .pg-btn { font-size: 0.75rem; padding: 6px 10px; }
+            .pg-num { width: 30px; height: 30px; font-size: 0.78rem; }
+            /* Footer strip */
             .footer-strip { flex-direction: column; text-align: center; gap: 12px; }
+            .btn-schedule { text-align: center; }
+            /* List header */
+            .list-header { flex-direction: column; gap: 8px; padding: 14px 16px; }
+            /* Modal */
+            .modal-card { width: 95vw; margin: 16px; }
+        }
+        @media (max-width: 400px) {
+            .page-title { font-size: 1.3rem !important; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .stat-num { font-size: 20px !important; }
         }
     </style>
 </head>
 <body>
 
+
     <?php include 'includes/navbar.php'; ?>
+
 
     <main class="wrapper">
         <header class="page-header-flex">
@@ -312,6 +377,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             <a href="user_request_pickup.php" class="btn-pickup"><?= $lang['request_pickup'] ?? 'Request a Pickup' ?> &rarr;</a>
         </header>
         <hr class="header-divider">
+
 
         <!-- SECTION 1: STATS -->
         <div class="stats-grid">
@@ -341,6 +407,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             </div>
         </div>
 
+
         <!-- SECTION 2: FILTERS -->
         <div class="white-card filter-bar">
             <div class="search-wrap">
@@ -362,6 +429,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             <div style="width:100%; margin-top:10px; font-size:12px; color:var(--text-muted);" id="resultCount"><?= $currentLang === 'bn' ? count($jsActivities) . ' টি পিকআপ দেখানো হচ্ছে' : 'Showing ' . count($jsActivities) . ' pickups' ?></div>
         </div>
 
+
         <!-- SECTION 3: ACTIVITY LIST -->
         <div class="white-card activity-list-card">
             <div class="list-header">
@@ -372,6 +440,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                 <!-- Injected by JS -->
             </div>
         </div>
+
 
         <!-- SECTION 4: IMPACT -->
         <?php
@@ -407,14 +476,10 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             </div>
         </div>
 
-        <!-- SECTION 5: PAGINATION -->
-        <div class="pagination">
-            <button class="pg-btn" disabled>&larr; Previous</button>
-            <div class="pg-num active">1</div>
-            <div class="pg-num">2</div>
-            <div class="pg-num">3</div>
-            <button class="pg-btn">Next &rarr;</button>
-        </div>
+
+        <!-- SECTION 5: PAGINATION (rendered by JS) -->
+        <div class="pagination"></div>
+
 
         <!-- SECTION 6: FOOTER -->
         <div class="footer-strip">
@@ -428,7 +493,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             ?></span>
             <a href="user_request_pickup.php" class="btn-schedule"><?= $currentLang === 'bn' ? 'পরবর্তী পিকআপ শিডিউল করুন →' : 'Schedule Next Pickup →' ?></a>
         </div>
-        
+       
         <!-- DETAILS MODAL -->
         <div id="detailsModal" class="modal-overlay">
             <div class="modal-card">
@@ -442,6 +507,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             </div>
         </div>
     </main>
+
 
     <script>
         const lang = "<?= $currentLang ?>";
@@ -474,7 +540,9 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             ]
         };
 
+
         const activities = <?= json_encode($jsActivities) ?>;
+
 
         const container = document.getElementById('activityContainer');
         const searchInput = document.getElementById('searchInput');
@@ -484,21 +552,25 @@ $currentLang = $_SESSION['lang'] ?? 'en';
         const datePicker = document.getElementById('datePicker');
         const dateRangeText = document.getElementById('dateRangeText');
 
+
         let currentFilter = 'ALL';
         let searchQuery = '';
         let currentPage = 1;
         const itemsPerPage = 5;
 
+
         function renderList() {
             const filtered = activities.filter(a => {
                 const matchStatus = currentFilter === 'ALL' || a.status === currentFilter;
-                const matchSearch = a.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                const matchSearch = a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                                     a.category.toLowerCase().includes(searchQuery.toLowerCase());
                 return matchStatus && matchSearch;
             });
 
+
             resultCount.innerText = `${trans.showingPrefix}${filtered.length} ${trans.showing}`;
             const pgContainer = document.querySelector('.pagination');
+
 
             if (filtered.length === 0) {
                 container.innerHTML = `
@@ -511,11 +583,14 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                 return;
             }
 
+
             const totalPages = Math.ceil(filtered.length / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages;
 
+
             const startIndex = (currentPage - 1) * itemsPerPage;
             const paginatedItems = filtered.slice(startIndex, startIndex + itemsPerPage);
+
 
             container.innerHTML = paginatedItems.map(a => {
                 const displayStatus = trans.status[a.status] || a.status;
@@ -547,8 +622,10 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                 </div>
             `}).join('');
 
+
             renderPagination(totalPages);
         }
+
 
         function renderPagination(totalPages) {
             const pgContainer = document.querySelector('.pagination');
@@ -557,23 +634,25 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                 return;
             }
             pgContainer.style.display = 'flex';
-            
+           
             let html = `<button class="pg-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">&larr; ${trans.prev}</button>`;
-            
+           
             for(let i=1; i<=totalPages; i++) {
                 html += `<div class="pg-num ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</div>`;
             }
-            
+           
             html += `<button class="pg-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">${trans.next} &rarr;</button>`;
-            
+           
             pgContainer.innerHTML = html;
         }
+
 
         function changePage(page) {
             currentPage = page;
             renderList();
             // Removed window.scrollTo to prevent UI jump and breaking the page feel.
         }
+
 
         function getStatusIcon(status) {
             switch(status) {
@@ -586,13 +665,14 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             }
         }
 
+
         function viewDetails(id) {
             const a = activities.find(x => x.id == id);
             if (!a) return;
-            
+           
             document.getElementById('modalTitle').innerText = `${trans.viewDetails} #${a.id}`;
             const displayStatus = trans.status[a.status] || a.status;
-            
+           
             const body = document.getElementById('modalBody');
             body.innerHTML = `
                 <div class="detail-row"><span class="detail-label">${trans.itemCategory}</span><span class="detail-val">${a.name} (${a.category})</span></div>
@@ -602,13 +682,15 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                 <div class="detail-row"><span class="detail-label">${trans.weight}</span><span class="detail-val">${a.weight}</span></div>
                 ${a.status === 'COMPLETED' ? `<div class="detail-row"><span class="detail-label">${trans.ptsEarned}</span><span class="detail-val" style="color:var(--gold);"><i class="ti ti-star"></i> +${a.points}</span></div>` : ''}
             `;
-            
+           
             document.getElementById('detailsModal').classList.add('active');
         }
+
 
         function closeModal() {
             document.getElementById('detailsModal').classList.remove('active');
         }
+
 
         // Close modal when clicking outside
         window.onclick = function(event) {
@@ -618,9 +700,10 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             }
         };
 
+
         // Search & Filter
         searchInput.oninput = (e) => { searchQuery = e.target.value; currentPage = 1; renderList(); };
-        
+       
         statusFilters.onclick = (e) => {
             if (e.target.classList.contains('pill')) {
                 document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
@@ -631,12 +714,14 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             }
         };
 
+
         // Date Picker Cycle
         let rangeIdx = 0;
         datePicker.onclick = () => {
             rangeIdx = (rangeIdx + 1) % trans.dateRanges.length;
             dateRangeText.innerText = trans.dateRanges[rangeIdx];
         };
+
 
         // Export CSV
         exportBtn.onclick = (e) => {
@@ -650,6 +735,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             a.download = 'notun-alo-activity.csv';
             a.click();
         };
+
 
         // Animation
         function animateValue(id, duration) {
@@ -667,6 +753,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             window.requestAnimationFrame(step);
         }
 
+
         window.onload = () => {
             renderList();
             animateValue('stat-total', 1200);
@@ -677,3 +764,6 @@ $currentLang = $_SESSION['lang'] ?? 'en';
     </script>
 </body>
 </html>
+
+
+
