@@ -22,51 +22,31 @@ if (!file_exists($sqlFile)) {
     die("SQL file not found: $sqlFile\n");
 }
 
-$sql = file_get_contents($sqlFile);
-if ($sql === false || strlen($sql) === 0) {
-    die("Failed to read SQL file or file is empty.\n");
+$fh = fopen($sqlFile, 'rb');
+if (!$fh) {
+    die("Failed to open SQL file.\n");
 }
-
-// Normalize line endings
-$sql = str_replace("\r\n", "\n", $sql);
-$sql = str_replace("\r", "\n", $sql);
 
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$statements = explode(";\n", $sql);
-
+$currentStmt = '';
 $total = 0;
 $success = 0;
 $skipped = 0;
 $errors = [];
 
-foreach ($statements as $i => $stmtBlock) {
-    $stmt = trim($stmtBlock);
-    if ($stmt === '') continue;
+// Helper: execute a single statement
+function execStmt(PDO $pdo, string $stmt, int &$total, int &$success, int &$skipped, array &$errors): void {
+    $stmt = trim($stmt);
+    if ($stmt === '') return;
 
     $total++;
+    $upper = strtoupper(substr($stmt, 0, 20));
 
-    // Remove commented lines within the block
-    $lines = explode("\n", $stmt);
-    $cleanLines = array_filter($lines, function ($line) {
-        $t = trim($line);
-        return $t !== '' && !str_starts_with($t, '--') && !str_starts_with($t, '/*');
-    });
-    if (empty($cleanLines)) {
+    // Skip SET variable statements, comments, and delimiter directives
+    if (preg_match('/^SET\s+@/i', $stmt) || $stmt === 'DELIMITER ;;') {
         $skipped++;
-        continue;
-    }
-    $stmt = implode("\n", $cleanLines);
-    $stmt = trim($stmt);
-    if ($stmt === '') {
-        $skipped++;
-        continue;
-    }
-
-    // Skip SET variable statements
-    if (preg_match('/^SET\s+@/i', $stmt)) {
-        $skipped++;
-        continue;
+        return;
     }
 
     // Convert INSERT INTO -> INSERT IGNORE INTO for idempotency
@@ -74,17 +54,47 @@ foreach ($statements as $i => $stmtBlock) {
         $stmt = preg_replace('/^INSERT\s+INTO/i', 'INSERT IGNORE INTO', $stmt);
     }
 
+    // Skip DROP TABLE IF EXISTS for safety but keep CREATE TABLE
+    if (preg_match('/^DROP\s+(TABLE|VIEW)\s+IF\s+EXISTS/i', $stmt)) {
+        echo "DROP: " . substr($stmt, 0, 90) . "\n";
+        $skipped++;
+        return;
+    }
+
     try {
         $pdo->exec($stmt);
         $success++;
-        echo "OK [$total] ";
         $firstLine = strtok($stmt, "\n");
-        echo substr($firstLine, 0, 100) . "\n";
+        echo "OK $total: " . substr($firstLine, 0, 100) . "\n";
     } catch (Exception $e) {
         $errors[] = "[$total] " . $e->getMessage() . " — " . substr($stmt, 0, 80);
-        echo "FAIL [$total] " . $e->getMessage() . "\n";
+        echo "FAIL $total: " . $e->getMessage() . "\n";
     }
 }
+
+while (($line = fgets($fh)) !== false) {
+    $trimmed = trim($line);
+
+    // Skip comment lines
+    if ($trimmed === '' || str_starts_with($trimmed, '--') || str_starts_with($trimmed, '/*')) {
+        continue;
+    }
+
+    $currentStmt .= $line;
+
+    // Check if statement ends with semicolon (possibly followed by whitespace)
+    if (str_ends_with(trim($currentStmt), ';')) {
+        execStmt($pdo, $currentStmt, $total, $success, $skipped, $errors);
+        $currentStmt = '';
+    }
+}
+
+// Handle any remaining statement
+if (trim($currentStmt) !== '') {
+    execStmt($pdo, $currentStmt, $total, $success, $skipped, $errors);
+}
+
+fclose($fh);
 
 echo "\n========================================\n";
 echo "Total statements : $total\n";
@@ -92,8 +102,8 @@ echo "Executed        : $success\n";
 echo "Skipped         : $skipped\n";
 echo "Errors          : " . count($errors) . "\n";
 if (!empty($errors)) {
-    echo "\n--- First 10 Errors ---\n";
-    foreach (array_slice($errors, 0, 10) as $err) {
+    echo "\n--- Errors ---\n";
+    foreach ($errors as $err) {
         echo "  $err\n";
     }
 }
