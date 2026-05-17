@@ -2,6 +2,7 @@
 require_once 'includes/config.php';
 startSession();
 
+
 if (isLoggedIn()) {
     $role = $_SESSION['role'] ?? 'user';
     redirect(match($role) {
@@ -11,10 +12,12 @@ if (isLoggedIn()) {
     });
 }
 
+
 $currentLang = $_SESSION['lang'] ?? 'en';
 $t = function(string $en, string $bn) use ($currentLang): string {
     return $currentLang === 'bn' ? $bn : $en;
 };
+
 
 try {
     $products = $pdo->query("SELECT * FROM products ORDER BY created_at DESC")->fetchAll();
@@ -22,6 +25,7 @@ try {
     if (!isDatabaseInitialized($pdo)) redirect('init_db.php');
     throw $e;
 }
+
 
 $totalPointsQuery = $pdo->query("SELECT SUM(lifetime_points) as total FROM rewards");
 $totalPointsData = $totalPointsQuery->fetch();
@@ -99,6 +103,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
         body.dark-mode .hero-float-card .pts-value { color: var(--sage); }
         body.dark-mode .hero-float-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
 
+
         /* ── Hero Animations ── */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
@@ -156,6 +161,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
         .float-card-2 { animation-delay: 0.5s; }
         .float-card-3 { animation-delay: 1s; }
 
+
         /* Shop Pagination */
         .shop-pagination .pg-btn { border: 1px solid var(--border); background: var(--card-bg, white); color: var(--text-secondary); padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .shop-pagination .pg-btn:hover:not(:disabled) { background: var(--bg-subtle, #f9fafb); color: var(--brand-primary); }
@@ -168,9 +174,253 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
         body.dark-mode .shop-pagination .pg-num.active { background: var(--brand-primary); color: #fff; border-color: var(--brand-primary); }
         body.dark-mode .shop-pagination .pg-btn:hover:not(:disabled) { background: #1a2e24; color: var(--sage); }
         body.dark-mode .shop-pagination .pg-num:hover:not(.active) { background: #1a2e24; }
+
+
+        /* On desktop, unwrap mobile-top-row so items flow in the nav bar normally */
+        .mobile-top-row {
+            display: contents; /* children participate in parent flex as if the div doesn't exist */
+        }
+
+
+        /* ===== LANDING MOBILE HAMBURGER ===== */
+        .landing-hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 8px;
+            padding: 7px 9px;
+            cursor: pointer;
+            transition: background 0.2s;
+            z-index: 300;
+        }
+        .landing-hamburger:hover { background: rgba(255,255,255,0.22); }
+        .landing-hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .landing-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .landing-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .landing-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+
+        /* ===== LANDING MOBILE OVERRIDES ===== */
+        @media (max-width: 768px) {
+            .landing-hamburger { display: flex; }
+
+
+            /* Mobile nav drawer — compact */
+            .landing-nav-right {
+                display: none;
+                position: fixed;
+                top: var(--nav-h, 72px);
+                left: 0;
+                right: 0;
+                background: linear-gradient(180deg, #145218 0%, #0d3310 100%);
+                flex-direction: column;
+                align-items: stretch;
+                padding: 0.6rem 1rem 0.75rem;
+                gap: 0.35rem;
+                z-index: 199;
+                box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+                border-bottom: 2px solid rgba(255,193,7,0.3);
+            }
+            .landing-nav-right.open { display: flex; }
+
+
+            /* Row 1: Language + Theme toggle in one compact line */
+            .landing-nav-right .mobile-top-row {
+                display: flex;
+                gap: 0.35rem;
+                align-items: center;
+            }
+            .landing-nav-right .mobile-top-row > a {
+                flex: 1;
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                padding: 0.4rem 0.5rem !important;
+                border-radius: 8px !important;
+                font-size: 0.82rem !important;
+                font-weight: 600 !important;
+                border: 1px solid rgba(255,255,255,0.2) !important;
+                background: rgba(255,255,255,0.07) !important;
+                color: rgba(255,255,255,0.9) !important;
+                text-align: center;
+            }
+            .landing-nav-right .mobile-top-row > a:hover { background: rgba(255,255,255,0.15) !important; }
+            .landing-nav-right .mobile-top-row .lang-active {
+                background: rgba(255,193,7,0.2) !important;
+                border-color: rgba(255,193,7,0.4) !important;
+                color: #fcd34d !important;
+            }
+            .landing-nav-right .mobile-top-row > span#themeToggleLanding {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                padding: 0.4rem 0.6rem !important;
+                border-radius: 8px !important;
+                font-size: 1rem !important;
+                border: 1px solid rgba(255,255,255,0.2) !important;
+                background: rgba(255,255,255,0.07);
+                cursor: pointer;
+                min-width: 38px;
+            }
+            .landing-nav-right .mobile-top-row > span#themeToggleLanding:hover { background: rgba(255,255,255,0.15) !important; }
+
+
+            /* Row 2: Login link */
+            .landing-nav-right > a.mobile-login {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                padding: 0.45rem 1rem !important;
+                border-radius: 8px !important;
+                font-size: 0.9rem !important;
+                border: 1px solid rgba(255,255,255,0.15) !important;
+                background: rgba(255,255,255,0.05);
+                color: rgba(255,255,255,0.85) !important;
+                text-align: center;
+            }
+            .landing-nav-right > a.mobile-login:hover { background: rgba(255,255,255,0.1) !important; }
+
+
+            /* Row 3: Get Started CTA */
+            .landing-nav-right .btn-primary.btn-sm {
+                background: #a3e635 !important;
+                color: #14532d !important;
+                font-weight: 700 !important;
+                border: none !important;
+                border-radius: 8px !important;
+                width: 100% !important;
+                padding: 0.5rem 1rem !important;
+                font-size: 0.9rem !important;
+                justify-content: center;
+            }
+
+
+            /* Shrink the giant bg emoji */
+            .hero-spin-emoji { font-size: 10rem !important; }
+
+
+            /* Rate cards: stack vertically */
+            .hero-rate-cards {
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 12px !important;
+                margin-top: 28px !important;
+            }
+            .hero-rate-cards .hero-float-card {
+                width: 100% !important;
+                max-width: 300px !important;
+                justify-content: center;
+            }
+
+
+            /* Hero section */
+            .hero-v2 { padding: 5.5rem 0 5rem !important; min-height: auto !important; }
+            .hero-v2-title { font-size: clamp(2rem, 9vw, 2.8rem) !important; }
+            .hero-v2-sub { font-size: 0.95rem !important; }
+            .hero-v2-badge { font-size: 0.72rem !important; padding: 5px 12px !important; white-space: normal !important; text-align: center !important; max-width: 92vw !important; }
+
+
+            /* About story card (inline padding: 56px 64px) */
+            .about-story-card { padding: 28px 20px !important; border-radius: 20px !important; }
+            .about-story-card h3 { font-size: 1.15rem !important; }
+            .about-story-card p { font-size: 0.9rem !important; line-height: 1.7 !important; }
+
+
+            /* About pillar cards */
+            .about-pillar-grid { gap: 16px !important; }
+            .about-pillar-card { padding: 24px 18px !important; border-radius: 16px !important; }
+
+
+            /* Team box */
+            .team-box { padding: 24px !important; flex-direction: column !important; align-items: flex-start !important; gap: 20px !important; }
+            .team-box > div:last-child { width: 100%; }
+
+
+            /* Sections */
+            .section { padding: 3.5rem 0 !important; }
+            .section-title { font-size: 1.8rem !important; margin-bottom: 2rem !important; }
+            .stats-strip { padding: 2.5rem 0 !important; }
+            .cta-v2 { padding: 4rem 0 !important; }
+            .cta-v2-content h2 { font-size: 1.7rem !important; }
+            .footer-v2 { padding: 2.5rem 0 1.5rem !important; }
+            .testimonial-card { padding: 1.5rem !important; }
+            .testimonial-quote { font-size: 0.9rem !important; }
+
+
+            /* Shop search */
+            .shop-search-wrap { flex-direction: column !important; }
+            .shop-search-wrap select { min-width: auto !important; width: 100% !important; }
+
+
+            /* ── Shop section mobile ── */
+            /* Search bar: stack search input + category select */
+            .shop-search-wrap {
+                flex-direction: column !important;
+                gap: 8px !important;
+                margin-bottom: 1.5rem !important;
+            }
+            .shop-search-inner { min-width: 0 !important; }
+            .shop-search-wrap > select {
+                min-width: 0 !important;
+                width: 100% !important;
+                padding: 10px 14px !important;
+                font-size: 0.88rem !important;
+                border-radius: 24px !important;
+            }
+
+
+            /* Product grid: 2 columns, compact */
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }
+            /* Smaller card images on mobile */
+            .product-card-v2 .product-img-wrap { height: 140px !important; }
+            .product-card-v2 .product-body { padding: 10px 10px 12px !important; gap: 4px !important; }
+            .product-card-v2 .product-name { font-size: 0.82rem !important; line-height: 1.3 !important; }
+            .product-card-v2 .product-desc { font-size: 0.72rem !important; -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+            .product-card-v2 .product-actions .btn { font-size: 0.75rem !important; padding: 6px 8px !important; }
+            .pts-badge-float { font-size: 0.65rem !important; padding: 2px 7px !important; top: 6px !important; left: 6px !important; }
+
+
+            /* Pagination: compact */
+            #landingShopPagination {
+                gap: 5px !important;
+                margin-top: 20px !important;
+                flex-wrap: wrap !important;
+            }
+            .shop-pagination .pg-btn { font-size: 0.78rem !important; padding: 6px 12px !important; }
+            .shop-pagination .pg-num { width: 32px !important; height: 32px !important; font-size: 0.8rem !important; }
+        }
+
+
+        @media (max-width: 480px) {
+            /* Single column on very small phones */
+            .product-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+            .product-card-v2 .product-img-wrap { height: 180px !important; }
+            .product-card-v2 .product-body { padding: 12px !important; }
+            .product-card-v2 .product-name { font-size: 0.9rem !important; }
+            .product-card-v2 .product-desc { font-size: 0.78rem !important; }
+            .hero-spin-emoji { font-size: 6rem !important; }
+            .section-title { font-size: 1.5rem !important; }
+            .stats-strip__value { font-size: 1.8rem !important; }
+            .stats-strip__label { font-size: 0.72rem !important; }
+            .about-story-card { padding: 20px 16px !important; }
+            .hero-rate-cards .hero-float-card { max-width: 260px !important; }
+        }
     </style>
 </head>
 <body class="landing-body">
+
 
 <!-- Navbar -->
 <nav class="navbar navbar--transparent" id="mainNavbar">
@@ -182,15 +432,23 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
                 <span class="nav-tagline"><?= $t('Recycling', 'পুনর্ব্যবহার') ?></span>
             </div>
         </a>
-        <div class="nav-right" style="gap: 0.75rem;">
-            <a href="?lang=bn" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.85rem; opacity: 0.85; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; <?= $currentLang === 'bn' ? 'background:rgba(255,255,255,0.15);' : '' ?>">বাং</a>
-            <a href="?lang=en" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.85rem; opacity: 0.85; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; <?= $currentLang === 'en' ? 'background:rgba(255,255,255,0.15);' : '' ?>">EN</a>
-            <span id="themeToggleLanding" style="cursor:pointer; color:white; font-size:1.1rem; opacity:0.8;">🌙</span>
-            <a href="login.php" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.95rem; opacity: 0.85;"><?= $t('Login', 'লগইন') ?></a>
+        <button class="landing-hamburger" id="landingHamburger" aria-label="Toggle menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="nav-right landing-nav-right" id="landingNavRight" style="gap: 0.75rem;">
+            <!-- Desktop: shown normally. Mobile: rendered as compact drawer rows -->
+            <div class="mobile-top-row">
+                <a href="?lang=bn" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.85rem; opacity: 0.85; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; <?= $currentLang === 'bn' ? 'background:rgba(255,255,255,0.15);' : '' ?>" <?= $currentLang === 'bn' ? 'class="lang-active"' : '' ?>>বাং</a>
+                <a href="?lang=en" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.85rem; opacity: 0.85; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; <?= $currentLang === 'en' ? 'background:rgba(255,255,255,0.15);' : '' ?>" <?= $currentLang === 'en' ? 'class="lang-active"' : '' ?>>EN</a>
+                <span id="themeToggleLanding" style="cursor:pointer; color:white; font-size:1.1rem; opacity:0.8;">🌙</span>
+            </div>
+            <a href="#shop-preview" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.95rem; opacity: 0.85;"><?= $t('Shop', 'দোকান') ?></a>
+            <a href="login.php" class="mobile-login" style="color: white; text-decoration: none; font-weight: 600; font-size: 0.95rem; opacity: 0.85;"><?= $t('Login', 'লগইন') ?></a>
             <a href="register.php" class="btn btn-primary btn-sm"><?= $t('Get Started', 'নিবন্ধন') ?></a>
         </div>
     </div>
 </nav>
+
 
 <!-- Preloader -->
 <div id="preloader">
@@ -201,6 +459,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     </div>
 </div>
 
+
 <!-- Hero -->
 <section class="hero-v2">
     <div class="hero-v2-bg"></div>
@@ -210,10 +469,12 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     <div class="hero-particle" style="left: 70%; animation-duration: 10s; animation-delay: 3s;"></div>
     <div class="hero-particle" style="left: 85%; animation-duration: 14s; animation-delay: 0s;"></div>
 
+
     <!-- Background rotating emoji behind headline -->
     <div style="position: absolute; top: 16%; left: 50%; transform: translateX(-50%); width: 100%; display: flex; justify-content: center; pointer-events: none; user-select: none; z-index: 0;">
-        <div style="font-size: 28rem; opacity: 0.09; animation: spin 25s linear infinite; line-height: 1;">♻️</div>
+        <div class="hero-spin-emoji" style="font-size: 28rem; opacity: 0.09; animation: spin 25s linear infinite; line-height: 1;">♻️</div>
     </div>
+
 
     <div class="container" style="position: relative; width: 100%; z-index: 1;">
         <div class="hero-v2-content" style="text-align: center; max-width: 800px; margin: 0 auto;">
@@ -231,8 +492,9 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
             </div>
         </div>
 
+
         <!-- Rate Cards Row -->
-        <div style="display: flex; justify-content: center; gap: 20px; margin-top: 48px; flex-wrap: wrap; position: relative; z-index: 2;">
+        <div class="hero-rate-cards" style="display: flex; justify-content: center; gap: 20px; margin-top: 48px; flex-wrap: wrap; position: relative; z-index: 2;">
             <div class="hero-float-card float-card-1">
                 <div class="pts-circle" style="background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534;">📄</div>
                 <div>
@@ -263,6 +525,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     </div>
 </section>
 
+
 <!-- Impact Ticker -->
 <div class="ticker-wrap">
     <div class="ticker-content">
@@ -275,6 +538,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
         💡 <?= $t('Join Notun Alo — be the change', 'নতুন আলোতে যোগ দিন — পরিবর্তন হোন') ?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </div>
 </div>
+
 
 <!-- How It Works -->
 <section id="how" class="section">
@@ -309,6 +573,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     </div>
 </section>
 
+
 <!-- Stats Strip -->
 <section class="stats-strip">
     <div class="container">
@@ -322,8 +587,8 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
                 <div class="stats-strip__label"><?= $t('Waste generated daily in Dhaka', 'ঢাকায় প্রতিদিন বর্জ্য উৎপন্ন') ?></div>
             </div>
             <div class="stat-counter-wrap" data-reveal>
-                <div class="stats-strip__value"><span class="stat-counter" data-target="2">0</span></div>
-                <div class="stats-strip__label"><?= $t('Materials we collect: Paper, Plastic, More!', 'আমরা সংগ্রহ করি: কাগজ, প্লাস্টিক, আরও অনেক কিছু!') ?></div>
+                <div class="stats-strip__value"><span class="stat-counter" data-target="3">0</span></div>
+                <div class="stats-strip__label"><?= $t('Materials we collect: Paper, Plastic, Metal!', 'আমরা সংগ্রহ করি: কাগজ, প্লাস্টিক, ধাতু!') ?></div>
             </div>
             <div class="stat-counter-wrap" data-reveal>
                 <div class="stats-strip__value"><span class="stat-counter" data-target="<?= $totalPointsEarned ?>">0</span>+</div>
@@ -333,10 +598,12 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     </div>
 </section>
 
+
 <!-- Shop Preview -->
-<section class="section shop-preview">
+<section class="section shop-preview" id="shop-preview">
     <div class="container">
         <h2 class="section-title" data-reveal><?= $t('Explore Our Shop', 'আমাদের দোকান দেখুন') ?></h2>
+
 
         <?php if (!empty($products)): ?>
         <div class="shop-search-wrap" data-reveal style="display:flex; gap:12px; flex-wrap:wrap;">
@@ -361,6 +628,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
             </select>
         </div>
         <?php endif; ?>
+
 
         <?php if (empty($products)): ?>
             <div class="empty-state" data-reveal>
@@ -404,6 +672,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     </div>
 </section>
 
+
 <!-- Testimonials -->
 <section class="section" style="background: var(--testimonial-bg); transition: background 0.3s;">
     <div class="container">
@@ -428,6 +697,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     </div>
 </section>
 
+
 <!-- About Us -->
 <section id="about" class="section" style="background: var(--about-bg);">
     <div class="container">
@@ -437,7 +707,8 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
             <p style="max-width:700px; margin:0 auto; font-size:1.1rem; line-height:1.8;"><?= $t('A movement born from a simple question — ', 'একটি সহজ প্রশ্ন থেকে জন্ম নেওয়া একটি আন্দোলন — ') ?><em style="color:#16a34a; font-weight:600;"><?= $t('what if every piece of waste was a beginning, not an end?', 'যদি প্রতিটি বর্জ্য একটি শেষ না হয়ে একটি শুরু হয়?') ?></em></p>
         </div>
 
-        <div style="background: linear-gradient(135deg, #064e3b, #065f46, #0d7556); border-radius:28px; padding: 56px 64px; color:white; margin-bottom:56px; position:relative; overflow:hidden; box-shadow: 0 30px 80px rgba(6,78,59,0.35);" data-reveal>
+
+        <div class="about-story-card" style="background: linear-gradient(135deg, #064e3b, #065f46, #0d7556); border-radius:28px; padding: 56px 64px; color:white; margin-bottom:56px; position:relative; overflow:hidden; box-shadow: 0 30px 80px rgba(6,78,59,0.35);" data-reveal>
             <div style="position:absolute; width:350px; height:350px; background:rgba(52,211,153,0.12); border-radius:50%; top:-100px; right:-80px; filter:blur(60px);"></div>
             <div style="position:absolute; width:250px; height:250px; background:rgba(163,230,53,0.1); border-radius:50%; bottom:-80px; left:-60px; filter:blur(50px);"></div>
             <div style="position:relative; z-index:1;">
@@ -448,30 +719,32 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
             </div>
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:28px; margin-bottom:56px;">
-            <div style="background:var(--pillar-bg); border:1px solid var(--pillar-border); border-radius:20px; padding:36px 28px; box-shadow:0 4px 20px rgba(0,0,0,0.05); transition:transform 0.3s, box-shadow 0.3s;" data-reveal onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 40px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.05)';">
+
+        <div class="about-pillar-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:28px; margin-bottom:56px;">
+            <div class="about-pillar-card" style="background:var(--pillar-bg); border:1px solid var(--pillar-border); border-radius:20px; padding:36px 28px; box-shadow:0 4px 20px rgba(0,0,0,0.05); transition:transform 0.3s, box-shadow 0.3s;" data-reveal onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 40px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.05)';">
                 <div style="width:56px; height:56px; background:#dcfce7; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin-bottom:20px;">&#127758;</div>
                 <h4 style="font-size:1.15rem; font-weight:700; margin-bottom:12px;"><?= $t('Our Mission', 'আমাদের লক্ষ্য') ?></h4>
                 <p style="line-height:1.75; font-size:0.95rem;"><?= $t('To make responsible waste disposal accessible, rewarding, and community-driven for every household in Bangladesh — starting from Dhaka and scaling to the nation.', 'প্রত্যেক বাংলাদেশী পরিবারের জন্য দায়িত্বশীল বর্জ্য নিষ্কাশনকে সহজলভ্য, পুরস্কৃত এবং কমিউনিটি-চালিত করা — ঢাকা থেকে শুরু করে সারা দেশে সম্প্রসারণ।') ?></p>
             </div>
-            <div style="background:var(--pillar-bg); border:1px solid var(--pillar-border); border-radius:20px; padding:36px 28px; box-shadow:0 4px 20px rgba(0,0,0,0.05); transition:transform 0.3s, box-shadow 0.3s;" data-reveal onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 40px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.05)';">
+            <div class="about-pillar-card" style="background:var(--pillar-bg); border:1px solid var(--pillar-border); border-radius:20px; padding:36px 28px; box-shadow:0 4px 20px rgba(0,0,0,0.05); transition:transform 0.3s, box-shadow 0.3s;" data-reveal onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 40px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.05)';">
                 <div style="width:56px; height:56px; background:#dbeafe; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin-bottom:20px;">&#128301;</div>
                 <h4 style="font-size:1.15rem; font-weight:700; margin-bottom:12px;"><?= $t('Our Vision', 'আমাদের দৃষ্টিভঙ্গি') ?></h4>
                 <p style="line-height:1.75; font-size:0.95rem;"><?= $t('A Bangladesh where circular economy principles are woven into daily life — where every citizen is empowered as an environmental steward, and recycling is as natural as breathing.', 'একটি বাংলাদেশ যেখানে সার্কুলার ইকোনমি নীতিগুলি দৈনন্দিন জীবনে বোনা — যেখানে প্রতিটি নাগরিক পরিবেশের রক্ষক হিসাবে ক্ষমতায়িত এবং পুনর্ব্যবহার শ্বাস নেওয়ার মতোই স্বাভাবিক।') ?></p>
             </div>
-            <div style="background:var(--pillar-bg); border:1px solid var(--pillar-border); border-radius:20px; padding:36px 28px; box-shadow:0 4px 20px rgba(0,0,0,0.05); transition:transform 0.3s, box-shadow 0.3s;" data-reveal onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 40px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.05)';">
+            <div class="about-pillar-card" style="background:var(--pillar-bg); border:1px solid var(--pillar-border); border-radius:20px; padding:36px 28px; box-shadow:0 4px 20px rgba(0,0,0,0.05); transition:transform 0.3s, box-shadow 0.3s;" data-reveal onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 40px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.05)';">
                 <div style="width:56px; height:56px; background:#fef3c7; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin-bottom:20px;">&#128161;</div>
                 <h4 style="font-size:1.15rem; font-weight:700; margin-bottom:12px;"><?= $t('Our Motivation', 'আমাদের প্রেরণা') ?></h4>
                 <p style="line-height:1.75; font-size:0.95rem;"><?= $t('We are students who refused to accept the status quo. Climate urgency, the SDG goals for 2030, and the raw potential of Bangladesh\'s people ignited us to build something that matters beyond the classroom.', 'আমরা এমন ছাত্র যারা স্থিতাবস্থা মেনে নিতে অস্বীকার করেছি। জলবায়ু জরুরিতা, ২০৩০ সালের এসডিজি লক্ষ্যমাত্রা এবং বাংলাদেশের জনগণের কাঁচা সম্ভাবনা আমাদের ক্লাসরুমের বাইরে কিছু তৈরি করতে প্রজ্বলিত করেছে।') ?></p>
             </div>
-            <div style="background:var(--pillar-bg); border:1px solid var(--pillar-border); border-radius:20px; padding:36px 28px; box-shadow:0 4px 20px rgba(0,0,0,0.05); transition:transform 0.3s, box-shadow 0.3s;" data-reveal onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 40px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.05)';">
+            <div class="about-pillar-card" style="background:var(--pillar-bg); border:1px solid var(--pillar-border); border-radius:20px; padding:36px 28px; box-shadow:0 4px 20px rgba(0,0,0,0.05); transition:transform 0.3s, box-shadow 0.3s;" data-reveal onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 16px 40px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.05)';">
                 <div style="width:56px; height:56px; background:#ede9fe; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin-bottom:20px;">&#129309;</div>
                 <h4 style="font-size:1.15rem; font-weight:700; margin-bottom:12px;"><?= $t('Our Promise', 'আমাদের অঙ্গীকার') ?></h4>
                 <p style="line-height:1.75; font-size:0.95rem;"><?= $t('We promise transparency, fairness, and impact. Every point you earn is real. Every pickup counts. Every eco-product in our shop was chosen because it represents what responsible commerce should look like.', 'আমরা স্বচ্ছতা, ন্যায্যতা এবং প্রভাবের প্রতিশ্রুতি দিই। আপনার অর্জিত প্রতিটি পয়েন্ট বাস্তব। প্রতিটি পিকআপ গণনা করে। আমাদের দোকানের প্রতিটি ইকো-পণ্য বেছে নেওয়া হয়েছে কারণ এটি দায়িত্বশীল বাণিজ্যের প্রতিনিধিত্ব করে।') ?></p>
             </div>
         </div>
 
-        <div style="background:var(--team-bg); border:1px solid var(--team-border); border-radius:20px; padding:40px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:24px;" data-reveal>
+
+        <div class="team-box" style="background:var(--team-bg); border:1px solid var(--team-border); border-radius:20px; padding:40px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:24px;" data-reveal>
             <div>
                 <div style="font-size:0.8rem; font-weight:700; color:#166534; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px;"><?= $t('Built With ❤️ By', 'নির্মিত হয়েছে ❤️ দ্বারা') ?></div>
                 <div style="font-size:1.5rem; font-weight:800; color:#064e3b;"><?= $t('Team GhostRiders', 'টিম ঘোস্টরাইডার্স') ?></div>
@@ -496,6 +769,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     </div>
 </section>
 
+
 <!-- CTA -->
 <section class="cta-v2">
     <div class="cta-v2-bg"></div>
@@ -513,6 +787,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
         </div>
     </div>
 </section>
+
 
 <!-- Footer -->
 <footer class="footer-v2">
@@ -542,6 +817,7 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     </div>
 </footer>
 
+
 <script>
 (function () {
     const input   = document.getElementById('landingShopSearch');
@@ -552,15 +828,24 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
     const catSel  = document.getElementById('landingCatFilter');
     if (!grid) return;
 
+
     const cards = Array.from(grid.querySelectorAll('.product-card-v2-landing'));
-    const itemsPerPage = 9;
     const prevText = "<?= $currentLang === 'bn' ? '← পূর্ববর্তী' : '← Previous' ?>";
     const nextText = "<?= $currentLang === 'bn' ? 'পরবর্তী →' : 'Next →' ?>";
     let currentPage = 1;
 
+
+    // Responsive items per page: 8 on mobile (2-col x 4 rows), 16 on desktop
+    function getItemsPerPage() {
+        return window.innerWidth <= 768 ? 8 : 16;
+    }
+
+
     function renderShop() {
+        const itemsPerPage = getItemsPerPage();
         const term = input ? input.value.trim().toLowerCase() : '';
         const cat = catSel ? catSel.value : 'ALL';
+
 
         let filtered = cards.filter(card => {
             const name = (card.dataset.name || '').toLowerCase();
@@ -571,10 +856,13 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
             return matchSearch && matchCat;
         });
 
+
         if (noRes) noRes.style.display = filtered.length === 0 ? 'block' : 'none';
+
 
         const totalPages = Math.ceil(filtered.length / itemsPerPage);
         if (currentPage > totalPages) currentPage = totalPages || 1;
+
 
         cards.forEach(c => c.style.display = 'none');
         const start = (currentPage - 1) * itemsPerPage;
@@ -583,9 +871,11 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
             filtered[i].style.display = '';
         }
 
-        // Pagination
+
+        // Pagination — hide if only 1 page
         if (!pagWrap) return;
         if (totalPages <= 1) { pagWrap.innerHTML = ''; return; }
+
 
         let html = `<button class="pg-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="window.landingShopPage(${currentPage - 1})">${prevText}</button>`;
         for (let i = 1; i <= totalPages; i++) {
@@ -595,14 +885,26 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
         pagWrap.innerHTML = html;
     }
 
+
     window.landingShopPage = function(p) { currentPage = p; renderShop(); };
+
 
     if (input) input.addEventListener('input', () => { currentPage = 1; renderShop(); });
     if (clear) clear.addEventListener('click', () => { input.value = ''; currentPage = 1; renderShop(); input.focus(); });
     if (catSel) catSel.addEventListener('change', () => { currentPage = 1; renderShop(); });
 
+
+    // Re-render on resize so page count adjusts between mobile/desktop
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => { currentPage = 1; renderShop(); }, 200);
+    });
+
+
     renderShop();
 })();
+
 
     // Dark mode toggle for landing page
     const toggle = document.getElementById('themeToggleLanding');
@@ -616,7 +918,37 @@ $totalPointsEarned = (int)($totalPointsData['total'] ?? 0);
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         };
     }
+
+
+    // ── Hamburger menu for mobile landing nav ──
+    const hamburger = document.getElementById('landingHamburger');
+    const navRight  = document.getElementById('landingNavRight');
+    if (hamburger && navRight) {
+        hamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = hamburger.classList.toggle('open');
+            navRight.classList.toggle('open', isOpen);
+            hamburger.setAttribute('aria-expanded', isOpen);
+        });
+        // Close when a nav link is clicked
+        navRight.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('open');
+                navRight.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+            });
+        });
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (!hamburger.contains(e.target) && !navRight.contains(e.target)) {
+                hamburger.classList.remove('open');
+                navRight.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
 </script>
 <script src="assets/js/animations.js?v=<?= time() ?>"></script>
 </body>
 </html>
+
