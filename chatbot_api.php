@@ -2,43 +2,201 @@
 // ============================================
 // chatbot_api.php — AI Chatbot AJAX Endpoint
 // Notun Alo Recycling Platform
-// Uses Pollinations.ai (100% free, no API key)
+// With caching, session memory, and suggestion chips
 // ============================================
 
 require_once 'includes/config.php';
 require_once 'includes/chatbot_context.php';
 require_once 'includes/chatbot_fallback.php';
 
-// ─── 1. Auth guard (JSON, not HTML redirect) ───────────────────────────────────
+// ─── Auth guard ────────────────────────────────────────────────────────────────
 requireLoginJson();
-
-// Always respond with JSON
 header('Content-Type: application/json; charset=utf-8');
 
-// ─── 2. Accept JSON body only ─────────────────────────────────────────────────
+// ─── DB table initialisation ───────────────────────────────────────────────────
+global $pdo;
+
+function ensureChatbotTables(PDO $pdo): void {
+    $pdo->exec("CREATE TABLE IF NOT EXISTS chatbot_cache (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        cache_key VARCHAR(64) NOT NULL UNIQUE,
+        response_text TEXT NOT NULL,
+        suggestions JSON DEFAULT NULL,
+        lang VARCHAR(5) NOT NULL DEFAULT 'en',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_cache_key (cache_key),
+        INDEX idx_created (created_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS chat_messages (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        session_id VARCHAR(64) NOT NULL DEFAULT 'main',
+        role ENUM('user','assistant','system') NOT NULL,
+        content TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_session (user_id, session_id, created_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+}
+ensureChatbotTables($pdo);
+
+// ─── Cache helpers ─────────────────────────────────────────────────────────────
+function chatbotCacheKey(string $query, string $lang): string {
+    return md5(mb_strtolower(trim($query)) . '|' . $lang);
+}
+
+function chatbotCacheGet(PDO $pdo, string $query, string $lang): ?array {
+    $key = chatbotCacheKey($query, $lang);
+    $stmt = $pdo->prepare(
+        "SELECT response_text, suggestions FROM chatbot_cache
+         WHERE cache_key = ? AND created_at > DATE_SUB(NOW(), INTERVAL 5 MINUTE)"
+    );
+    $stmt->execute([$key]);
+    $row = $stmt->fetch();
+    if (!$row) return null;
+    return [
+        'reply'       => $row['response_text'],
+        'suggestions' => $row['suggestions'] ? json_decode($row['suggestions'], true) : null,
+    ];
+}
+
+function chatbotCacheSet(PDO $pdo, string $query, string $lang, string $response, ?array $suggestions): void {
+    $key = chatbotCacheKey($query, $lang);
+    $stmt = $pdo->prepare(
+        "INSERT INTO chatbot_cache (cache_key, response_text, suggestions, lang)
+         VALUES (?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE response_text = VALUES(response_text), suggestions = VALUES(suggestions), created_at = NOW()"
+    );
+    $stmt->execute([$key, $response, $suggestions ? json_encode($suggestions) : null, $lang]);
+}
+
+// ─── Session memory helpers ────────────────────────────────────────────────────
+function chatMessageSave(PDO $pdo, int $userId, string $sessionId, string $role, string $content): void {
+    $stmt = $pdo->prepare(
+        "INSERT INTO chat_messages (user_id, session_id, role, content) VALUES (?, ?, ?, ?)"
+    );
+    $stmt->execute([$userId, $sessionId, $role, $content]);
+}
+
+function chatMessageLoadHistory(PDO $pdo, int $userId, string $sessionId, int $limit = 8): array {
+    $stmt = $pdo->prepare(
+        "SELECT role, content FROM chat_messages
+         WHERE user_id = ? AND session_id = ?
+         ORDER BY created_at DESC LIMIT ?"
+    );
+    $stmt->execute([$userId, $sessionId, $limit]);
+    $rows = $stmt->fetchAll();
+    return array_reverse(array_map(fn($r) => ['role' => $r['role'], 'content' => $r['content']], $rows));
+}
+
+// ─── Suggestion chip generator ─────────────────────────────────────────────────
+function generateSuggestions(string $reply, ?string $source, bool $isBengali, bool $hasPickupAction): array {
+    if ($hasPickupAction) {
+        return $isBengali
+            ? ['পয়েন্ট চেক করুন', 'ড্যাশবোর্ড দেখুন', 'রিসাইক্লিং গাইড']
+            : ['Check Points', 'View Dashboard', 'Recycling Guide'];
+    }
+    $source = $source ?? '';
+
+    $pointsChipsBN = ['পিকআপ শিডিউল', 'রিসাইক্লিং গাইড', 'ইমপ্যাক্ট স্ট্যাটাস'];
+    $pointsChipsEN = ['Schedule Pickup', 'Recycling Guide', 'Impact Stats'];
+
+    $guideChipsBN = ['পিকআপ শিডিউল', 'পয়েন্ট চেক', 'যোগাযোগ'];
+    $guideChipsEN = ['Schedule Pickup', 'Check Points', 'Contact Support'];
+
+    $pickupChipsBN = ['পয়েন্ট চেক', 'রিসাইক্লিং গাইড', 'সাহায্য'];
+    $pickupChipsEN = ['Check Points', 'Recycling Guide', 'Help'];
+
+    $genericBN = ['পয়েন্ট চেক', 'পিকআপ শিডিউল', 'রিসাইক্লিং গাইড'];
+    $genericEN = ['Check Points', 'Schedule Pickup', 'Recycling Guide'];
+
+    return match ($source) {
+        'direct_points', 'points' => $isBengali ? $pointsChipsBN : $pointsChipsEN,
+        'direct_guide', 'guide'   => $isBengali ? $guideChipsBN : $guideChipsEN,
+        'pickup_lookup', 'schedule' => $isBengali ? $pickupChipsBN : $pickupChipsEN,
+        default => $isBengali ? $genericBN : $genericEN,
+    };
+}
+
+// ─── Accept JSON body ──────────────────────────────────────────────────────────
 $raw   = file_get_contents('php://input');
 $input = json_decode($raw, true);
 
-if (!is_array($input) || !isset($input['message'], $input['history'])) {
+if (!is_array($input) || !isset($input['message'])) {
     http_response_code(400);
-    echo json_encode(['reply' => 'Invalid request.', 'action' => null]);
+    echo json_encode(['reply' => 'Invalid request.', 'action' => null, 'suggestions' => null]);
     exit;
 }
 
 $userMessage = trim((string)($input['message']));
-$history     = is_array($input['history']) ? $input['history'] : [];
+$clientHistory = is_array($input['history'] ?? null) ? $input['history'] : null;
+$sessionId   = trim((string)($input['session_id'] ?? 'main'));
+if ($sessionId === '') $sessionId = 'main';
 
 if ($userMessage === '') {
-    echo json_encode(['reply' => 'Please type a message.', 'action' => null]);
+    echo json_encode(['reply' => 'Please type a message.', 'action' => null, 'suggestions' => null]);
     exit;
 }
 
-// ─── 3. Detect user language for error messages ───────────────────────────────
-$isBengali = (bool)preg_match('/[\x{0980}-\x{09FF}]/u', $userMessage);
+// ─── Language detection (Bengali script + Banglish + mixed-script) ─────────────
+function detectDominantLanguage(string $message): array {
+    $message = trim($message);
+    if ($message === '') return ['lang' => 'en', 'confidence' => 1.0];
+
+    $bnChars = preg_match_all('/\p{Bengali}/u', $message);
+    $enChars = preg_match_all('/[a-zA-Z]/', $message);
+    $words = preg_split('/\s+/', $message);
+    $totalChars = mb_strlen($message);
+
+    // Banglish keyword detection
+    $banglishWords = ['ki', 'obostha', 'kemon', 'acho', 'ami', 'tumi', 'khobor',
+        'valobashi', 'dhaka', 'bangla', 'bhalo', 'ace', 'naki', 'jani', 'janina',
+        'bolo', 'dite', 'nibo', 'korte', 'kivabe', 'lomba', 'bujina', 'bolben',
+        'hobe', 'kono', 'jonno', 'mone', 'hole', 'dorkar', 'chai', 'chaile',
+        'thakbe', 'parbo', 'dibo', 'nibe', 'asbe', 'jaabe', 'bujhlam'];
+    $banglishScore = 0;
+    foreach ($words as $w) {
+        $w = preg_replace('/[^a-z]/', '', mb_strtolower($w));
+        if (in_array($w, $banglishWords, true)) {
+            $banglishScore++;
+        }
+    }
+    $banglishRatio = $totalChars > 0 ? $banglishScore / max(count($words), 1) : 0;
+
+    // Bengali unicode ratio
+    $bnRatio = $totalChars > 0 ? $bnChars / $totalChars : 0;
+
+    // Mixed script: has both Bengali and English characters
+    $hasMixed = $bnChars > 0 && $enChars > 0;
+
+    // Decision logic
+    if ($bnRatio > 0.3) {
+        // Strong Bengali presence
+        return ['lang' => 'bn', 'confidence' => min(1.0, 0.5 + $bnRatio)];
+    }
+    if ($banglishRatio >= 0.3) {
+        // Strong Banglish — treat as Bengali
+        return ['lang' => 'bn', 'confidence' => min(0.9, 0.4 + $banglishRatio)];
+    }
+    if ($hasMixed && $banglishRatio >= 0.15) {
+        // Mixed script with some Banglish cues
+        return ['lang' => 'bn', 'confidence' => 0.6];
+    }
+    if ($banglishScore >= 2) {
+        return ['lang' => 'bn', 'confidence' => 0.7];
+    }
+    // Default English
+    return ['lang' => 'en', 'confidence' => 1.0];
+}
+
+$langResult = detectDominantLanguage($userMessage);
+$lang = $langResult['lang'];
+$langConfidence = $langResult['confidence'];
+$isBengali = $lang === 'bn';
 
 $ragEnabled = strtolower((string)getenv('RAG_ENABLED') ?: '') === 'true';
 
-function callRagAssistant(string $message, bool $isBengali, array $user): ?array {
+function callRagAssistant(string $message, string $lang, array $user): ?array {
     $ragUrl = rtrim((string)getenv('RAG_API_URL') ?: 'http://localhost:5000', '/');
 
     $chWarm = curl_init($ragUrl . '/health');
@@ -58,7 +216,7 @@ function callRagAssistant(string $message, bool $isBengali, array $user): ?array
 
     $payload = json_encode([
         'query' => $message,
-        'language' => $isBengali ? 'bn' : 'en',
+        'language' => $lang,
         'user_name' => $user['name'] ?? '',
         'user_points' => (int)($user['points'] ?? 0),
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -232,54 +390,103 @@ function maybeAnswerImpactLookup(int $userId, string $message, bool $isBengali):
          . "Thank you for saving the planet! / পৃথিবী বাঁচাতে সাহায্য করার জন্য ধন্যবাদ! 🌿";
 }
 
+// ─── Shared response helper (save + cache + output) ──────────────────────────
+function respondJson(PDO $pdo, int $userId, string $sessionId, string $lang,
+    string $reply, string $userMessage, ?array $action = null,
+    ?string $source = null, ?array $sources = null): void {
+
+    // Save user message to session history
+    chatMessageSave($pdo, $userId, $sessionId, 'user', $userMessage);
+    // Save assistant response
+    chatMessageSave($pdo, $userId, $sessionId, 'assistant', $reply);
+
+    // Cache static responses (not user-specific)
+    if ($source !== null && $source !== 'impact_lookup' && $source !== 'rag') {
+        $suggestions = generateSuggestions($reply, $source, $lang === 'bn', $action !== null);
+        chatbotCacheSet($pdo, $userMessage, $lang, $reply, $suggestions);
+    }
+
+    $suggestions = generateSuggestions($reply, $source, $lang === 'bn', $action !== null);
+
+    $out = [
+        'reply'       => $reply,
+        'action'      => $action,
+        'source'      => $source,
+        'suggestions' => $suggestions,
+        'session_id'  => $sessionId,
+    ];
+    if ($sources !== null) $out['sources'] = $sources;
+
+    echo json_encode($out, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
 try {
 
-    // ─── 4. Load user + points ────────────────────────────────────────────────
+    // ─── Load user + points ────────────────────────────────────────────────────
     global $pdo;
     $user = getCurrentUser($pdo);
     if (!$user) {
         throw new RuntimeException('User session expired.');
     }
-    $user['points'] = getUserPoints($pdo, (int)$user['id']);
+    $userId = (int)$user['id'];
+    $user['points'] = getUserPoints($pdo, $userId);
 
-    // 4.1 Check Quick Actions / Direct Triggers
+    // ─── Check cache first (skipped for user-specific queries) ─────────────────
     $lowerMsg = strtolower($userMessage);
-    
-    // Check Points (Strict match or 'my points' intent)
-    if (preg_match('/^(check points|my points|points balance|পয়েন্ট চেক|আমার পয়েন্ট|ব্যালেন্স)$/i', trim($lowerMsg)) || $lowerMsg === 'points') {
-        $pts = (int)$user['points'];
-        $reply = $isBengali 
-            ? "🏆 আপনার বর্তমান পয়েন্ট: **$pts pts**।\nআপনি কাগজ (৫), প্লাস্টিক (৮), অথবা ধাতু (১২) রিসাইকেল করে আরও পয়েন্ট অর্জন করতে পারেন। 😊"
-            : "🏆 Your current points: **$pts pts**.\nYou can earn more by recycling Paper (5 pts/kg), Plastic (8 pts/kg), or Metal (12 pts/kg). 😊";
-        echo json_encode(['reply' => $reply, 'action' => null, 'source' => 'direct_points'], JSON_UNESCAPED_UNICODE);
-        exit;
+    $isUserQuery = preg_match('/\b(point|points|my\s|আমার|ব্যালেন্স|impact|স্ট্যাটাস)\b/i', $lowerMsg);
+    if (!$isUserQuery) {
+        $cached = chatbotCacheGet($pdo, $userMessage, $lang);
+        if ($cached !== null) {
+            // Still save messages for session continuity
+            chatMessageSave($pdo, $userId, $sessionId, 'user', $userMessage);
+            chatMessageSave($pdo, $userId, $sessionId, 'assistant', $cached['reply']);
+
+            echo json_encode([
+                'reply'       => $cached['reply'],
+                'action'      => null,
+                'source'      => 'cache',
+                'suggestions' => $cached['suggestions'],
+                'session_id'  => $sessionId,
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            exit;
+        }
     }
 
-    // Recycling Guide (Strict match)
+    // ─── Direct Triggers ───────────────────────────────────────────────────────
+
+    // Check Points
+    if (preg_match('/^(check points|my points|points balance|পয়েন্ট চেক|আমার পয়েন্ট|ব্যালেন্স)$/i', trim($lowerMsg)) || $lowerMsg === 'points') {
+        $pts = (int)$user['points'];
+        $reply = $isBengali
+            ? "🏆 আপনার বর্তমান পয়েন্ট: **$pts pts**।\nআপনি কাগজ (৫), প্লাস্টিক (৮), অথবা ধাতু (১২) রিসাইকেল করে আরও পয়েন্ট অর্জন করতে পারেন। 😊"
+            : "🏆 Your current points: **$pts pts**.\nYou can earn more by recycling Paper (5 pts/kg), Plastic (8 pts/kg), or Metal (12 pts/kg). 😊";
+        respondJson($pdo, $userId, $sessionId, $lang, $reply, $userMessage, null, 'direct_points');
+    }
+
+    // Recycling Guide
     if (preg_match('/^(recycling guide|how to recycle|guide|রিসাইক্লিং গাইড|গাইড)$/i', trim($lowerMsg))) {
         $reply = $isBengali
             ? "♻️ **রিসাইক্লিং গাইড:**\n\nআমরা ৩টি প্রধান ক্যাটাগরি গ্রহণ করি:\n• 📄 কাগজ (৫ pts/kg)\n• 🧴 প্লাস্টিক (৮ pts/kg)\n• 🔩 ধাতু (১২ pts/kg)\n\nপিকআপ শিডিউল করতে ওজন এবং তারিখসহ আমাকে জানান।"
             : "♻️ **Recycling Guide:**\n\nWe accept 3 main categories:\n• 📄 Paper (5 pts/kg)\n• 🧴 Plastic (8 pts/kg)\n• 🔩 Metal (12 pts/kg)\n\nTo schedule a pickup, just let me know the weight and date.";
-        echo json_encode(['reply' => $reply, 'action' => null, 'source' => 'direct_guide'], JSON_UNESCAPED_UNICODE);
-        exit;
+        respondJson($pdo, $userId, $sessionId, $lang, $reply, $userMessage, null, 'direct_guide');
     }
 
     // Impact Stats
-    $impactReply = maybeAnswerImpactLookup((int)$user['id'], $userMessage, $isBengali);
+    $impactReply = maybeAnswerImpactLookup($userId, $userMessage, $isBengali);
     if ($impactReply !== null) {
-        echo json_encode(['reply' => $impactReply, 'action' => null, 'source' => 'impact_lookup'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        exit;
+        respondJson($pdo, $userId, $sessionId, $lang, $impactReply, $userMessage, null, 'impact_lookup');
     }
 
     // Pickup History / Schedule Request
-    $directReply = maybeAnswerPickupLookup($pdo, (int)$user['id'], $userMessage, $isBengali);
-    if ($directReply !== null) {
-        echo json_encode(['reply' => $directReply, 'action' => null, 'source' => 'pickup_lookup'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        exit;
+    $pickupReply = maybeAnswerPickupLookup($pdo, $userId, $userMessage, $isBengali);
+    if ($pickupReply !== null) {
+        respondJson($pdo, $userId, $sessionId, $lang, $pickupReply, $userMessage, null, 'pickup_lookup');
     }
 
+    // RAG assistant
     if ($ragEnabled) {
-        $rag = callRagAssistant($userMessage, $isBengali, $user);
+        $rag = callRagAssistant($userMessage, $lang, $user);
         if ($rag !== null) {
             $reply = $rag['reply'];
             $points = (int)($user['points'] ?? 0);
@@ -289,20 +496,17 @@ try {
                     ? "\n\n🏆 আপনার বর্তমান পয়েন্ট: {$points} pts"
                     : "\n\n🏆 Your current points: {$points} pts";
             }
-            echo json_encode([
-                'reply' => $reply,
-                'action' => null,
-                'sources' => $rag['sources'],
-                'source' => 'rag',
-            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            exit;
+            respondJson($pdo, $userId, $sessionId, $lang, $reply, $userMessage, null, 'rag', $rag['sources'] ?? null);
         }
     }
 
-    // ─── 5. Build system prompt ───────────────────────────────────────────────
-    $systemPrompt = getChatbotSystemPrompt($user);
+    // ─── Load session memory ───────────────────────────────────────────────────
+    $history = $clientHistory !== null ? $clientHistory : chatMessageLoadHistory($pdo, $userId, $sessionId, 6);
 
-    // ─── 6. Build messages array (OpenAI-compatible) ──────────────────────────
+    // ─── Build system prompt ───────────────────────────────────────────────────
+    $systemPrompt = getChatbotSystemPrompt($user, $lang);
+
+    // ─── Build messages array (OpenAI-compatible) ──────────────────────────────
     $messages = [
         ['role' => 'system', 'content' => $systemPrompt],
     ];
@@ -315,9 +519,9 @@ try {
 
     $messages[] = ['role' => 'user', 'content' => $userMessage];
 
-    // ─── 7. Try Pollinations.ai (free, optional) ────────────────────────────
+    // ─── Try Pollinations.ai ────────────────────────────────────────────────────
     $payload = json_encode([
-        'model'       => 'llama-3.1-70b', // More intelligent for reasoning than default
+        'model'       => 'llama-3.1-70b',
         'messages'    => $messages,
         'temperature' => 0.7,
         'private'     => true,
@@ -332,7 +536,7 @@ try {
             'Content-Type: application/json',
             'Accept: application/json',
         ],
-        CURLOPT_TIMEOUT        => 30, // Increased for larger model
+        CURLOPT_TIMEOUT        => 30,
         CURLOPT_CONNECTTIMEOUT => 10,
         CURLOPT_SSL_VERIFYPEER => true,
     ]);
@@ -348,7 +552,7 @@ try {
         $aiText  = trim($decoded['choices'][0]['message']['content'] ?? '');
     }
 
-    // ─── 8. Fallback: local rule-based responses ─────────────────────────────
+    // ─── Fallback: local rule-based responses ─────────────────────────────────
     if ($aiText === '') {
         if (!$curlError && $httpCode !== 200) {
             error_log("Pollinations.ai returned HTTP {$httpCode}, using local fallback");
@@ -358,7 +562,7 @@ try {
         $aiText = getLocalFallbackResponse($userMessage, $isBengali, $user);
     }
 
-    // ─── 9. Detect pickup JSON in AI response (from Pollinations only) ──────
+    // ─── Detect pickup JSON in AI response ────────────────────────────────────
     $action = null;
     $reply  = $aiText;
 
@@ -434,18 +638,30 @@ try {
         }
     }
 
-    // ─── 9. Return response ───────────────────────────────────────────────────
-    echo json_encode([
-        'reply'  => $reply,
-        'action' => $action,
-    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    // ─── Low-confidence bilingual disambiguation ──────────────────────────────
+    $wordCount = count(preg_split('/\s+/', $userMessage));
+    if ($langConfidence < 0.6 && $wordCount >= 2) {
+        $bilingualNote = $lang === 'bn'
+            ? "\n\n---\n(English: I detected Bangla/Banglish in your message. If you prefer English, just type in English. 😊)"
+            : "\n\n---\n(বাংলায়: আমি আপনার মেসেজে ইংরেজি শনাক্ত করেছি। আপনি যদি বাংলায় লিখতে চান, দয়া করে বাংলায় লিখুন। 😊)";
+        if (strpos($reply, '(English:') === false && strpos($reply, '(বাংলায়:') === false) {
+            $reply .= $bilingualNote;
+        }
+    }
+
+    // ─── Send response ─────────────────────────────────────────────────────────
+    respondJson($pdo, $userId, $sessionId, $lang, $reply, $userMessage, $action);
 
 } catch (Throwable $e) {
-    // Log full error server-side only
     error_log('[Notun Alo Chatbot] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
 
+    $catchLang = isset($lang) ? ($lang === 'bn') : false;
+    $catchSid  = isset($sessionId) ? $sessionId : 'main';
+
     echo json_encode([
-        'reply'  => langError($isBengali),
-        'action' => null,
+        'reply'       => langError($catchLang),
+        'action'      => null,
+        'suggestions' => null,
+        'session_id'  => $catchSid,
     ], JSON_UNESCAPED_UNICODE);
 }

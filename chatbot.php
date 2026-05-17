@@ -390,8 +390,8 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             }
         });
 
-        async function sendMessage() {
-            const text = chatInput.value.trim();
+        async function sendMessage(suggestionText) {
+            const text = suggestionText || chatInput.value.trim();
             if (!text || isLoading) return;
 
             isLoading = true;
@@ -399,6 +399,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
 
             if (currentConvId === 'new') {
                 const id = 'conv_' + Date.now();
+                currentConvId = id;
                 conversations[id] = { title: text, messages: [] };
                 const item = document.createElement('div');
                 item.className = 'chat-item';
@@ -416,10 +417,12 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             }
 
             appendUserMessage(text);
-            chatInput.value = '';
-            chatInput.style.height = 'auto'; // Reset height
+            if (!suggestionText) {
+                chatInput.value = '';
+                chatInput.style.height = 'auto';
+            }
 
-            // Show typing indicator or "Thinking..."
+            // Show typing indicator
             const typingMsg = { type: 'ai', text: 'Thinking...', isTyping: true };
             appendAiMessage(typingMsg);
             const typingBubble = messageArea.lastElementChild;
@@ -430,7 +433,8 @@ $currentLang = $_SESSION['lang'] ?? 'en';
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         message: text,
-                        history: conversationHistory
+                        session_id: currentConvId,
+                        history: conversationHistory.length > 0 ? conversationHistory : undefined
                     })
                 });
 
@@ -442,8 +446,9 @@ $currentLang = $_SESSION['lang'] ?? 'en';
 
                 const reply = data.reply || "Sorry, I didn't get that.";
                 const isPickup = data.action && data.action.type === 'pickup_scheduled';
+                const suggestions = data.suggestions || [];
 
-                appendAiMessage({ text: reply, isPickup: isPickup });
+                appendAiMessage({ text: reply, isPickup: isPickup, quickReplies: suggestions });
 
                 // Update history for the session
                 conversationHistory.push({ role: 'user', content: text });
@@ -451,7 +456,7 @@ $currentLang = $_SESSION['lang'] ?? 'en';
 
                 if (conversations[currentConvId]) {
                     conversations[currentConvId].messages.push({ type: 'user', text });
-                    conversations[currentConvId].messages.push({ type: 'ai', text: reply });
+                    conversations[currentConvId].messages.push({ type: 'ai', text: reply, quickReplies: suggestions });
                 }
 
             } catch (err) {
@@ -472,8 +477,8 @@ $currentLang = $_SESSION['lang'] ?? 'en';
             return div.innerHTML;
         }
 
-        function handleQuickReply(text) { chatInput.value = text; sendMessage(); }
-        function handleSuggestion(text) { messageArea.innerHTML = ''; handleQuickReply(text); }
+        function handleQuickReply(text) { sendMessage(text); }
+        function handleSuggestion(text) { messageArea.innerHTML = ''; sendMessage(text); }
         function scrollToBottom() { messageArea.scrollTop = messageArea.scrollHeight; }
 
         // Sidebar Actions

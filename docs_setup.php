@@ -58,6 +58,7 @@ try {
     echo "Docs database infrastructure initialized successfully.";
 
 } catch (PDOException $e) {
-    die("Database Error: " . $e->getMessage());
+    error_log('[docs_setup] ' . $e->getMessage());
+    die('A database error occurred during setup.');
 }
 ?>

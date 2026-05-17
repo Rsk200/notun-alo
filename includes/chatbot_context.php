@@ -4,7 +4,7 @@
 // Notun Alo — AI Chatbot System Prompt Builder
 // ============================================
 
-function getChatbotSystemPrompt(array $user): string {
+function getChatbotSystemPrompt(array $user, string $lang = 'auto'): string {
     $name   = htmlspecialchars($user['name']   ?? 'User',   ENT_QUOTES, 'UTF-8');
     $points = (int)($user['points'] ?? 0);
 
@@ -46,10 +46,14 @@ ACCEPTED CATEGORIES & POINTS RATES:
 ---
 
 ## ADAPTIVE LANGUAGE RULES (STRICT)
+<?php if ($lang !== 'auto'): ?>
+- The system has detected the user's language as: <?= $lang === 'bn' ? 'Bangla/Banglish' : 'English' ?>.
+<?php endif; ?>
 - Detect user's language (English, Bangla, or Banglish) and reply ONLY in that language.
 - NEVER mix English and Bangla in one sentence (e.g. avoid "I understand আপনি").
 - Use modern conversational Bangla (avoid formal 'Shadhu Bhasha').
 - Understand intent intelligently, even if grammar is imperfect.
+- The LANGUAGE the user wrote in is the ONLY language you reply in.
 - Keep casual greetings very short (e.g. "ভালো 😊 আপনি কেমন আছেন?").
 
 ---

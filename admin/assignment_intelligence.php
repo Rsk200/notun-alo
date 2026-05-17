@@ -43,6 +43,7 @@ $model = $pdo->query("SELECT * FROM model_versions WHERE is_active = 1 ORDER BY 
 include '../includes/header.php';
 include '../includes/navbar.php';
 
+$currentLang = $_SESSION['lang'] ?? 'en';
 $t = function($en, $bn) use ($currentLang) {
     return $currentLang === 'bn' ? $bn : $en;
 };

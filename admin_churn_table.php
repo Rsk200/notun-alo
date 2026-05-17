@@ -2,6 +2,7 @@
 require_once 'includes/config.php';
 requireLogin();
 
+$currentLang = $_SESSION['lang'] ?? 'en';
 $t = function($en, $bn) use ($currentLang) {
     return $currentLang === 'bn' ? $bn : $en;
 };

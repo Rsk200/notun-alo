@@ -10,6 +10,7 @@ startSession();
 $userId = (int)$_SESSION['user_id'];
 $points = getUserPoints($pdo, $userId);
 $flash  = null;
+$currentLang = $_SESSION['lang'] ?? 'en';
 
 $t = function($en, $bn) use ($currentLang) {
     return $currentLang === 'bn' ? $bn : $en;

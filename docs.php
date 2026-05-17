@@ -1,14 +1,11 @@
 <?php
-session_start();
 require_once 'includes/config.php';
+global $pdo;
 
 // Check Admin Access (Admins skip the schedule check)
 $isAdmin = isset($_SESSION['user_id']) && isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'super_admin');
 
 try {
-    $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
     // Fetch Settings
     $stmt = $pdo->query("SELECT * FROM docs_settings WHERE id = 1");
     $settings = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -48,7 +45,8 @@ try {
     $totalPickups = $pdo->query("SELECT COUNT(*) FROM pickups WHERE status = 'completed'")->fetchColumn();
 
 } catch (PDOException $e) {
-    die("Connection Failed: " . $e->getMessage());
+    error_log('[docs] ' . $e->getMessage());
+    die('A database error occurred.');
 }
 ?>
 <!DOCTYPE html>

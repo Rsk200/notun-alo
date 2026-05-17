@@ -1,6 +1,6 @@
 <?php
-session_start();
 require_once 'includes/config.php';
+global $pdo;
 
 // Only Admin access
 if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'super_admin')) {
@@ -9,34 +9,23 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['ro
 }
 
 try {
-    $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
     // Handle Form Submissions
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['update_settings'])) {
-            $mode = $_POST['visibility_mode'];
-            $start = $_POST['start_time'];
-            $end = $_POST['end_time'];
             $stmt = $pdo->prepare("UPDATE docs_settings SET visibility_mode = ?, start_time = ?, end_time = ? WHERE id = 1");
-            $stmt->execute([$mode, $start, $end]);
+            $stmt->execute([$_POST['visibility_mode'], $_POST['start_time'], $_POST['end_time']]);
             $msg = "Settings updated!";
         }
 
         if (isset($_POST['add_member'])) {
-            $name = $_POST['name'];
-            $role = $_POST['role'];
-            $email = $_POST['email'];
             $stmt = $pdo->prepare("INSERT INTO team_members (name, role, email) VALUES (?, ?, ?)");
-            $stmt->execute([$name, $role, $email]);
+            $stmt->execute([$_POST['name'], $_POST['role'], $_POST['email']]);
             $msg = "Team member added!";
         }
 
         if (isset($_POST['update_section'])) {
-            $id = $_POST['section_id'];
-            $content = $_POST['content'];
             $stmt = $pdo->prepare("UPDATE docs_sections SET content = ? WHERE id = ?");
-            $stmt->execute([$content, $id]);
+            $stmt->execute([$_POST['content'], $_POST['section_id']]);
             $msg = "Section updated!";
         }
     }
@@ -47,7 +36,8 @@ try {
     $team = $pdo->query("SELECT * FROM team_members ORDER BY display_order ASC")->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    die("Error: " . $e->getMessage());
+    error_log('[admin_docs] ' . $e->getMessage());
+    die('A database error occurred. Please check the server logs.');
 }
 ?>
 <!DOCTYPE html>
@@ -122,8 +112,8 @@ try {
             <div style="margin-top:20px; display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:10px;">
                 <?php foreach ($team as $m): ?>
                     <div style="background:#1e293b; padding:10px; border-radius:8px; font-size:0.8rem;">
-                        <strong><?php echo $m['name']; ?></strong><br>
-                        <?php echo $m['role']; ?>
+                        <strong><?= e($m['name']) ?></strong><br>
+                        <?= e($m['role']) ?>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -135,8 +125,8 @@ try {
             <?php foreach ($sections as $sec): ?>
                 <form method="POST" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom:20px; margin-bottom:20px;">
                     <input type="hidden" name="section_id" value="<?php echo $sec['id']; ?>">
-                    <label style="color:var(--docs-accent); font-weight:700;"><?php echo $sec['title']; ?></label>
-                    <textarea name="content" rows="6"><?php echo $sec['content']; ?></textarea>
+                    <label style="color:var(--docs-accent); font-weight:700;"><?= e($sec['title']) ?></label>
+                    <textarea name="content" rows="6"><?= e($sec['content']) ?></textarea>
                     <button type="submit" name="update_section">Save Changes</button>
                 </form>
             <?php endforeach; ?>
